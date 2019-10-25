@@ -1,3 +1,6 @@
+# Abstrakt
+
+[![Build Status](https://dev.azure.com/aussiedevcrew/Wormhole/_apis/build/status/microsoft.abstrakt?branchName=master)](https://dev.azure.com/aussiedevcrew/Wormhole/_build/latest?definitionId=20&branchName=master)
 
 # Contributing
 
