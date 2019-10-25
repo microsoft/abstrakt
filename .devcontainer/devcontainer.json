@@ -8,7 +8,8 @@
     "postCreateCommand": "go mod tidy",
     "extensions": [
         "ms-azuretools.vscode-docker",
-        "ms-vscode.go"
+        "ms-vscode.go",
+        "coenraads.bracket-pair-colorizer-2"
     ],
     "settings": {
         "terminal.integrated.shell.linux": "zsh",
@@ -17,6 +18,9 @@
         "go.useLanguageServer": true,
         "go.toolsEnvVars": {
             "GO111MODULE": "on"
+        },
+        "[go]": {
+            "editor.formatOnSave": true
         },
         "remote.extensionKind": {
             "ms-azuretools.vscode-docker": "workspace"
