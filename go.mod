@@ -3,11 +3,11 @@ module github.com/microsoft/abstrakt
 go 1.12
 
 require (
-	github.com/AlekSi/gocov-xml v0.0.0-20190121064608-3a14fb1c4737 // indirect
-	github.com/axw/gocov v1.0.0 // indirect
-	github.com/jstemmer/go-junit-report v0.9.1 // indirect
+	github.com/AlekSi/gocov-xml v0.0.0-20190121064608-3a14fb1c4737
+	github.com/axw/gocov v1.0.0
+	github.com/jstemmer/go-junit-report v0.9.1
 	github.com/magiconair/properties v1.8.1 // indirect
-	github.com/matm/gocov-html v0.0.0-20160206185555-f6dd0fd0ebc7 // indirect
+	github.com/matm/gocov-html v0.0.0-20160206185555-f6dd0fd0ebc7
 	github.com/microsoft/fabrikate v0.0.0-20191001204411-06156442c6ac
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/pelletier/go-toml v1.4.0 // indirect
