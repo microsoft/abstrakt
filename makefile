@@ -7,7 +7,6 @@ lint-all: lint-prepare lint vet
 lint-prepare: 
 	@echo "Installing golangci-lint"
 	wget -O - -q https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh| sh -s v1.21.0
-	go get github.com/jstemmer/go-junit-report
 
 lint:
 	@echo "Linting"
