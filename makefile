@@ -20,12 +20,6 @@ vet:
 # Testing		 #
 ##################
 
-test-prepare: 
-	go get github.com/jstemmer/go-junit-report
-	go get github.com/axw/gocov/gocov
-	go get github.com/AlekSi/gocov-xml
-	go get github.com/axw/gocov/gocov
-	go get github.com/matm/gocov-html
 
 test: 
 	@go test -v ./... -cover -coverprofile=coverage.txt -race -covermode=atomic
@@ -37,6 +31,6 @@ test-export:
 	mkdir coverage | true
 	gocov-html < coverage.json > coverage/index.html
 
-test-all: test-prepare test
+test-all: test
 
-test-export-all: test-prepare test-export
+test-export-all: test-export

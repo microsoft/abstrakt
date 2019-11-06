@@ -7,6 +7,4 @@ import (
 	"github.com/matm/gocov-html"
 )
 
-func test(){
-	Coverage c = nil;
-}
+func test() {}
