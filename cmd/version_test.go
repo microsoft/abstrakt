@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"os"
-	"testing" // based on standard golang testing library
+	"testing" // based on standard golang testing library https://golang.org/pkg/testing/
 )
 
 // TestMain does setup or teardown (tests run when m.Run() is called)
