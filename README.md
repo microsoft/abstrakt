@@ -41,3 +41,9 @@ With everything installed and running, you can continue.
 4. Once your container has finished building, you can now start developing!
 5. Open a new terminal in Visual Studio Code (`Terminal` -> `New Terminal`).
 6. Type `go run main.go`.
+
+### Building
+
+1. Run `make lint-all` to lint and vet the code.
+2. Run `make test-all` to run unit tests.
+3. [Optional] Run `make test-export-all` to export test and and converage reports.

@@ -18,7 +18,7 @@ vet:
 	go vet ./...
 
 ##################
-# Linting/Verify #
+# Testing		 #
 ##################
 
 test-prepare: 
@@ -37,3 +37,7 @@ test-export:
 	gocov-xml < coverage.json > coverage.xml
 	mkdir coverage | true
 	gocov-html < coverage.json > coverage/index.html
+
+test-all: test-prepare test
+
+test-export-all: test-prepare test-export
