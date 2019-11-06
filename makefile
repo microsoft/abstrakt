@@ -14,7 +14,7 @@ lint:
 
 vet:
 	@echo "Vetting"
-	go vet ./...
+	go vet ./cmd
 
 ##################
 # Testing		 #
@@ -22,7 +22,7 @@ vet:
 
 
 test: 
-	@go test -v ./... -cover -coverprofile=coverage.txt -race -covermode=atomic
+	@go test -v ./... -cover -coverprofile=coverage.txt -race -covermode=atomic 
 
 test-export: 
 	go test -v ./... -cover -coverprofile=coverage.txt -race -covermode=atomic 2>&1 | go-junit-report > report.xml
