@@ -26,7 +26,7 @@ func checkStringContains(t *testing.T, got, expected string) {
 }
 
 func TestComposeCmdVerifyRequiredFlags(t *testing.T) {
-	expected := "required flag(s) \"constesllationfile\", \"mapsfile\", \"outputPath\" not set"
+	expected := "required flag(s) \"constellationFilePath\", \"mapsFilePath\", \"outputPath\" not set"
 	output, err := executeCommand(composeCmd, "")
 	if err != nil {
 		checkStringContains(t, err.Error(), expected)
@@ -38,7 +38,7 @@ func TestComposeCmdVerifyRequiredFlags(t *testing.T) {
 
 func TestComposeCmdWithValidFlags(t *testing.T) {
 
-	output, err := executeCommand(composeCmd, "-f", "constesllationFilePath", "-m", "mapsFilePath", "-o", "outputPath")
+	output, err := executeCommand(composeCmd, "-f", "constellationFilePath", "-m", "mapsFilePath", "-o", "outputPath")
 	if err != nil {
 		t.Errorf("error: \n %v\noutput:\n %v\n", err, output)
 	}
