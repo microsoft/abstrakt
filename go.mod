@@ -4,6 +4,7 @@ go 1.13
 
 require (
 	github.com/magiconair/properties v1.8.1 // indirect
+	github.com/microsoft/fabrikate v0.0.0-20191001204411-06156442c6ac
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/pelletier/go-toml v1.4.0 // indirect
 	github.com/sirupsen/logrus v1.4.2
