@@ -1,37 +1,19 @@
 package cmd
 
 import (
-	"os"
-
-	"github.com/spf13/cobra"
-
+	commands "github.com/microsoft/abstrakt/commands"
 	"github.com/microsoft/abstrakt/internal/tool"
 	homedir "github.com/mitchellh/go-homedir"
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"os"
 )
 
 var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
-var rootCmd = &cobra.Command{
-	Use:   "abstrakt",
-	Short: "Scalable, config driven data pipelines for Kubernetes.",
-	Long:  "Scalable, config driven data pipelines for Kubernetes.",
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	//	Run: func(cmd *cobra.Command, args []string) { },
-	PersistentPreRunE: func(cmd *cobra.Command, args []string) (err error) {
-		verbose := cmd.Flag("verbose").Value.String()
 
-		if verbose == "true" {
-			logger.SetLevelDebug()
-		} else {
-			logger.SetLevelInfo()
-		}
-
-		return nil
-	},
-}
+var rootCmd = commands.DefaultRootCommand()
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
