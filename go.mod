@@ -1,6 +1,6 @@
 module github.com/microsoft/abstrakt
 
-go 1.13
+go 1.12
 
 require (
 	github.com/AlekSi/gocov-xml v0.0.0-20190121064608-3a14fb1c4737
