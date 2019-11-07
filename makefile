@@ -32,10 +32,10 @@ test:
 
 test-export: 
 	go test -v ./... -cover -coverprofile=coverage.txt -race -covermode=atomic 2>&1 | $(GOPATH)/bin/go-junit-report > report.xml
-	gocov convert coverage.txt > coverage.json
-	gocov-xml < coverage.json > coverage.xml
+	$(GOPATH)/bin/gocov convert coverage.txt > coverage.json
+	$(GOPATH)/bin/gocov-xml < coverage.json > coverage.xml
 	mkdir coverage | true
-	gocov-html < coverage.json > coverage/index.html
+	$(GOPATH)/bin/gocov-html < coverage.json > coverage/index.html
 
 test-all: test-prepare test
 
