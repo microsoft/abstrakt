@@ -28,10 +28,10 @@ test-prepare:
 	go get github.com/matm/gocov-html
 
 test: 
-	go test -v ./... -cover -coverprofile=coverage.txt -covermode=count
+	go test -v ./... -cover -coverprofile=coverage.txt -race -covermode=atomic
 
 test-export: 
-	go test -v ./... -cover -coverprofile=coverage.txt -covermode=count 2>&1 | $(GOPATH)/bin/go-junit-report > report.xml
+	go test -v ./... -cover -coverprofile=coverage.txt -race -covermode=atomic 2>&1 | $(GOPATH)/bin/go-junit-report > report.xml
 	$(GOPATH)/bin/gocov convert coverage.txt > coverage.json
 	$(GOPATH)/bin/gocov-xml < coverage.json > coverage.xml
 	mkdir coverage | true
