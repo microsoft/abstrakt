@@ -1,4 +1,4 @@
-package cmd
+package commands
 
 import (
 	logger "github.com/microsoft/abstrakt/internal/tool"
@@ -17,8 +17,4 @@ var versionCmd = &cobra.Command{
 // PrintVersion prints the current version of Abstrakt being used.
 func PrintVersion() {
 	logger.Info("abstrakt version 0.0.1")
-}
-
-func init() {
-	rootCmd.AddCommand(versionCmd)
 }
