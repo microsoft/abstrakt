@@ -2,7 +2,7 @@
 # Linting/Verify #
 ##################
 
-lint-all: lint-prepare lint vet
+lint-all: lint-prepare lint #vet
 
 lint-prepare: 
 	@echo "Installing golangci-lint"
