@@ -3,6 +3,7 @@ module github.com/microsoft/abstrakt
 go 1.13
 
 require (
+	github.com/jstemmer/go-junit-report v0.9.1 // indirect
 	github.com/magiconair/properties v1.8.1 // indirect
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/pelletier/go-toml v1.4.0 // indirect

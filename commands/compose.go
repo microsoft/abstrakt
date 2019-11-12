@@ -28,21 +28,10 @@ var composeCmd = &cobra.Command{
 
 func init() {
 	composeCmd.Flags().StringVarP(&constellationFilePath, "constellationFilePath", "f", "", "constellation file path")
-	err := composeCmd.MarkFlagRequired("constellationFilePath")
-	if err != nil {
-		fmt.Println("constellationFilePath is required")
-	}
+	_ = composeCmd.MarkFlagRequired("constellationFilePath")
 	composeCmd.Flags().StringVarP(&mapsFilePath, "mapsFilePath", "m", "", "maps file path")
-
-	err = composeCmd.MarkFlagRequired("mapsFilePath")
-	if err != nil {
-		fmt.Println("mapsFilePath is required")
-	}
+	_ = composeCmd.MarkFlagRequired("mapsFilePath")
 	composeCmd.Flags().StringVarP(&outputPath, "outputPath", "o", "", "destination directory")
-
-	err = composeCmd.MarkFlagRequired("outputPath")
-	if err != nil {
-		fmt.Println("outputPath is required")
-	}
+	_ = composeCmd.MarkFlagRequired("outputPath")
 	composeCmd.Flags().StringVarP(&templateType, "template type", "t", "helm", "output template type")
 }
