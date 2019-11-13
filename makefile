@@ -5,7 +5,7 @@
 
 test-watcher:
 	@echo "Running test watcher"
-	./.scripts/test_watcher.sh
+	bash ./.scripts/test_watcher.sh
 
 lint-all: lint-prepare lint vet
 
