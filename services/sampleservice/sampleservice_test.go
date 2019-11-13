@@ -1,3 +1,4 @@
+//so named because you cannot import the same module again in a circular fashion
 package sampleservice_test
 
 import (
@@ -6,8 +7,8 @@ import (
 )
 
 func TestResolveService(t *testing.T) {
-	s := sl.SampleService
-	if s == nil {
-		t.Fail()
-	}
+	s := sl.SampleService()
+
+	s.Print()
+
 }
