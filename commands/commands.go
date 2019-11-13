@@ -27,7 +27,7 @@ func DefaultRootCommand() *cobra.Command {
 	}
 
 	c.AddCommand(
-		composeCmd, versionCmd,
+		composeCmd, versionCmd, visualiseCmd,
 	)
 
 	return c
