@@ -28,7 +28,7 @@ var composeCmd = &cobra.Command{
 
 func init() {
 	composeCmd.Flags().StringVarP(&constellationFilePath, "constellationFilePath", "f", "", "constellation file path")
-	composeCmd.MarkFlagRequired("constellationFilePath")
+	_ = composeCmd.MarkFlagRequired("constellationFilePath")
 	composeCmd.Flags().StringVarP(&mapsFilePath, "mapsFilePath", "m", "", "maps file path")
 	_ = composeCmd.MarkFlagRequired("mapsFilePath")
 	composeCmd.Flags().StringVarP(&outputPath, "outputPath", "o", "", "destination directory")
