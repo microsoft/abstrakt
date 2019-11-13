@@ -18,3 +18,9 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 1. Run `make lint-all` to lint and vet the code.
 2. Run `make test-all` to run unit tests.
 3. [Optional] Run `make test-export-all` to export test and and converage reports.
+
+### Watching Tests
+
+A utility test watcher has been added which will automatically re-run your tests as files change. 
+
+`make test-watcher`
