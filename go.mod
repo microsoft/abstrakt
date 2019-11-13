@@ -3,8 +3,11 @@ module github.com/microsoft/abstrakt
 go 1.13
 
 require (
+	github.com/AlekSi/gocov-xml v0.0.0-20190121064608-3a14fb1c4737 // indirect
 	github.com/google/wire v0.3.0
+	github.com/jstemmer/go-junit-report v0.9.1 // indirect
 	github.com/magiconair/properties v1.8.1 // indirect
+	github.com/matm/gocov-html v0.0.0-20191111163307-9ee104d84c82 // indirect
 	github.com/mattn/go-colorable v0.1.4 // indirect
 	github.com/mattn/go-isatty v0.0.10 // indirect
 	github.com/mitchellh/go-homedir v1.1.0
