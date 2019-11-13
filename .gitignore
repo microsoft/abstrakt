@@ -11,10 +11,14 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
+report.xml
+coverage.xml
+coverage.json
+coverage.txt
+
 .vscode
 
 .DS_Store
 abstrakt
 bin
-bin/golangci-lint
-bin/golangci-lint
+
