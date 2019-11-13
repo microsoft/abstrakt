@@ -15,5 +15,6 @@
 
 .DS_Store
 abstrakt
+bin
 bin/golangci-lint
 bin/golangci-lint
