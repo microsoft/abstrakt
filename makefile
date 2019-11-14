@@ -11,7 +11,7 @@ lint-all: lint-prepare lint vet
 
 lint-prepare: 
 	@echo "Installing golangci-lint"
-	wget -O - -q https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh| sh -s v1.21.0 > /dev/null 2>&1
+	if [[ ! -f './bin/golangci-lint' ]]; then wget -O - -q https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh| sh -s v1.21.0 >/dev/null 2>&1; fi
 
 lint:
 	@echo "Linting"
