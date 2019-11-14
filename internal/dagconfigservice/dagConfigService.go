@@ -1,4 +1,4 @@
-package yaml
+package dagconfigservice
 
 ////////////////////////////////////////////////////////////
 // DagConfig class - information for a deployment regarding
@@ -14,6 +14,7 @@ package yaml
 ////////////////////////////////////////////////////////////
 
 import (
+	"github.com/microsoft/abstrakt/internal/tools/guid"
 	yamlParser "gopkg.in/yaml.v2"
 	"io/ioutil"
 	"strings"
@@ -35,7 +36,7 @@ type DagProperty interface{}
 // DagService -- a DAG Service description
 type DagService struct {
 	Name       string                 `yaml:"Name"`
-	ID         GUID                   `yaml:"Id"`
+	ID         guid.GUID              `yaml:"Id"`
 	Type       string                 `yaml:"Type"`
 	Properties map[string]DagProperty `yaml:"Properties"`
 }
@@ -43,19 +44,24 @@ type DagService struct {
 // DagRelationship -- a relationship between Services
 type DagRelationship struct {
 	Name        string                 `yaml:"Name"`
-	ID          GUID                   `yaml:"Id"`
+	ID          guid.GUID              `yaml:"Id"`
 	Description string                 `yaml:"Description"`
-	From        GUID                   `yaml:"From"`
-	To          GUID                   `yaml:"To"`
+	From        guid.GUID              `yaml:"From"`
+	To          guid.GUID              `yaml:"To"`
 	Properties  map[string]DagProperty `yaml:"Properties"`
 }
 
-// DagConfig -- The DAG config for a deployment
+// DagConfigService -- The DAG config for a deployment
 type DagConfigService struct {
 	Name          string            `yaml:"Name"`
-	ID            GUID              `yaml:"Id"`
+	ID            guid.GUID         `yaml:"Id"`
 	Services      []DagService      `yaml:"Services"`
 	Relationships []DagRelationship `yaml:"Relationships"`
+}
+
+// NewDagConfigService -- Create a new DagConfigService instance
+func NewDagConfigService() DagConfigService {
+	return DagConfigService{}
 }
 
 // FindServiceByName -- Find a Service by name.
@@ -66,7 +72,7 @@ func (m *DagConfigService) FindServiceByName(serviceName string) (res *DagServic
 			return &val
 		}
 		// if we want to tolerate case being incorrect (e.g., ABC vs. abc) ...
-		if tolerateMiscasedKey && strings.EqualFold(val.Name, serviceName) {
+		if guid.TolerateMiscasedKey && strings.EqualFold(val.Name, serviceName) {
 			return &val
 		}
 	}
@@ -74,7 +80,7 @@ func (m *DagConfigService) FindServiceByName(serviceName string) (res *DagServic
 }
 
 // FindServiceByID -- Find a Service by id.
-func (m *DagConfigService) FindServiceByID(serviceID GUID) (res *DagService) {
+func (m *DagConfigService) FindServiceByID(serviceID guid.GUID) (res *DagService) {
 	sid := string(serviceID) // no-op conversion, but needed for strings.* functions
 	for _, val := range m.Services {
 		// try first for an exact match
@@ -82,7 +88,7 @@ func (m *DagConfigService) FindServiceByID(serviceID GUID) (res *DagService) {
 			return &val
 		}
 		// if we want to tolerate case being incorrect (e.g., ABC vs. abc),
-		if tolerateMiscasedKey && strings.EqualFold(string(val.ID), sid) {
+		if guid.TolerateMiscasedKey && strings.EqualFold(string(val.ID), sid) {
 			return &val
 		}
 	}
@@ -97,7 +103,7 @@ func (m *DagConfigService) FindRelationshipByName(relationshipName string) (res 
 			return &val
 		}
 		// if we want to tolerate case being incorrect (e.g., ABC vs. abc) ...
-		if tolerateMiscasedKey && strings.EqualFold(val.Name, relationshipName) {
+		if guid.TolerateMiscasedKey && strings.EqualFold(val.Name, relationshipName) {
 			return &val
 		}
 	}
@@ -105,7 +111,7 @@ func (m *DagConfigService) FindRelationshipByName(relationshipName string) (res 
 }
 
 // FindRelationshipByID -- Find a Relationship by id.
-func (m *DagConfigService) FindRelationshipByID(relationshipID GUID) (res *DagService) {
+func (m *DagConfigService) FindRelationshipByID(relationshipID guid.GUID) (res *DagService) {
 	rid := string(relationshipID) // no-op conversion, but needed for strings.* functions
 	for _, val := range m.Services {
 		// try first for an exact match
@@ -113,31 +119,29 @@ func (m *DagConfigService) FindRelationshipByID(relationshipID GUID) (res *DagSe
 			return &val
 		}
 		// if we want to tolerate case being incorrect (e.g., ABC vs. abc),
-		if tolerateMiscasedKey && strings.EqualFold(string(val.ID), rid) {
+		if guid.TolerateMiscasedKey && strings.EqualFold(string(val.ID), rid) {
 			return &val
 		}
 	}
 	return nil
 }
 
-// NewDagConfigFromFile -- New DAG info instance from the named file.
-func NewDagConfigFromFile(fileName string) (ret *DagConfigService, err error) {
+// LoadDagConfigFromFile -- New DAG info instance from the named file.
+func (m *DagConfigService) LoadDagConfigFromFile(fileName string) (err error) {
 	err = nil
 	contentBytes, err := ioutil.ReadFile(fileName)
 	if nil != err {
-		return nil, err
+		return err
 	}
-
-	return NewDagConfigFromString(string(contentBytes))
+	err = m.LoadDagConfigFromString(string(contentBytes))
+	return err
 }
 
-// NewDagConfigFromString -- New DAG info instance from the given yaml string.
-func NewDagConfigFromString(yamlString string) (ret *DagConfigService, err error) {
+// LoadDagConfigFromString -- New DAG info instance from the given yaml string.
+func (m *DagConfigService) LoadDagConfigFromString(yamlString string) (err error) {
 	err = nil
-	tp := &DagConfigService{}
-	err = yamlParser.Unmarshal([]byte(yamlString), tp)
-	if err != nil {
-		tp = nil
-	}
-	return tp, err
+	//tp := &DagConfigService{}
+	err = yamlParser.Unmarshal([]byte(yamlString), m)
+
+	return err
 }

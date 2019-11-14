@@ -1,8 +1,10 @@
-package yaml
+package buildmapservice
 
 import (
 	"reflect"
 	"testing"
+
+	"github.com/microsoft/abstrakt/internal/tools/guid"
 )
 
 func TestNewWormholeMapFromString(t *testing.T) {
@@ -56,7 +58,7 @@ Maps:
 
 var buildMap01 = WormholeMap{
 	Name: "Basic Azure Event Hubs maps",
-	ID:   GUID("a5a7c413-a020-44a2-bd23-1941adb7ad58"),
+	ID:   guid.GUID("a5a7c413-a020-44a2-bd23-1941adb7ad58"),
 	Maps: []WormholeMapInfo{
 		WormholeMapInfo{
 			ChartName: "event_hub_sample_event_generator",

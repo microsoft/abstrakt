@@ -2,6 +2,9 @@
 # Linting/Verify #
 ##################
 
+#wire:
+	#@echo "Running wire build"
+	#wire ./internal/serviceLocator
 
 test-watcher:
 	@echo "Running test watcher"

@@ -1,4 +1,4 @@
-package yaml
+package buildmapservice
 
 //////////////////////////////////////////////////////
 // WormholeMap:  Process map files relating services
@@ -7,9 +7,11 @@ package yaml
 //////////////////////////////////////////////////////
 
 import (
-	yamlParser "gopkg.in/yaml.v2"
 	"io/ioutil"
 	"strings"
+
+	"github.com/microsoft/abstrakt/internal/tools/guid"
+	yamlParser "gopkg.in/yaml.v2"
 )
 
 // Note: the yaml mapping attributes are necessary (despite the nearly
@@ -28,7 +30,7 @@ type WormholeMapInfo struct {
 // WormholeMap -- data from the entire build map.
 type WormholeMap struct {
 	Name string            `yaml:"Name"`
-	ID   GUID              `yaml:"Id"`
+	ID   guid.GUID         `yaml:"Id"`
 	Maps []WormholeMapInfo `yaml:"Maps"`
 }
 
@@ -40,7 +42,7 @@ func (m *WormholeMap) FindByName(chartName string) (res *WormholeMapInfo) {
 			return &wmi
 		}
 		// if we want to tolerate case being incorrect (e.g., ABC vs. abc),
-		if tolerateMiscasedKey && strings.EqualFold(string(wmi.ChartName), chartName) {
+		if guid.TolerateMiscasedKey && strings.EqualFold(string(wmi.ChartName), chartName) {
 			return &wmi
 		}
 	}
@@ -55,7 +57,7 @@ func (m *WormholeMap) FindByType(typeName string) (res *WormholeMapInfo) {
 			return &wmi
 		}
 		// if we want to tolerate case being incorrect (e.g., ABC vs. abc),
-		if tolerateMiscasedKey && strings.EqualFold(string(wmi.Type), typeName) {
+		if guid.TolerateMiscasedKey && strings.EqualFold(string(wmi.Type), typeName) {
 			return &wmi
 		}
 	}
