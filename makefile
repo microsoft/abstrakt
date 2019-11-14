@@ -9,13 +9,17 @@ test-watcher:
 
 lint-all: lint-prepare lint vet
 
-lint-prepare: 
+lint-prepare:
+ifeq (,$(shell which golangci-lint))
 	@echo "Installing golangci-lint"
-	wget -O - -q https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh| sh -s v1.21.0 > /dev/null 2>&1
+	curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.21.0
+else
+	@echo "golangci-lint is installed"
+endif
 
 lint:
 	@echo "Linting"
-	./bin/golangci-lint run ./...
+	golangci-lint run ./...
 
 vet:
 	@echo "Vetting"
