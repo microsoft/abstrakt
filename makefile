@@ -12,7 +12,7 @@ lint-all: lint-prepare lint vet
 lint-prepare:
 ifeq (,$(shell which golangci-lint))
 	@echo "Installing golangci-lint"
-	curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.21.0
+	curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.21.0 > /dev/null 2>&1
 else
 	@echo "golangci-lint is installed"
 endif
