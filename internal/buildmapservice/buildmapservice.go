@@ -19,23 +19,23 @@ import (
 // expect the names in the YAML file to be all lower-case.
 // e.g. ChartName would only work if "chartname" was used in the yaml file.
 
-// WormholeMapInfo -- info about an individual component
-type WormholeMapInfo struct {
+// BuildMapInfo -- info about an individual component
+type BuildMapInfo struct {
 	ChartName string `yaml:"ChartName"`
 	Type      string `yaml:"Type"`
 	Location  string `yaml:"Location"`
 	Version   string `yaml:"Version"`
 }
 
-// WormholeMap -- data from the entire build map.
-type WormholeMapService struct {
-	Name string            `yaml:"Name"`
-	ID   guid.GUID         `yaml:"Id"`
-	Maps []WormholeMapInfo `yaml:"Maps"`
+// BuildMapService -- data from the entire build map.
+type BuildMapService struct {
+	Name string         `yaml:"Name"`
+	ID   guid.GUID      `yaml:"Id"`
+	Maps []BuildMapInfo `yaml:"Maps"`
 }
 
 // FindByName -- Look up a map by chart name.
-func (m *WormholeMapService) FindByName(chartName string) (res *WormholeMapInfo) {
+func (m *BuildMapService) FindByName(chartName string) (res *BuildMapInfo) {
 	for _, wmi := range m.Maps {
 		// try first for an exact match
 		if chartName == wmi.ChartName {
@@ -50,7 +50,7 @@ func (m *WormholeMapService) FindByName(chartName string) (res *WormholeMapInfo)
 }
 
 // FindByType -- Look up a map by the "Type" value.
-func (m *WormholeMapService) FindByType(typeName string) (res *WormholeMapInfo) {
+func (m *BuildMapService) FindByType(typeName string) (res *BuildMapInfo) {
 	for _, wmi := range m.Maps {
 		// try first for an exact match
 		if typeName == wmi.Type {
@@ -65,7 +65,7 @@ func (m *WormholeMapService) FindByType(typeName string) (res *WormholeMapInfo) 
 }
 
 // LoadWormholeMapFromFile -- New Map info instance from the named file.
-func (m *WormholeMapService) LoadWormholeMapFromFile(fileName string) (err error) {
+func (m *BuildMapService) LoadWormholeMapFromFile(fileName string) (err error) {
 	err = nil
 	contentBytes, err := ioutil.ReadFile(fileName)
 	if nil != err {
@@ -76,7 +76,7 @@ func (m *WormholeMapService) LoadWormholeMapFromFile(fileName string) (err error
 }
 
 // LoadWormholeMapFromString -- New Map info instance from the given yaml string.
-func (m *WormholeMapService) LoadWormholeMapFromString(yamlString string) (err error) {
+func (m *BuildMapService) LoadWormholeMapFromString(yamlString string) (err error) {
 	err = nil
 
 	err = yamlParser.Unmarshal([]byte(yamlString), m)
