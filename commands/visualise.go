@@ -55,6 +55,10 @@ var visualiseCmd = &cobra.Command{
 			fmt.Println("constellationFilePath: " + constellationFilePath)
 		}
 
+		if !fileExists(constellationFilePath) {
+			fmt.Println("Could not open YAML input file for reading")
+			os.Exit(-1)
+		}
 		yamlString := readYaml(constellationFilePath)
 		// fmt.Println("Finished reading %s", yamlString)
 		result := parseYaml(yamlString)
@@ -65,7 +69,10 @@ var visualiseCmd = &cobra.Command{
 
 func init() {
 	visualiseCmd.Flags().StringVarP(&constellationFilePath, "constellationFilePath", "f", "", "constellation file path")
-	visualiseCmd.MarkFlagRequired("constellationFilePath")
+	err := visualiseCmd.MarkFlagRequired("constellationFilePath")
+	if err != nil {
+		panic(err)
+	}
 	// visualiseCmd.Flags().Bool("verbose", true, "verbose - show logging  information")
 	visualiseCmd.Flags().StringVarP(&verbose, "verbose", "v", "true", "verbose - show logging  information")
 }
@@ -129,7 +136,10 @@ func generateGraph(readConfig Config) {
 		}
 		newName := strings.Replace(v.Name, " ", "_", -1)
 		lookup[v.ID] = newName
-		g.AddNode(readConfig.Name, newName, nil)
+		err := g.AddNode(readConfig.Name, newName, nil)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	//Add relationships to the graph linking using the lookup IDs to name map
@@ -140,7 +150,10 @@ func generateGraph(readConfig Config) {
 		}
 		localFrom := lookup[v.From]
 		localTo := lookup[v.To]
-		g.AddEdge(localFrom, localTo, true, nil)
+		err := g.AddEdge(localFrom, localTo, true, nil)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	//Produce resulting graph in dot notation format
