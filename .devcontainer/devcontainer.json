@@ -9,7 +9,9 @@
     "extensions": [
         "ms-azuretools.vscode-docker",
         "ms-vscode.go",
-        "coenraads.bracket-pair-colorizer-2"
+        "coenraads.bracket-pair-colorizer-2",
+        "windmilleng.vscode-go-autotest",
+        "premparihar.gotestexplorer"
     ],
     "settings": {
         "terminal.integrated.shell.linux": "zsh",
