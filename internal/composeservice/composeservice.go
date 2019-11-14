@@ -11,10 +11,16 @@ type ComposeService struct {
 	BuildMapService  buildmapservice.BuildMapService
 }
 
+//LoadFromFile takes a string dag and map and loads them
+func (m *ComposeService) LoadFromFile(dagFile string, mapFile string) {
+	m.DagConfigService.LoadDagConfigFromFile(dagFile)
+	m.BuildMapService.LoadMapFromFile(mapFile)
+}
+
 //LoadFromString takes a string dag and map and loads them
 func (m *ComposeService) LoadFromString(dagString string, mapString string) {
 	m.DagConfigService.LoadDagConfigFromString(dagString)
-	m.BuildMapService.LoadWormholeMapFromString(mapString)
+	m.BuildMapService.LoadMapFromString(mapString)
 }
 
 //NewComposeService constructs a new compose service

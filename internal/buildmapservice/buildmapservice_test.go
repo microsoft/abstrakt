@@ -7,7 +7,7 @@ import (
 	"github.com/microsoft/abstrakt/internal/tools/guid"
 )
 
-func TestNewWormholeMapFromString(t *testing.T) {
+func TestMapFromString(t *testing.T) {
 	type args struct {
 		yamlString string
 	}
@@ -27,13 +27,13 @@ func TestNewWormholeMapFromString(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			mapper := &BuildMapService{}
-			err := mapper.LoadWormholeMapFromString(tt.args.yamlString)
+			err := mapper.LoadMapFromString(tt.args.yamlString)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("LoadWormholeMapFromString() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("LoadMapFromString() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(mapper, tt.wantRet) {
-				t.Errorf("LoadWormholeMapFromString() = %v, want %v", mapper, tt.wantRet)
+				t.Errorf("LoadMapFromString() = %v, want %v", mapper, tt.wantRet)
 			}
 		})
 	}

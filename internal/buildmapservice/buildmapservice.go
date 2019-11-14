@@ -1,7 +1,7 @@
 package buildmapservice
 
 //////////////////////////////////////////////////////
-// WormholeMap:  Process map files relating services
+// BuildMapService:  Process map files relating services
 // to helm chart files.  For example, see accompanying
 // test file.
 //////////////////////////////////////////////////////
@@ -64,19 +64,19 @@ func (m *BuildMapService) FindByType(typeName string) (res *BuildMapInfo) {
 	return nil
 }
 
-// LoadWormholeMapFromFile -- New Map info instance from the named file.
-func (m *BuildMapService) LoadWormholeMapFromFile(fileName string) (err error) {
+// LoadMapFromFile -- New Map info instance from the named file.
+func (m *BuildMapService) LoadMapFromFile(fileName string) (err error) {
 	err = nil
 	contentBytes, err := ioutil.ReadFile(fileName)
 	if nil != err {
 		return err
 	}
-	err = m.LoadWormholeMapFromString(string(contentBytes))
+	err = m.LoadMapFromString(string(contentBytes))
 	return err
 }
 
-// LoadWormholeMapFromString -- New Map info instance from the given yaml string.
-func (m *BuildMapService) LoadWormholeMapFromString(yamlString string) (err error) {
+// LoadMapFromString -- New Map info instance from the given yaml string.
+func (m *BuildMapService) LoadMapFromString(yamlString string) (err error) {
 	err = nil
 
 	err = yamlParser.Unmarshal([]byte(yamlString), m)
