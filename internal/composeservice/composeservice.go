@@ -27,5 +27,6 @@ func (m *ComposeService) LoadFromString(dagString string, mapString string) {
 func NewComposeService() ComposeService {
 	s := ComposeService{}
 	s.DagConfigService = dagconfigservice.NewDagConfigService()
+	s.BuildMapService = buildmapservice.NewBuildMapService()
 	return s
 }

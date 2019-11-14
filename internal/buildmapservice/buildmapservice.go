@@ -83,3 +83,8 @@ func (m *BuildMapService) LoadMapFromString(yamlString string) (err error) {
 
 	return err
 }
+
+//NewBuildMapService returns a new instance of NewBuildMapService
+func NewBuildMapService() BuildMapService {
+	return BuildMapService{}
+}
