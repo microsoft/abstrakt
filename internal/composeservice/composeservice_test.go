@@ -6,11 +6,11 @@ import (
 
 func TestLoadFromString(t *testing.T) {
 	comp := NewComposeService()
-	comp.LoadFromString(Test01DagStr, "")
+	comp.LoadFromString(test01DagStr, configMapTest01String)
 
 }
 
-const Test01DagStr = `Name: "Azure Event Hubs Sample"
+const test01DagStr = `Name: "Azure Event Hubs Sample"
 Id: "d6e4a5e9-696a-4626-ba7a-534d6ff450a5"
 Services:
 - Name: "Event Generator"
@@ -38,4 +38,22 @@ Relationships:
   From: "3aa1e546-1ed5-4d67-a59c-be0d5905b490"
   To: "a268fae5-2a82-4a3e-ada7-a52eeb7019ac"
   Properties: {}
+`
+
+const configMapTest01String = `
+Name: "Basic Azure Event Hubs maps"
+Id: "a5a7c413-a020-44a2-bd23-1941adb7ad58"
+Maps:
+- ChartName: "event_hub_sample_event_generator"
+  Type: "EventGenerator"
+  Location: "../../helm"
+  Version: "1.0.0"
+- ChartName: "event_hub_sample_event_logger"
+  Type: "EventLogger"
+  Location: "../../helm"
+  Version: "1.0.0"
+- ChartName: "event_hub_sample_event_hub"
+  Type: "EventHub"
+  Location: "../../helm"
+  Version: "1.0.0"
 `

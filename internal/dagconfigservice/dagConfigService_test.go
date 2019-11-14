@@ -19,7 +19,7 @@ func TestNewDagConfigFromString(t *testing.T) {
 	}{
 		{ // TEST START
 			name:    "Test.01",
-			args:    targs{yamlString: Test01DagStr},
+			args:    targs{yamlString: test01DagStr},
 			wantRet: &test01WantDag,
 		},
 	}
@@ -39,7 +39,7 @@ func TestNewDagConfigFromString(t *testing.T) {
 }
 
 // Sample DAG file data
-const Test01DagStr = `Name: "Azure Event Hubs Sample"
+const test01DagStr = `Name: "Azure Event Hubs Sample"
 Id: "d6e4a5e9-696a-4626-ba7a-534d6ff450a5"
 Services:
 - Name: "Event Generator"
