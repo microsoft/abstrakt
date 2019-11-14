@@ -28,14 +28,14 @@ type WormholeMapInfo struct {
 }
 
 // WormholeMap -- data from the entire build map.
-type WormholeMap struct {
+type WormholeMapService struct {
 	Name string            `yaml:"Name"`
 	ID   guid.GUID         `yaml:"Id"`
 	Maps []WormholeMapInfo `yaml:"Maps"`
 }
 
 // FindByName -- Look up a map by chart name.
-func (m *WormholeMap) FindByName(chartName string) (res *WormholeMapInfo) {
+func (m *WormholeMapService) FindByName(chartName string) (res *WormholeMapInfo) {
 	for _, wmi := range m.Maps {
 		// try first for an exact match
 		if chartName == wmi.ChartName {
@@ -50,7 +50,7 @@ func (m *WormholeMap) FindByName(chartName string) (res *WormholeMapInfo) {
 }
 
 // FindByType -- Look up a map by the "Type" value.
-func (m *WormholeMap) FindByType(typeName string) (res *WormholeMapInfo) {
+func (m *WormholeMapService) FindByType(typeName string) (res *WormholeMapInfo) {
 	for _, wmi := range m.Maps {
 		// try first for an exact match
 		if typeName == wmi.Type {
@@ -64,24 +64,22 @@ func (m *WormholeMap) FindByType(typeName string) (res *WormholeMapInfo) {
 	return nil
 }
 
-// NewWormholeMapFromFile -- New Map info instance from the named file.
-func NewWormholeMapFromFile(fileName string) (ret *WormholeMap, err error) {
+// LoadWormholeMapFromFile -- New Map info instance from the named file.
+func (m *WormholeMapService) LoadWormholeMapFromFile(fileName string) (err error) {
 	err = nil
 	contentBytes, err := ioutil.ReadFile(fileName)
 	if nil != err {
-		return nil, err
+		return err
 	}
-
-	return NewWormholeMapFromString(string(contentBytes))
+	err = m.LoadWormholeMapFromString(string(contentBytes))
+	return err
 }
 
-// NewWormholeMapFromString -- New Map info instance from the given yaml string.
-func NewWormholeMapFromString(yamlString string) (ret *WormholeMap, err error) {
+// LoadWormholeMapFromString -- New Map info instance from the given yaml string.
+func (m *WormholeMapService) LoadWormholeMapFromString(yamlString string) (err error) {
 	err = nil
-	tp := &WormholeMap{}
-	err = yamlParser.Unmarshal([]byte(yamlString), tp)
-	if err != nil {
-		tp = nil
-	}
-	return tp, err
+
+	err = yamlParser.Unmarshal([]byte(yamlString), m)
+
+	return err
 }

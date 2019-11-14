@@ -14,7 +14,7 @@ func TestNewWormholeMapFromString(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		wantRet *WormholeMap
+		wantRet *WormholeMapService
 		wantErr bool
 	}{
 		{
@@ -26,13 +26,14 @@ func TestNewWormholeMapFromString(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotRet, err := NewWormholeMapFromString(tt.args.yamlString)
+			mapper := &WormholeMapService{}
+			err := mapper.LoadWormholeMapFromString(tt.args.yamlString)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("NewWormholeMapFromString() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("LoadWormholeMapFromString() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(gotRet, tt.wantRet) {
-				t.Errorf("NewWormholeMapFromString() = %v, want %v", gotRet, tt.wantRet)
+			if !reflect.DeepEqual(mapper, tt.wantRet) {
+				t.Errorf("LoadWormholeMapFromString() = %v, want %v", mapper, tt.wantRet)
 			}
 		})
 	}
@@ -56,7 +57,7 @@ Maps:
   Version: "1.0.0"
 `
 
-var buildMap01 = WormholeMap{
+var buildMap01 = WormholeMapService{
 	Name: "Basic Azure Event Hubs maps",
 	ID:   guid.GUID("a5a7c413-a020-44a2-bd23-1941adb7ad58"),
 	Maps: []WormholeMapInfo{
