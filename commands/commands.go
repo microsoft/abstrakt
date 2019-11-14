@@ -32,3 +32,8 @@ func DefaultRootCommand() *cobra.Command {
 
 	return c
 }
+
+func testLinterIsWorking() *string {
+	// ...
+	return nil
+}
