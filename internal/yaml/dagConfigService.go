@@ -51,7 +51,7 @@ type DagRelationship struct {
 }
 
 // DagConfig -- The DAG config for a deployment
-type DagConfig struct {
+type DagConfigService struct {
 	Name          string            `yaml:"Name"`
 	ID            GUID              `yaml:"Id"`
 	Services      []DagService      `yaml:"Services"`
@@ -59,7 +59,7 @@ type DagConfig struct {
 }
 
 // FindServiceByName -- Find a Service by name.
-func (m *DagConfig) FindServiceByName(serviceName string) (res *DagService) {
+func (m *DagConfigService) FindServiceByName(serviceName string) (res *DagService) {
 	for _, val := range m.Services {
 		// try first for an exact match
 		if val.Name == serviceName {
@@ -74,7 +74,7 @@ func (m *DagConfig) FindServiceByName(serviceName string) (res *DagService) {
 }
 
 // FindServiceByID -- Find a Service by id.
-func (m *DagConfig) FindServiceByID(serviceID GUID) (res *DagService) {
+func (m *DagConfigService) FindServiceByID(serviceID GUID) (res *DagService) {
 	sid := string(serviceID) // no-op conversion, but needed for strings.* functions
 	for _, val := range m.Services {
 		// try first for an exact match
@@ -90,7 +90,7 @@ func (m *DagConfig) FindServiceByID(serviceID GUID) (res *DagService) {
 }
 
 // FindRelationshipByName -- Find a Relationship by name.
-func (m *DagConfig) FindRelationshipByName(relationshipName string) (res *DagRelationship) {
+func (m *DagConfigService) FindRelationshipByName(relationshipName string) (res *DagRelationship) {
 	for _, val := range m.Relationships {
 		// try first for an exact match
 		if val.Name == relationshipName {
@@ -105,7 +105,7 @@ func (m *DagConfig) FindRelationshipByName(relationshipName string) (res *DagRel
 }
 
 // FindRelationshipByID -- Find a Relationship by id.
-func (m *DagConfig) FindRelationshipByID(relationshipID GUID) (res *DagService) {
+func (m *DagConfigService) FindRelationshipByID(relationshipID GUID) (res *DagService) {
 	rid := string(relationshipID) // no-op conversion, but needed for strings.* functions
 	for _, val := range m.Services {
 		// try first for an exact match
@@ -121,7 +121,7 @@ func (m *DagConfig) FindRelationshipByID(relationshipID GUID) (res *DagService) 
 }
 
 // NewDagConfigFromFile -- New DAG info instance from the named file.
-func NewDagConfigFromFile(fileName string) (ret *DagConfig, err error) {
+func NewDagConfigFromFile(fileName string) (ret *DagConfigService, err error) {
 	err = nil
 	contentBytes, err := ioutil.ReadFile(fileName)
 	if nil != err {
@@ -132,9 +132,9 @@ func NewDagConfigFromFile(fileName string) (ret *DagConfig, err error) {
 }
 
 // NewDagConfigFromString -- New DAG info instance from the given yaml string.
-func NewDagConfigFromString(yamlString string) (ret *DagConfig, err error) {
+func NewDagConfigFromString(yamlString string) (ret *DagConfigService, err error) {
 	err = nil
-	tp := &DagConfig{}
+	tp := &DagConfigService{}
 	err = yamlParser.Unmarshal([]byte(yamlString), tp)
 	if err != nil {
 		tp = nil

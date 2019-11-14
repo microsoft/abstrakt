@@ -9,7 +9,7 @@ package sl
 
 import (
 	"github.com/google/wire"
-	"github.com/microsoft/abstrakt/services/sampleservice"
+	"github.com/microsoft/abstrakt/internal/sampleservice"
 )
 
 func SampleService() sampleservice.SampleService {

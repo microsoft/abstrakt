@@ -12,7 +12,7 @@ func TestNewDagConfigFromString(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    targs
-		wantRet *DagConfig
+		wantRet *DagConfigService
 		wantErr bool
 	}{
 		{ // TEST START
@@ -66,7 +66,7 @@ Relationships:
   Properties: {}
 `
 
-var test01WantDag DagConfig = DagConfig{
+var test01WantDag DagConfigService = DagConfigService{
 	Name: "Azure Event Hubs Sample",
 	ID:   GUID("d6e4a5e9-696a-4626-ba7a-534d6ff450a5"),
 	Services: []DagService{

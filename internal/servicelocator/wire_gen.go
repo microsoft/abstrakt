@@ -6,7 +6,7 @@
 package sl
 
 import (
-	"github.com/microsoft/abstrakt/services/sampleservice"
+	"github.com/microsoft/abstrakt/internal/sampleservice"
 )
 
 // Injectors from sl.go:
