@@ -4,10 +4,38 @@ import (
 	"testing"
 )
 
+func TestCompose(t *testing.T) {
+	comp := NewComposeService()
+	err := comp.Compose()
+
+	if err == nil {
+		t.Errorf("Compose should fail if not yet loaded")
+	}
+
+	err = comp.LoadFromString(test01DagStr, configMapTest01String)
+	if err != nil {
+		t.Errorf("Compose should have loaded")
+	}
+
+}
+
 func TestLoadFromString(t *testing.T) {
 	comp := NewComposeService()
-	comp.LoadFromString(test01DagStr, configMapTest01String)
+	err := comp.LoadFromString(test01DagStr, configMapTest01String)
 
+	if err != nil {
+		t.Errorf("Error: %v", err)
+	}
+
+	err = comp.LoadFromString("sfdsd", configMapTest01String)
+	if err == nil {
+		t.Errorf("Didn't get error when should")
+	}
+
+	err = comp.LoadFromString(test01DagStr, "sdfsdf")
+	if err == nil {
+		t.Errorf("Didn't get error when should")
+	}
 }
 
 const test01DagStr = `Name: "Azure Event Hubs Sample"

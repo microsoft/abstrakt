@@ -1,6 +1,7 @@
 package composeservice
 
 import (
+	"errors"
 	"github.com/microsoft/abstrakt/internal/buildmapservice"
 	"github.com/microsoft/abstrakt/internal/dagconfigservice"
 )
@@ -11,6 +12,15 @@ type ComposeService struct {
 	BuildMapService  buildmapservice.BuildMapService
 }
 
+//Compose takes the loaded DAG and maps and builds the Helm values and requirements documents
+func (m *ComposeService) Compose() error {
+	if m.DagConfigService.Name == "" || m.BuildMapService.Name == "" {
+		return errors.New("Please initialise with LoadFromFile or LoadFromString")
+	}
+
+	return nil
+}
+
 //LoadFromFile takes a string dag and map and loads them
 func (m *ComposeService) LoadFromFile(dagFile string, mapFile string) {
 	m.DagConfigService.LoadDagConfigFromFile(dagFile)
@@ -18,9 +28,16 @@ func (m *ComposeService) LoadFromFile(dagFile string, mapFile string) {
 }
 
 //LoadFromString takes a string dag and map and loads them
-func (m *ComposeService) LoadFromString(dagString string, mapString string) {
-	m.DagConfigService.LoadDagConfigFromString(dagString)
-	m.BuildMapService.LoadMapFromString(mapString)
+func (m *ComposeService) LoadFromString(dagString string, mapString string) (err error) {
+	err = m.DagConfigService.LoadDagConfigFromString(dagString)
+
+	if err != nil {
+		return err
+	}
+
+	err = m.BuildMapService.LoadMapFromString(mapString)
+
+	return err
 }
 
 //NewComposeService constructs a new compose service
