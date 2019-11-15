@@ -74,7 +74,7 @@ func init() {
 		panic(err)
 	}
 	// visualiseCmd.Flags().Bool("verbose", true, "verbose - show logging  information")
-	visualiseCmd.Flags().StringVarP(&verbose, "verbose", "v", "true", "verbose - show logging  information")
+	visualiseCmd.Flags().StringVarP(&verbose, "verbose", "v", "false", "verbose - show logging  information")
 }
 
 //fileExists - basic utility function to check the provided filename can be opened and is not a folder/directory
