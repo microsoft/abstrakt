@@ -4,7 +4,6 @@ go 1.13
 
 require (
 	github.com/awalterschulze/gographviz v0.0.0-20190522210029-fa59802746ab
-	github.com/jstemmer/go-junit-report v0.9.1 // indirect
 	github.com/google/wire v0.3.0
 	github.com/magiconair/properties v1.8.1 // indirect
 	github.com/mitchellh/go-homedir v1.1.0
