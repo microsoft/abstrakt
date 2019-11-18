@@ -19,4 +19,3 @@ require (
 	helm.sh/helm/v3 v3.0.0
 	k8s.io/apimachinery v0.0.0-20191116203941-08e4eafd6d11 // indirect
 	k8s.io/helm v2.16.1+incompatible
-)
