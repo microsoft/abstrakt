@@ -2,7 +2,12 @@ package commands
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/spf13/cobra"
+	"io/ioutil"
+	"os"
+	"path"
+
 	"strings"
 	"testing"
 )
@@ -39,6 +44,29 @@ func TestComposeCmdVerifyRequiredFlags(t *testing.T) {
 func TestComposeCmdWithValidFlags(t *testing.T) {
 
 	output, err := executeCommand(composeCmd, "-f", "constellationFilePath", "-m", "mapsFilePath", "-o", "outputPath")
+	if err != nil {
+		t.Errorf("error: \n %v\noutput:\n %v\n", err, output)
+	}
+
+}
+
+func TestComposeWithRealFiles(t *testing.T) {
+	tdir, err := ioutil.TempDir("", "outut-")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer os.RemoveAll(tdir)
+
+	cwd, err := os.Getwd()
+
+	fmt.Print(cwd)
+
+	constellationPath := path.Join(cwd, "../sample/constellation/sample_constellation.yaml")
+	mapsPath := path.Join(cwd, "../sample/constellation/sample_constellation_maps.yaml")
+
+	output, err := executeCommand(composeCmd, "-f", constellationPath, "-m", mapsPath, "-o", tdir)
+
 	if err != nil {
 		t.Errorf("error: \n %v\noutput:\n %v\n", err, output)
 	}
