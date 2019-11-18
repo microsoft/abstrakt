@@ -39,10 +39,10 @@ RUN apt-get update \
         golang.org/x/tools/cmd/gopls \
         github.com/alecthomas/gometalinter \
         honnef.co/go/tools/... \
-        github.com/golangci/golangci-lint/cmd/golangci-lint \
         github.com/mgechev/revive \
         github.com/derekparker/delve/cmd/dlv 2>&1 \
     && GO111MODULE=on go get golang.org/x/tools/gopls@latest \
+    && curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.21.0 \
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
