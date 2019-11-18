@@ -51,7 +51,11 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 		serviceMap[service.Type]++
 
 		dep := &chart.Dependency{
-			Name: service.ChartName, Version: service.Version, Repository: service.Location, Alias: alias,
+			Name: service.ChartName, Version: service.Version, Repository: service.Location,
+		}
+
+		if count > 0 {
+			dep.Alias = alias
 		}
 
 		deps = append(deps, dep)

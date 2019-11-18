@@ -28,12 +28,15 @@ func TestComposeService(t *testing.T) {
 	}
 
 	err = comp.LoadFromString(test01DagStr, configMapTest01String)
+
 	h, err = comp.Compose("test", tdir)
 	if err != nil {
 		t.Errorf("Compose should have loaded")
 	}
 
 	t.Log(h.Metadata.Description)
+
+	chartutil.SaveDir(h, tdir)
 
 }
 
