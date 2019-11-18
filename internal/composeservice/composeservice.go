@@ -34,6 +34,8 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 
 	deps := make([]*chart.Dependency, 0)
 
+	values := newChart.Values
+
 	for _, n := range m.DagConfigService.Services {
 		service := m.BuildMapService.FindByType(n.Type)
 		if service == nil {
@@ -60,8 +62,13 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 
 		deps = append(deps, dep)
 
-	}
+		valMap := make(map[string]string)
+		values[alias] = &valMap
 
+		valMap["name"] = alias
+		valMap["type"] = service.Type
+	}
+	newChart.Values = values
 	newChart.Metadata.Dependencies = deps
 
 	return newChart, nil

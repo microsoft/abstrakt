@@ -3,6 +3,7 @@ package composeservice
 //"helm.sh/helm/v3/pkg/chart"
 
 import (
+	"fmt"
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/chartutil"
@@ -30,6 +31,7 @@ func TestComposeService(t *testing.T) {
 	err = comp.LoadFromString(test01DagStr, configMapTest01String)
 
 	h, err = comp.Compose("test", tdir)
+
 	if err != nil {
 		t.Errorf("Compose should have loaded")
 	}
@@ -37,6 +39,14 @@ func TestComposeService(t *testing.T) {
 	t.Log(h.Metadata.Description)
 
 	chartutil.SaveDir(h, tdir)
+	h, _ = loader.LoadDir(tdir)
+	for _, raw := range h.Raw {
+		if raw.Name == "test/values.yaml" {
+			fmt.Printf(string(raw.Data))
+		}
+	}
+
+	//chartYaml = ioutil.ReadFile(filepath.Join(tdir, "test", "Chart.yaml"))
 
 }
 
