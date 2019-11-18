@@ -34,5 +34,5 @@ You can find sample constellation files in the following location:
 
 `/sample/constellation/`
 
-Using these failes you can test the app binary. 
+Using these files you can test the app binary. 
 
