@@ -1,7 +1,6 @@
 package chartservice
 
 import (
-	"helm.sh/helm/v3/pkg/chartutil"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -18,20 +17,15 @@ func TestChartSavesAndLoads(t *testing.T) {
 	defer os.RemoveAll(tdir)
 	defer os.RemoveAll(tdir2)
 
-	c, err := chartutil.Create("foo", tdir)
+	c, err := CreateChart("foo", tdir)
 
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	mychart, err := LoadChartFromDir(c)
+	err = SaveChartToDir(c, tdir2)
 	if err != nil {
-		t.Fatalf("Failed to load newly created chart %q: %s", c, err)
-	}
-
-	err = SaveChartToDir(mychart, tdir2)
-	if err != nil {
-		t.Fatalf("Failed to save newly created chart %q: %s", c, err)
+		t.Fatalf("Failed to save newly created chart %q: %s", tdir2, err)
 	}
 
 	newPath := filepath.Join(tdir2, "foo")

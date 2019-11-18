@@ -6,6 +6,23 @@ import (
 	"helm.sh/helm/v3/pkg/chartutil"
 )
 
+//CreateChart makes a new chart at the specified location
+func CreateChart(name string, dir string) (*chart.Chart, error) {
+	cpath, err := chartutil.Create(name, dir)
+
+	if err != nil {
+		return nil, err
+	}
+
+	chart, err := loader.LoadDir(cpath)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return chart, nil
+}
+
 // LoadChartFromDir loads a Helm chart from the specified director
 func LoadChartFromDir(dir string) (*chart.Chart, error) {
 	h, err := loader.LoadDir(dir)

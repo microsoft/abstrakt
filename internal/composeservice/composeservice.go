@@ -5,11 +5,10 @@ import (
 	"fmt"
 
 	"github.com/microsoft/abstrakt/internal/buildmapservice"
+	"github.com/microsoft/abstrakt/internal/chartservice"
 	"github.com/microsoft/abstrakt/internal/dagconfigservice"
 
 	"helm.sh/helm/v3/pkg/chart"
-	"helm.sh/helm/v3/pkg/chart/loader"
-	"helm.sh/helm/v3/pkg/chartutil"
 )
 
 //ComposeService takes maps and configs and builds out the helm chart
@@ -24,7 +23,7 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 		return nil, errors.New("Please initialise with LoadFromFile or LoadFromString")
 	}
 
-	newChart, err := createChart(name, dir)
+	newChart, err := chartservice.CreateChart(name, dir)
 
 	if err != nil {
 		return nil, err
@@ -73,22 +72,6 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 
 	return newChart, nil
 
-}
-
-func createChart(name string, dir string) (*chart.Chart, error) {
-	cpath, err := chartutil.Create(name, dir)
-
-	if err != nil {
-		return nil, err
-	}
-
-	chart, err := loader.LoadDir(cpath)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return chart, nil
 }
 
 //LoadFromFile takes a string dag and map and loads them
