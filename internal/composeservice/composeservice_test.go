@@ -3,6 +3,7 @@ package composeservice
 //"helm.sh/helm/v3/pkg/chart"
 
 import (
+	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/chartutil"
 	"io/ioutil"
@@ -67,7 +68,17 @@ func TestCompose(t *testing.T) {
 
 	mychart.Values["Jordan"] = "testing123"
 
+	deps := []*chart.Dependency{
+		{Name: "alpine", Version: "0.1.0", Repository: "https://example.com/charts"},
+		{Name: "mariner", Version: "4.3.2", Repository: "https://example.com/charts"},
+	}
+
+	t.Logf("Directory: %v", tdir)
+
+	mychart.Metadata.Dependencies = deps
+
 	chartutil.SaveDir(mychart, filepath.Join(tdir, "anotheretst"))
+
 	//chartutil.SaveDir()
 	s := "jordan"
 	s = s
