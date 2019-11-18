@@ -61,11 +61,15 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 
 		deps = append(deps, dep)
 
-		valMap := make(map[string]string)
+		valMap := make(map[string]interface{})
 		values[alias] = &valMap
 
 		valMap["name"] = alias
 		valMap["type"] = service.Type
+
+		relationships := make(map[string]interface{})
+		valMap["relationships"] = &relationships
+		m.DagConfigService.FindRelationshipByID()
 	}
 	newChart.Values = values
 	newChart.Metadata.Dependencies = deps

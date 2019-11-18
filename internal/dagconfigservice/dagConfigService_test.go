@@ -7,6 +7,18 @@ import (
 	"github.com/microsoft/abstrakt/internal/tools/guid"
 )
 
+func TestRelationshipFinding(t *testing.T) {
+	dag := &DagConfigService{}
+	_ = dag.LoadDagConfigFromString(test01DagStr)
+	rel1 := dag.FindRelationshipByFromID("e1bcb3d-ff58-41d4-8779-f71e7b8800f8")
+	rel2 := dag.FindRelationshipByToID("3aa1e546-1ed5-4d67-a59c-be0d5905b490")
+
+	if rel1.From != rel2.From || rel1.To != rel2.To {
+		t.Error("Relationships were not correctly resolved")
+	}
+
+}
+
 func TestNewDagConfigFromString(t *testing.T) {
 	type targs struct {
 		yamlString string

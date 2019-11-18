@@ -126,6 +126,38 @@ func (m *DagConfigService) FindRelationshipByID(relationshipID guid.GUID) (res *
 	return nil
 }
 
+// FindRelationshipByToID -- Find a Relationship by the id that is the target of the rel.
+func (m *DagConfigService) FindRelationshipByToID(relationshipToID guid.GUID) (res *DagRelationship) {
+	rid := string(relationshipToID) // no-op conversion, but needed for strings.* functions
+	for _, val := range m.Relationships {
+		// try first for an exact match
+		if val.To == relationshipToID {
+			return &val
+		}
+		// if we want to tolerate case being incorrect (e.g., ABC vs. abc),
+		if guid.TolerateMiscasedKey && strings.EqualFold(string(val.ID), rid) {
+			return &val
+		}
+	}
+	return nil
+}
+
+// FindRelationshipByFromID -- Find a Relationship by the id that is the source of the rel.
+func (m *DagConfigService) FindRelationshipByFromID(relationshipToID guid.GUID) (res *DagRelationship) {
+	rid := string(relationshipToID) // no-op conversion, but needed for strings.* functions
+	for _, val := range m.Relationships {
+		// try first for an exact match
+		if val.From == relationshipToID {
+			return &val
+		}
+		// if we want to tolerate case being incorrect (e.g., ABC vs. abc),
+		if guid.TolerateMiscasedKey && strings.EqualFold(string(val.ID), rid) {
+			return &val
+		}
+	}
+	return nil
+}
+
 // LoadDagConfigFromFile -- New DAG info instance from the named file.
 func (m *DagConfigService) LoadDagConfigFromFile(fileName string) (err error) {
 	err = nil
