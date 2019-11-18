@@ -69,7 +69,26 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 
 		relationships := make(map[string]interface{})
 		valMap["relationships"] = &relationships
-		m.DagConfigService.FindRelationshipByID()
+		toRels := m.DagConfigService.FindRelationshipByToID(n.ID)
+		fromRels := m.DagConfigService.FindRelationshipByFromID(n.ID)
+
+		if toRels != nil {
+			toRelations := make(map[string]string)
+			relationships["input"] = &toRelations
+			//find the target service
+			foundService := m.DagConfigService.FindServiceByID(toRels.From)
+			toRelations["service"] = string(toRels.ID)
+			toRelations["type"] = foundService.Type
+		}
+
+		if fromRels != nil {
+			fromRelations := make(map[string]string)
+			relationships["output"] = &fromRelations
+			//find the target service
+			foundService := m.DagConfigService.FindServiceByID(fromRels.To)
+			fromRelations["service"] = string(fromRels.ID)
+			fromRelations["type"] = foundService.Type
+		}
 	}
 	newChart.Values = values
 	newChart.Metadata.Dependencies = deps

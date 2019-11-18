@@ -200,7 +200,7 @@ Relationships:
 - Name: "Generator to Event Hubs Link"
   Id: "211a55bd-5d92-446c-8be8-190f8f0e623e"
   Description: "Event Generator to Event Hub connection"
-  From: "e1bcb3d-ff58-41d4-8779-f71e7b8800f8"
+  From: "9e1bcb3d-ff58-41d4-8779-f71e7b8800f8"
   To: "3aa1e546-1ed5-4d67-a59c-be0d5905b490"
   Properties: {}
 - Name: "Event Hubs to Event Logger Link"
