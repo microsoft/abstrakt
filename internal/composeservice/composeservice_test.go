@@ -12,19 +12,32 @@ import (
 	"testing"
 )
 
-func TestCompose(t *testing.T) {
+func TestComposeService(t *testing.T) {
+
+	tdir, err := ioutil.TempDir("", "helm-")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(tdir)
+
 	comp := NewComposeService()
-	err := comp.Compose()
+	h, err := comp.Compose("test", tdir)
 
 	if err == nil {
 		t.Errorf("Compose should fail if not yet loaded")
 	}
 
 	err = comp.LoadFromString(test01DagStr, configMapTest01String)
-	err = comp.Compose()
+	h, err = comp.Compose("test", tdir)
 	if err != nil {
 		t.Errorf("Compose should have loaded")
 	}
+
+	t.Log(h.Metadata.Description)
+
+}
+
+func TestHelmLibCompose(t *testing.T) {
 
 	tdir, err := ioutil.TempDir("", "helm-")
 	if err != nil {
@@ -166,6 +179,10 @@ Services:
   Id: "a268fae5-2a82-4a3e-ada7-a52eeb7019ac"
   Type: "EventLogger"
   Properties: {}
+- Name: "Event Logger"
+  Id: "1d0255d4-5b8c-4a52-b0bb-ac024cda37e5"
+  Type: "EventLogger"
+  Properties: {}
 Relationships:
 - Name: "Generator to Event Hubs Link"
   Id: "211a55bd-5d92-446c-8be8-190f8f0e623e"
@@ -175,6 +192,12 @@ Relationships:
   Properties: {}
 - Name: "Event Hubs to Event Logger Link"
   Id: "08ccbd67-456f-4349-854a-4e6959e5017b"
+  Description: "Event Hubs to Event Logger connection"
+  From: "3aa1e546-1ed5-4d67-a59c-be0d5905b490"
+  To: "1d0255d4-5b8c-4a52-b0bb-ac024cda37e5"
+  Properties: {}
+- Name: "Event Hubs to Event Logger Link Repeat"
+  Id: "c8a719e0-164d-408f-9ed1-06e08dc5abbe"
   Description: "Event Hubs to Event Logger connection"
   From: "3aa1e546-1ed5-4d67-a59c-be0d5905b490"
   To: "a268fae5-2a82-4a3e-ada7-a52eeb7019ac"

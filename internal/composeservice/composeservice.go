@@ -6,7 +6,10 @@ import (
 
 	"github.com/microsoft/abstrakt/internal/buildmapservice"
 	"github.com/microsoft/abstrakt/internal/dagconfigservice"
-	yamlParser "gopkg.in/yaml.v2"
+
+	"helm.sh/helm/v3/pkg/chart"
+	"helm.sh/helm/v3/pkg/chart/loader"
+	"helm.sh/helm/v3/pkg/chartutil"
 )
 
 //ComposeService takes maps and configs and builds out the helm chart
@@ -16,32 +19,65 @@ type ComposeService struct {
 }
 
 //Compose takes the loaded DAG and maps and builds the Helm values and requirements documents
-func (m *ComposeService) Compose() error {
+func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) {
 	if m.DagConfigService.Name == "" || m.BuildMapService.Name == "" {
-		return errors.New("Please initialise with LoadFromFile or LoadFromString")
+		return nil, errors.New("Please initialise with LoadFromFile or LoadFromString")
 	}
 
-	yamlString := "---\nversion: 1\n..."
-
-	yaml := make(map[interface{}]interface{})
-
-	err := yamlParser.Unmarshal([]byte(yamlString), &yaml)
-
-	yaml["jordan"] = "jordan"
-
-	b, err := yamlParser.Marshal(&yaml)
-
-	fmt.Println(string(b))
-
-	// for i, n := range m.DagConfigService.Services {
-
-	// }
+	newChart, err := createChart(name, dir)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return err
+	serviceMap := make(map[string]int)
+
+	deps := make([]*chart.Dependency, 0)
+
+	for _, n := range m.DagConfigService.Services {
+		service := m.BuildMapService.FindByType(n.Type)
+		if service == nil {
+			return nil, fmt.Errorf("Could not find service: %v", service)
+		}
+
+		count := serviceMap[service.Type]
+		alias := service.ChartName
+		if count > 0 {
+			alias = fmt.Sprintf("%v%v", service.ChartName, count)
+		}
+
+		fmt.Printf(alias)
+
+		serviceMap[service.Type]++
+
+		dep := &chart.Dependency{
+			Name: service.ChartName, Version: service.Version, Repository: service.Location, Alias: alias,
+		}
+
+		deps = append(deps, dep)
+
+	}
+
+	newChart.Metadata.Dependencies = deps
+
+	return newChart, nil
+
+}
+
+func createChart(name string, dir string) (*chart.Chart, error) {
+	cpath, err := chartutil.Create(name, dir)
+
+	if err != nil {
+		return nil, err
+	}
+
+	chart, err := loader.LoadDir(cpath)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return chart, nil
 }
 
 //LoadFromFile takes a string dag and map and loads them
