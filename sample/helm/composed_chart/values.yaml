@@ -1,0 +1,10 @@
+global:
+  deployment_version_major: 1.1
+  deployment_version_minor: 2
+  deployment_owner: 
+  deployment_resource_group: 
+  deployment_location: 
+
+platform_hub1:
+  test: This here is a test value for hub1
+

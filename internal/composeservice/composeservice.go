@@ -2,8 +2,11 @@ package composeservice
 
 import (
 	"errors"
+	"fmt"
+
 	"github.com/microsoft/abstrakt/internal/buildmapservice"
 	"github.com/microsoft/abstrakt/internal/dagconfigservice"
+	yamlParser "gopkg.in/yaml.v2"
 )
 
 //ComposeService takes maps and configs and builds out the helm chart
@@ -18,7 +21,27 @@ func (m *ComposeService) Compose() error {
 		return errors.New("Please initialise with LoadFromFile or LoadFromString")
 	}
 
-	return nil
+	yamlString := "---\nversion: 1\n..."
+
+	yaml := make(map[interface{}]interface{})
+
+	err := yamlParser.Unmarshal([]byte(yamlString), &yaml)
+
+	yaml["jordan"] = "jordan"
+
+	b, err := yamlParser.Marshal(&yaml)
+
+	fmt.Println(string(b))
+
+	// for i, n := range m.DagConfigService.Services {
+
+	// }
+
+	if err != nil {
+		return err
+	}
+
+	return err
 }
 
 //LoadFromFile takes a string dag and map and loads them

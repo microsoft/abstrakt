@@ -1,0 +1,11 @@
+name: compose_sample
+home: https://github.com/jakkaj/ComposableDeployments
+version: "1.0.0"
+description: A sample of hierarchical, composable deployments with Helm and Kubernetes
+icon: https://docs.microsoft.com/favicon.ico
+sources:
+  - https://github.com/jakkaj/ComposableDeployments
+  - https://github.com/jakkaj/ravenswood  
+maintainers:
+  - name: Jordan Knight
+    email: jordan.knight@microsoft.com 
