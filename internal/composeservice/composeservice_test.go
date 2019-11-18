@@ -1,10 +1,11 @@
 package composeservice
 
+//"helm.sh/helm/v3/pkg/chart"
+
 import (
+	"helm.sh/helm/v3/pkg/chart/loader"
+	"helm.sh/helm/v3/pkg/chartutil"
 	"io/ioutil"
-	"k8s.io/helm/pkg/chartutil"
-	//"k8s.io/helm/pkg/helm/helmpath"
-	"k8s.io/helm/pkg/proto/hapi/chart"
 	"os"
 	"path/filepath"
 	"testing"
@@ -24,50 +25,99 @@ func TestCompose(t *testing.T) {
 		t.Errorf("Compose should have loaded")
 	}
 
-	tdir, err := ioutil.TempDir("", "helm-create-")
+	tdir, err := ioutil.TempDir("", "helm-")
 	if err != nil {
 		t.Fatal(err)
 	}
-
 	defer os.RemoveAll(tdir)
 
-	// CD into it
-	pwd, err := os.Getwd()
+	c, err := chartutil.Create("foo", tdir)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := os.Chdir(tdir); err != nil {
-		t.Fatal(err)
-	}
-	defer os.Chdir(pwd)
 
-	chartname := filepath.Base("JordanTest")
-	cfile := &chart.Metadata{
-		Name:        chartname,
-		Description: "A Helm chart for Kubernetes",
-		Version:     "0.1.0",
-		AppVersion:  "1.0",
-		ApiVersion:  chartutil.ApiVersionV1,
-	}
+	dir := filepath.Join(tdir, "foo")
 
-	c, err := chartutil.Create(cfile, filepath.Dir("JordanTest"))
-
-	if fi, err := os.Stat("JordanTest"); err != nil {
-		t.Fatalf("no chart directory: %s", err)
-	} else if !fi.IsDir() {
-		t.Fatalf("chart is not directory")
-	}
-
-	mychart, err := chartutil.LoadDir(c)
+	mychart, err := loader.LoadDir(c)
 	if err != nil {
-		t.Fatalf("Failed to load newly created chart %q: %s", filepath.Dir("JordanTest"), err)
+		t.Fatalf("Failed to load newly created chart %q: %s", c, err)
 	}
 
-	if mychart.Metadata.Name != "JordanTest" {
-		t.Errorf("Expected name to be 'JordanTest', got %q", mychart.Metadata.Name)
+	if mychart.Name() != "foo" {
+		t.Errorf("Expected name to be 'foo', got %q", mychart.Name())
 	}
 
-	//mychart.Values.Values["Jordan"] = "testing 123"
+	for _, f := range []string{
+		chartutil.ChartfileName,
+		chartutil.DeploymentName,
+		chartutil.HelpersName,
+		chartutil.IgnorefileName,
+		chartutil.NotesName,
+		chartutil.ServiceAccountName,
+		chartutil.ServiceName,
+		chartutil.TemplatesDir,
+		chartutil.TemplatesTestsDir,
+		chartutil.TestConnectionName,
+		chartutil.ValuesfileName,
+	} {
+		if _, err := os.Stat(filepath.Join(dir, f)); err != nil {
+			t.Errorf("Expected %s file: %s", f, err)
+		}
+	}
+
+	mychart.Values["Jordan"] = "testing123"
+
+	chartutil.SaveDir(mychart, filepath.Join(tdir, "anotheretst"))
+	//chartutil.SaveDir()
+	s := "jordan"
+	s = s
+	// tdir, err := ioutil.TempDir("", "helm-create-")
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
+
+	// defer os.RemoveAll(tdir)
+
+	// // CD into it
+	// pwd, err := os.Getwd()
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
+	// if err := os.Chdir(tdir); err != nil {
+	// 	t.Fatal(err)
+	// }
+	// defer os.Chdir(pwd)
+
+	// chartname := filepath.Base("JordanTest")
+	// cfile := &chart.Metadata{
+	// 	Name:        chartname,
+	// 	Description: "A Helm chart for Kubernetes",
+	// 	Version:     "0.1.0",
+	// 	AppVersion:  "1.0",
+	// 	ApiVersion:  chartutil.ApiVersionV1,
+	// }
+
+	// c, err := chartutil.Create(cfile, filepath.Dir("JordanTest"))
+
+	// if fi, err := os.Stat("JordanTest"); err != nil {
+	// 	t.Fatalf("no chart directory: %s", err)
+	// } else if !fi.IsDir() {
+	// 	t.Fatalf("chart is not directory")
+	// }
+
+	// mychart, err := chartutil.LoadDir(c)
+	// if err != nil {
+	// 	t.Fatalf("Failed to load newly created chart %q: %s", filepath.Dir("JordanTest"), err)
+	// }
+
+	// if mychart.Metadata.Name != "JordanTest" {
+	// 	t.Errorf("Expected name to be 'JordanTest', got %q", mychart.Metadata.Name)
+	// }
+
+	// vals := mychart.Values.GetValues()
+	// vals = vals
+	// //jk := mychart.GetValues().Values
+	// //jk["testing"] = &chart.Value{}
 
 }
 
