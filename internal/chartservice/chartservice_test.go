@@ -9,10 +9,14 @@ import (
 
 func TestChartSavesAndLoads(t *testing.T) {
 	tdir, err := ioutil.TempDir("", "helm-")
-	tdir2, err := ioutil.TempDir("", "helm-")
+	tdir2, err2 := ioutil.TempDir("", "helm-")
 
 	if err != nil {
 		t.Fatal(err)
+	}
+
+	if err2 != nil {
+		t.Fatal(err2)
 	}
 	defer os.RemoveAll(tdir)
 	defer os.RemoveAll(tdir2)

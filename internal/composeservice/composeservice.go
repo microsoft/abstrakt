@@ -47,7 +47,7 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 			alias = fmt.Sprintf("%v%v", service.ChartName, count)
 		}
 
-		fmt.Printf(alias)
+		fmt.Print(alias)
 
 		serviceMap[service.Type]++
 
@@ -98,9 +98,13 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 }
 
 //LoadFromFile takes a string dag and map and loads them
-func (m *ComposeService) LoadFromFile(dagFile string, mapFile string) {
-	m.DagConfigService.LoadDagConfigFromFile(dagFile)
-	m.BuildMapService.LoadMapFromFile(mapFile)
+func (m *ComposeService) LoadFromFile(dagFile string, mapFile string) error {
+	err := m.DagConfigService.LoadDagConfigFromFile(dagFile)
+	if err != nil {
+		return err
+	}
+	err = m.BuildMapService.LoadMapFromFile(mapFile)
+	return err
 }
 
 //LoadFromString takes a string dag and map and loads them

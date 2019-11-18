@@ -23,7 +23,7 @@ var composeCmd = &cobra.Command{
 
 		if templateType == "helm" || templateType == "" {
 			service := composeservice.NewComposeService()
-			service.LoadFromFile(constellationFilePath, mapsFilePath)
+			_ = service.LoadFromFile(constellationFilePath, mapsFilePath)
 			chart, err := service.Compose("Output", outputPath)
 			if err != nil {
 				fmt.Printf("Could not compose: %v", err)
