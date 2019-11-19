@@ -1,18 +1,20 @@
-package yaml
+package buildmapservice
 
 import (
 	"reflect"
 	"testing"
+
+	"github.com/microsoft/abstrakt/internal/tools/guid"
 )
 
-func TestNewWormholeMapFromString(t *testing.T) {
+func TestMapFromString(t *testing.T) {
 	type args struct {
 		yamlString string
 	}
 	tests := []struct {
 		name    string
 		args    args
-		wantRet *WormholeMap
+		wantRet *BuildMapService
 		wantErr bool
 	}{
 		{
@@ -24,13 +26,14 @@ func TestNewWormholeMapFromString(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotRet, err := NewWormholeMapFromString(tt.args.yamlString)
+			mapper := &BuildMapService{}
+			err := mapper.LoadMapFromString(tt.args.yamlString)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("NewWormholeMapFromString() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("LoadMapFromString() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(gotRet, tt.wantRet) {
-				t.Errorf("NewWormholeMapFromString() = %v, want %v", gotRet, tt.wantRet)
+			if !reflect.DeepEqual(mapper, tt.wantRet) {
+				t.Errorf("LoadMapFromString() = %v, want %v", mapper, tt.wantRet)
 			}
 		})
 	}
@@ -54,23 +57,23 @@ Maps:
   Version: "1.0.0"
 `
 
-var buildMap01 = WormholeMap{
+var buildMap01 = BuildMapService{
 	Name: "Basic Azure Event Hubs maps",
-	ID:   GUID("a5a7c413-a020-44a2-bd23-1941adb7ad58"),
-	Maps: []WormholeMapInfo{
-		WormholeMapInfo{
+	ID:   guid.GUID("a5a7c413-a020-44a2-bd23-1941adb7ad58"),
+	Maps: []BuildMapInfo{
+		BuildMapInfo{
 			ChartName: "event_hub_sample_event_generator",
 			Type:      "EventGenerator",
 			Location:  "../../helm",
 			Version:   "1.0.0",
 		},
-		WormholeMapInfo{
+		BuildMapInfo{
 			ChartName: "event_hub_sample_event_logger",
 			Type:      "EventLogger",
 			Location:  "../../helm",
 			Version:   "1.0.0",
 		},
-		WormholeMapInfo{
+		BuildMapInfo{
 			ChartName: "event_hub_sample_event_hub",
 			Type:      "EventHub",
 			Location:  "../../helm",

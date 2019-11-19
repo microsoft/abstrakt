@@ -28,4 +28,11 @@ With everything installed and running, you can continue.
 5. Open a new terminal in Visual Studio Code (`Terminal` -> `New Terminal`).
 6. Type `go run main.go`.
 
+### Samples
+
+You can find sample constellation files in the following location:
+
+`/sample/constellation/`
+
+Using these files you can test the app binary. 
 

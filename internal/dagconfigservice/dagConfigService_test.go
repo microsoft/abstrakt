@@ -1,9 +1,22 @@
-package yaml
+package dagconfigservice
 
 import (
+	"github.com/microsoft/abstrakt/internal/tools/guid"
 	"reflect"
 	"testing"
 )
+
+func TestRelationshipFinding(t *testing.T) {
+	dag := &DagConfigService{}
+	_ = dag.LoadDagConfigFromString(test01DagStr)
+	rel1 := dag.FindRelationshipByFromID("e1bcb3d-ff58-41d4-8779-f71e7b8800f8")
+	rel2 := dag.FindRelationshipByToID("3aa1e546-1ed5-4d67-a59c-be0d5905b490")
+
+	if rel1.From != rel2.From || rel1.To != rel2.To {
+		t.Error("Relationships were not correctly resolved")
+	}
+
+}
 
 func TestNewDagConfigFromString(t *testing.T) {
 	type targs struct {
@@ -12,7 +25,7 @@ func TestNewDagConfigFromString(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    targs
-		wantRet *DagConfig
+		wantRet *DagConfigService
 		wantErr bool
 	}{
 		{ // TEST START
@@ -23,13 +36,14 @@ func TestNewDagConfigFromString(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotRet, err := NewDagConfigFromString(tt.args.yamlString)
+			dag := &DagConfigService{}
+			err := dag.LoadDagConfigFromString(tt.args.yamlString)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("NewDagConfigFromString() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("LoadDagConfigFromString() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(gotRet, tt.wantRet) {
-				t.Errorf("NewDagConfigFromString() =\n%#v,\nWant:\n%#v\n", gotRet, tt.wantRet)
+			if !reflect.DeepEqual(dag, tt.wantRet) {
+				t.Errorf("LoadDagConfigFromString() =\n%#v,\nWant:\n%#v\n", dag, tt.wantRet)
 			}
 		})
 	}
@@ -66,25 +80,25 @@ Relationships:
   Properties: {}
 `
 
-var test01WantDag DagConfig = DagConfig{
+var test01WantDag DagConfigService = DagConfigService{
 	Name: "Azure Event Hubs Sample",
-	ID:   GUID("d6e4a5e9-696a-4626-ba7a-534d6ff450a5"),
+	ID:   guid.GUID("d6e4a5e9-696a-4626-ba7a-534d6ff450a5"),
 	Services: []DagService{
 		DagService{
 			Name:       "Event Generator",
-			ID:         GUID("9e1bcb3d-ff58-41d4-8779-f71e7b8800f8"),
+			ID:         guid.GUID("9e1bcb3d-ff58-41d4-8779-f71e7b8800f8"),
 			Type:       "EventGenerator",
 			Properties: make(map[string]DagProperty),
 		},
 		DagService{
 			Name:       "Azure Event Hub",
-			ID:         GUID("3aa1e546-1ed5-4d67-a59c-be0d5905b490"),
+			ID:         guid.GUID("3aa1e546-1ed5-4d67-a59c-be0d5905b490"),
 			Type:       "EventHub",
 			Properties: make(map[string]DagProperty),
 		},
 		DagService{
 			Name:       "Event Logger",
-			ID:         GUID("a268fae5-2a82-4a3e-ada7-a52eeb7019ac"),
+			ID:         guid.GUID("a268fae5-2a82-4a3e-ada7-a52eeb7019ac"),
 			Type:       "EventLogger",
 			Properties: make(map[string]DagProperty),
 		},
@@ -92,18 +106,18 @@ var test01WantDag DagConfig = DagConfig{
 	Relationships: []DagRelationship{
 		DagRelationship{
 			Name:        "Generator to Event Hubs Link",
-			ID:          GUID("211a55bd-5d92-446c-8be8-190f8f0e623e"),
+			ID:          guid.GUID("211a55bd-5d92-446c-8be8-190f8f0e623e"),
 			Description: "Event Generator to Event Hub connection",
-			From:        GUID("e1bcb3d-ff58-41d4-8779-f71e7b8800f8"),
-			To:          GUID("3aa1e546-1ed5-4d67-a59c-be0d5905b490"),
+			From:        guid.GUID("e1bcb3d-ff58-41d4-8779-f71e7b8800f8"),
+			To:          guid.GUID("3aa1e546-1ed5-4d67-a59c-be0d5905b490"),
 			Properties:  make(map[string]DagProperty),
 		},
 		DagRelationship{
 			Name:        "Event Hubs to Event Logger Link",
-			ID:          GUID("08ccbd67-456f-4349-854a-4e6959e5017b"),
+			ID:          guid.GUID("08ccbd67-456f-4349-854a-4e6959e5017b"),
 			Description: "Event Hubs to Event Logger connection",
-			From:        GUID("3aa1e546-1ed5-4d67-a59c-be0d5905b490"),
-			To:          GUID("a268fae5-2a82-4a3e-ada7-a52eeb7019ac"),
+			From:        guid.GUID("3aa1e546-1ed5-4d67-a59c-be0d5905b490"),
+			To:          guid.GUID("a268fae5-2a82-4a3e-ada7-a52eeb7019ac"),
 			Properties:  make(map[string]DagProperty),
 		},
 	},
