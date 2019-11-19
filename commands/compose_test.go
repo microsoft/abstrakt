@@ -20,7 +20,7 @@ func executeCommandC(root *cobra.Command, args ...string) (c *cobra.Command, out
 	root.SetOutput(buf)
 	root.SetArgs(args)
 	c, err = root.ExecuteC()
-	return c, buf.String(), err
+	return
 }
 
 func checkStringContains(t *testing.T, got, expected string) {

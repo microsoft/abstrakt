@@ -98,13 +98,13 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 }
 
 //LoadFromFile takes a string dag and map and loads them
-func (m *ComposeService) LoadFromFile(dagFile string, mapFile string) error {
-	err := m.DagConfigService.LoadDagConfigFromFile(dagFile)
+func (m *ComposeService) LoadFromFile(dagFile string, mapFile string) (err error) {
+	err = m.DagConfigService.LoadDagConfigFromFile(dagFile)
 	if err != nil {
 		return err
 	}
 	err = m.BuildMapService.LoadMapFromFile(mapFile)
-	return err
+	return
 }
 
 //LoadFromString takes a string dag and map and loads them
@@ -112,12 +112,12 @@ func (m *ComposeService) LoadFromString(dagString string, mapString string) (err
 	err = m.DagConfigService.LoadDagConfigFromString(dagString)
 
 	if err != nil {
-		return err
+		return
 	}
 
 	err = m.BuildMapService.LoadMapFromString(mapString)
 
-	return err
+	return
 }
 
 //NewComposeService constructs a new compose service
