@@ -1,9 +1,10 @@
 #!/bin/bash
 
 dogo() {
+       #wire ./internal/serviceLocator
        go fmt
-       go generate
-       gotest -v ./...
+       go generate       
+       gotest -v ./internal/composeservice
 }
 
 

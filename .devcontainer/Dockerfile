@@ -17,6 +17,7 @@ RUN apt-get update \
     && go build -o gocode-gomod github.com/stamblerre/gocode \
     && mv gocode-gomod $GOPATH/bin/ \
     && go get -u -v \
+        github.com/google/wire/cmd/wire \
         github.com/rakyll/gotest \
         github.com/mdempsky/gocode \
         github.com/uudashr/gopkgs/cmd/gopkgs \

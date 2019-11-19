@@ -2,7 +2,7 @@ package cmd
 
 import (
 	commands "github.com/microsoft/abstrakt/commands"
-	"github.com/microsoft/abstrakt/internal/tool"
+	"github.com/microsoft/abstrakt/internal/tools/logger"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

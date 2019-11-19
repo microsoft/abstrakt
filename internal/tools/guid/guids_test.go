@@ -1,4 +1,4 @@
-package yaml
+package guid
 
 import "testing"
 

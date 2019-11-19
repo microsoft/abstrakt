@@ -1,4 +1,4 @@
-package yaml
+package guid
 
 ////////////////////////////////////////////////////////////
 // util -- misc. helpers
@@ -18,7 +18,8 @@ import (
 // e.g. if asked for Name="abc", then okay to return the object
 // named "Abc", if found.  If false, use only exact name matching.
 
-const tolerateMiscasedKey = true
+//TolerateMiscasedKey -- how strict the yaml parsing should be on case sensitivity
+const TolerateMiscasedKey = true
 
 // For ID fields, we currently use strings containing GUID-formatted
 // information (e.g., "d6e4a5e9-696a-4626-ba7a-534d6ff450a5").

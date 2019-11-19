@@ -2,6 +2,8 @@ package commands
 
 import (
 	"fmt"
+	"github.com/microsoft/abstrakt/internal/chartservice"
+	"github.com/microsoft/abstrakt/internal/composeservice"
 	"github.com/spf13/cobra"
 	"strings"
 )
@@ -18,6 +20,30 @@ var composeCmd = &cobra.Command{
 		"abstrakt compose -t [template type] -f [constellationFilePath] -m [mapsFilePath] -o [outputPath]",
 
 	Run: func(cmd *cobra.Command, args []string) {
+
+		if templateType == "helm" || templateType == "" {
+			service := composeservice.NewComposeService()
+			_ = service.LoadFromFile(constellationFilePath, mapsFilePath)
+			chart, err := service.Compose("Output", outputPath)
+			if err != nil {
+				fmt.Printf("Could not compose: %v", err)
+				return
+			}
+
+			err = chartservice.SaveChartToDir(chart, outputPath)
+
+			if err != nil {
+				fmt.Printf("There was an error saving the chart: %v", err)
+				return
+			}
+
+			fmt.Printf("Chart was saved to: %v", outputPath)
+
+		} else {
+			fmt.Printf("Template type: %v is not known", templateType)
+			return
+		}
+
 		fmt.Println("args: " + strings.Join(args, " "))
 		fmt.Println("template: " + templateType)
 		fmt.Println("constellationFilePath: " + constellationFilePath)
