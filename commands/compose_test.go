@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
-
 	"strings"
 	"testing"
 )

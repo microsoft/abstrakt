@@ -1,10 +1,9 @@
 package dagconfigservice
 
 import (
+	"github.com/microsoft/abstrakt/internal/tools/guid"
 	"reflect"
 	"testing"
-
-	"github.com/microsoft/abstrakt/internal/tools/guid"
 )
 
 func TestRelationshipFinding(t *testing.T) {

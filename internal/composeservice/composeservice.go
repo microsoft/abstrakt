@@ -44,7 +44,7 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 		count := serviceMap[service.Type]
 		alias := service.ChartName
 		if count > 0 {
-			alias = fmt.Sprintf("%v%v", service.ChartName, count)
+			alias = fmt.Sprintf("%v%v", alias, count)
 		}
 
 		fmt.Print(alias)
