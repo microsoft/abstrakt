@@ -2,8 +2,10 @@ package chartservice
 
 import (
 	"helm.sh/helm/v3/pkg/chart"
+	"os"
 	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/chartutil"
+	"helm.sh/helm/v3/pkg/downloader"
 )
 
 //CreateChart makes a new chart at the specified location
@@ -42,4 +44,16 @@ func SaveChartToDir(chart *chart.Chart, dir string) error {
 // ZipChartToDir compresses the chart and saves it in compiled format
 func ZipChartToDir(chart *chart.Chart, dir string) (string, error) {
 	return chartutil.Save(chart, dir)
+}
+
+// BuildChart download charts
+func BuildChart(dir string) (err error) {
+
+	manager := downloader.Manager {
+		Out: os.Stdout,
+		ChartPath: dir,
+	}
+
+	err = manager.Build();
+	return;
 }
