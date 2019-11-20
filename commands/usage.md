@@ -27,7 +27,9 @@ Abstrakt is a command line utility for processing constellation files. It has a 
 
 The output from the visualise subcommand is [Graphviz dot notation](https://www.graphviz.org/doc/info/lang.html)
 
-Copy the output and paste into a Graphviz rendering tool to see the graph produced. Some sites listed below (rendering option in the utility to be developed).  
+The output from a call to 'abstrakt visualise' can be piped into Graphviz to generate a graphical output. See the example in the Examples section. 
+
+Alternatively, copy the output and paste into a Graphviz rendering tool to see the graph produced. Some sites listed below (rendering option in the utility to be developed).  
 
 [Graphviz online](https://dreampuf.github.io/GraphvizOnline/)  
 [Webgraphviz](http://www.webgraphviz.com/)  
@@ -71,3 +73,7 @@ Run visualise on a file
 	        Event_Logger;
 	
 	}
+	
+Pipe visualise output to Graphviz producing a file called result.png (assumes Graphviz is installed and can be called from the location abstrakt is being run)
+
+	abstrakt visualise -f basic_azure_event_hubs.yaml | dot -Tpng > result.png
