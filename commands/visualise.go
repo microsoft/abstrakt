@@ -8,40 +8,16 @@ package commands
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"io/ioutil"
 	"log"
 	"os"
 	"strings"
 
 	"github.com/awalterschulze/gographviz"
-	"gopkg.in/yaml.v2"
+	"github.com/microsoft/abstrakt/internal/dagconfigservice"
+	"github.com/microsoft/abstrakt/internal/tools/guid"
 )
 
-// var constellationFilePath string
 var verbose string
-
-//Config is a struct used to parse the yaml from the constellation definition
-// It was created using Yaml to Go
-type Config struct {
-	Name     string `yaml:"Name"`
-	ID       string `yaml:"Id"`
-	Services []struct {
-		Name       string `yaml:"Name"`
-		ID         string `yaml:"Id"`
-		Type       string `yaml:"Type"`
-		Properties struct {
-		} `yaml:"Properties"`
-	} `yaml:"Services"`
-	Relationships []struct {
-		Name        string `yaml:"Name"`
-		ID          string `yaml:"Id"`
-		Description string `yaml:"Description"`
-		From        string `yaml:"From"`
-		To          string `yaml:"To"`
-		Properties  struct {
-		} `yaml:"Properties"`
-	} `yaml:"Relationships"`
-}
 
 var visualiseCmd = &cobra.Command{
 	Use:   "visualise",
@@ -59,10 +35,15 @@ var visualiseCmd = &cobra.Command{
 			fmt.Println("Could not open YAML input file for reading")
 			os.Exit(-1)
 		}
-		yamlString := readYaml(constellationFilePath)
-		// fmt.Println("Finished reading %s", yamlString)
-		result := parseYaml(yamlString)
-		generateGraph(result)
+
+		dsGraph := dagconfigservice.NewDagConfigService()
+		err := dsGraph.LoadDagConfigFromFile(constellationFilePath)
+		if err != nil {
+			log.Fatalf("dagConfigService failed to load file %q: %s", constellationFilePath, err)
+		}
+
+		resString := generateGraph(dsGraph)
+		fmt.Println(resString)
 
 	},
 }
@@ -73,7 +54,6 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-	// visualiseCmd.Flags().Bool("verbose", true, "verbose - show logging  information")
 	visualiseCmd.Flags().StringVarP(&verbose, "verbose", "v", "false", "verbose - show logging  information")
 }
 
@@ -86,39 +66,17 @@ func fileExists(filename string) bool {
 	return !info.IsDir()
 }
 
-//parseYaml - utility function to take in a yaml string and return a Config structure filled with the results of
-//parsing the yaml file
-func parseYaml(inputString string) Config {
-	var config Config
-
-	err := yaml.Unmarshal([]byte(inputString), &config)
-	if err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	// fmt.Printf("--- t:\n%v\n\n", config)
-	return config
-}
-
-//readYaml - read the yaml from the provided filename into a memory string variable.
-func readYaml(fileName string) string {
-	readData, err := ioutil.ReadFile(fileName)
-	if err != nil {
-		panic(err)
-	}
-	return string(readData)
-}
-
-//generateGraph - function to take a Config structure and create a graph object that contains the
-//definition of the graph. Also outputs a string representation (GraphViz dot notation) of the resulting graph
+//generateGraph - function to take a dagconfigService structure and create a graph object that contains the
+//representation of the graph. Also outputs a string representation (GraphViz dot notation) of the resulting graph
 //this can be passed on to GraphViz to graphically render the resulting graph
-func generateGraph(readConfig Config) {
+func generateGraph(readGraph dagconfigservice.DagConfigService) string {
 
 	//lookup is used to map IDs to names. Names are easier to visualise but IDs are more important to ensure the
 	//presented constellation is correct and IDs are used to link nodes together
-	lookup := make(map[string]string)
+	lookup := make(map[guid.GUID]string)
 
 	g := gographviz.NewGraph()
-	if err := g.SetName(strings.Replace(readConfig.Name, " ", "_", -1)); err != nil { //Replace spaces with underscores, names with spaces can break graphviz engines
+	if err := g.SetName(strings.Replace(readGraph.Name, " ", "_", -1)); err != nil { //Replace spaces with underscores, names with spaces can break graphviz engines
 		log.Fatalf("error: %v", err)
 		panic(err)
 	}
@@ -130,13 +88,13 @@ func generateGraph(readConfig Config) {
 
 	//Add all nodes to the graph storing the lookup from ID to name (for later adding relationships)
 	//Replace spaces in names with underscores, names with spaces can break graphviz engines)
-	for _, v := range readConfig.Services {
+	for _, v := range readGraph.Services {
 		if verbose == "true" {
 			log.Printf("Adding node %s %s\n", v.ID, v.Name)
 		}
 		newName := strings.Replace(v.Name, " ", "_", -1)
 		lookup[v.ID] = newName
-		err := g.AddNode(readConfig.Name, newName, nil)
+		err := g.AddNode(readGraph.Name, newName, nil)
 		if err != nil {
 			panic(err)
 		}
@@ -144,7 +102,7 @@ func generateGraph(readConfig Config) {
 
 	//Add relationships to the graph linking using the lookup IDs to name map
 	//Replace spaces in names with underscores, names with spaces can break graphviz engines)
-	for _, v := range readConfig.Relationships {
+	for _, v := range readGraph.Relationships {
 		if verbose == "true" {
 			log.Printf("Adding relationship from %s ---> %s\n", v.From, v.To)
 		}
@@ -157,6 +115,7 @@ func generateGraph(readConfig Config) {
 	}
 
 	//Produce resulting graph in dot notation format
-	fmt.Printf("%s", g.String())
+	// fmt.Printf("%s", g.String())
+	return g.String()
 
 }
