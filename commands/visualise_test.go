@@ -56,7 +56,10 @@ func TestFileExists(t *testing.T) {
 
 func TestGenerateGraph(t *testing.T) {
 	retConfig := dagconfigservice.NewDagConfigService()
-	retConfig.LoadDagConfigFromString(test01DagStr)
+	err := retConfig.LoadDagConfigFromString(test01DagStr)
+	if err != nil {
+		panic(err)
+	}
 
 	cmpString := test02ConstGraphString
 	retString := generateGraph(retConfig)
@@ -85,7 +88,10 @@ Type: EventGenerator
 `
 
 	retConfig := dagconfigservice.NewDagConfigService()
-	retConfig.LoadDagConfigFromString(testValidYAMLString)
+	err := retConfig.LoadDagConfigFromString(testValidYAMLString)
+	if err != nil {
+		panic(err)
+	}
 
 	if retConfig.Name != "Azure Event Hubs Sample" &&
 		retConfig.ID != "d6e4a5e9-696a-4626-ba7a-534d6ff450a5" &&
