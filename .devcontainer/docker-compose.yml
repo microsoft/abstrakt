@@ -1,6 +1,7 @@
 version: '3'
 services:
   docker-in-docker:
+    network_mode: "host"
     build:
       context: ../
       dockerfile: .devcontainer/Dockerfile
