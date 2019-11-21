@@ -11,6 +11,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Configure apt, install packages and tools
 RUN apt-get update \
     && apt-get -y install --no-install-recommends apt-utils 2>&1 \
+    && apt-get -y install sudo \
     && apt-get -y install git procps lsb-release \
     && apt-get -y install wget nano zsh inotify-tools jq \
     && go get -x -d github.com/stamblerre/gocode 2>&1 \
@@ -47,9 +48,30 @@ RUN apt-get update \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
+RUN apt-get update \
+    # Install Docker CE CLI
+    && apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common lsb-release \
+    && curl -fsSL https://download.docker.com/linux/$(lsb_release -is | tr '[:upper:]' '[:lower:]')/gpg | apt-key add - 2>/dev/null \
+    && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/$(lsb_release -is | tr '[:upper:]' '[:lower:]') $(lsb_release -cs) stable" \
+    && apt-get update \
+    && apt-get install -y docker-ce-cli \
+    # Install kubectl
+    && curl -sSL -o /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl \
+    && chmod +x /usr/local/bin/kubectl \
+    # Install Helm
+    && curl -s https://raw.githubusercontent.com/helm/helm/master/scripts/get | bash -
+
+RUN apt-get -y install git procps wget nano zsh inotify-tools jq
 # Verify git, process tools installed
 RUN wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh || true
+RUN echo "alias k=kubectl" >> "/root/.zshrc"
+
+ENV PATH="/usr/local/kubebuilder/bin:${PATH}"
 
 ENV GO111MODULE=on
+
+ENV KUBECONFIG="/root/.kube/kind-config-kind"
+COPY ./makefile ./
+RUN make install-kind
 
 ENV SHELL /bin/bash
