@@ -76,4 +76,4 @@ Run visualise on a file
 	
 Pipe visualise output to Graphviz producing a file called result.png (assumes Graphviz is installed and can be called from the location abstrakt is being run)
 
-	abstrakt visualise -f basic_azure_event_hubs.yaml | dot -Tpng > result.png
+	abstrakt visualise -f ./sample/constellation/sample_consteallation.yaml | dot -Tpng > result.png

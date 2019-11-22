@@ -52,3 +52,11 @@ test-export:
 test-all: test-prepare test
 
 test-export-all: test-prepare test-export
+
+
+##################
+#  Run Examples    		  #
+##################
+
+visualise: abstrakt
+	./abstrakt visualise -f ./sample/constellation/sample_constellation.yaml | dot -Tpng > result.png
