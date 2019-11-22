@@ -86,6 +86,8 @@ endif
 #  Run Examples    		  #
 ##################
 
-visualise:
+build:
 	go build -o abstrakt main.go
+
+visualise: build	
 	./abstrakt visualise -f ./sample/constellation/sample_constellation.yaml | dot -Tpng > result.png

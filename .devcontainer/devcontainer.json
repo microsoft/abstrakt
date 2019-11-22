@@ -5,7 +5,7 @@
     "service": "docker-in-docker",
     "workspaceFolder": "/workspace",
     "shutdownAction": "stopCompose",
-    "postCreateCommand": "go mod tidy && make set-kindcluster",
+    "postCreateCommand": "go mod tidy && make set-kindcluster && make build",
     "extensions": [
         "ms-azuretools.vscode-docker",
         "ms-vscode.go",
