@@ -53,7 +53,6 @@ test-all: test-prepare test
 
 test-export-all: test-prepare test-export
 
-
 create-kindcluster:
 ifeq (,$(shell kind get clusters))
 	@echo "no kind cluster"
@@ -82,3 +81,13 @@ ifeq (,$(shell which kind))
 else
 	@echo "kind has been installed"
 endif
+
+##################
+#  Run Examples    		  #
+##################
+
+build:
+	go build -o abstrakt main.go
+
+visualise: build	
+	./abstrakt visualise -f ./sample/constellation/sample_constellation.yaml | dot -Tpng > result.png

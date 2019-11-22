@@ -21,4 +21,5 @@ coverage.txt
 .DS_Store
 abstrakt
 bin
-
+basic_azure_event_hubs.yaml
+result.png
