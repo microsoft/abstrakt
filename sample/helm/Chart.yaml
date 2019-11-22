@@ -2,17 +2,17 @@ apiVersion: v2
 appVersion: 1.16.0
 dependencies:
 - name: event_hub_sample_event_generator
-  repository: ../../helm
+  repository: "file://../../../../sample/deps/event_hub_sample_event_generator"
   version: 1.0.0
 - name: event_hub_sample_event_hub
-  repository: ../../helm
+  repository: "file://../../../../sample/deps/event_hub_sample_event_hub"
   version: 1.0.0
 - name: event_hub_sample_event_logger
-  repository: ../../helm
+  repository:  "file://../../../../sample/deps/event_hub_sample_event_logger"
   version: 1.0.0
 - alias: event_hub_sample_event_logger1
   name: event_hub_sample_event_logger
-  repository: ../../helm
+  repository:  "file://../../../../sample/deps/event_hub_sample_event_logger"
   version: 1.0.0
 description: A Helm chart for Kubernetes
 name: test

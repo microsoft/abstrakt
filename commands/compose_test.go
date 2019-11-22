@@ -50,7 +50,7 @@ func TestComposeCmdWithValidFlags(t *testing.T) {
 }
 
 func TestComposeWithRealFiles(t *testing.T) {
-	tdir, err := ioutil.TempDir("", "outut-")
+	tdir, err := ioutil.TempDir("./", "output-")
 	if err != nil {
 		t.Fatal(err)
 	}
