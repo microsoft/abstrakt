@@ -23,3 +23,6 @@ abstrakt
 bin
 
 **/output-*
+
+basic_azure_event_hubs.yaml
+result.png
