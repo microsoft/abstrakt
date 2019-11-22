@@ -11,7 +11,6 @@ require (
 	github.com/google/wire v0.3.0
 	github.com/jstemmer/go-junit-report v0.9.1 // indirect
 	github.com/magiconair/properties v1.8.1 // indirect
-	github.com/matm/gocov-html v0.0.0-20191111163307-9ee104d84c82 // indirect
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/pelletier/go-toml v1.4.0 // indirect
 	github.com/sirupsen/logrus v1.4.2
@@ -23,5 +22,4 @@ require (
 	gopkg.in/yaml.v2 v2.2.5
 	helm.sh/helm/v3 v3.0.0
 	k8s.io/apimachinery v0.0.0-20191116203941-08e4eafd6d11 // indirect
-	k8s.io/helm v2.16.1+incompatible
 )
