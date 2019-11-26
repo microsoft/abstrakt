@@ -93,6 +93,13 @@ endif
 
 build:
 	go build -o abstrakt main.go
+	chmod +x abstrakt
 
 visualise: build	
 	./abstrakt visualise -f ./sample/constellation/sample_constellation.yaml | dot -Tpng > result.png
+
+
+http-demo: build
+	
+	./abstrakt compose -f ./sample/constellation/http_constellation.yaml -m ./sample/constellation/http_constellation_maps.yaml -o ./output/http_sample
+	

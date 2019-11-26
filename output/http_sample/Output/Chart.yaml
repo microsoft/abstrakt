@@ -1,0 +1,17 @@
+apiVersion: v2
+appVersion: 1.16.0
+dependencies:
+- name: wormhole_sender
+  repository: file://../../../sample/helm/http_microservices/sender
+  version: 1.0.0
+- alias: wormhole_sender1
+  name: wormhole_sender
+  repository: file://../../../sample/helm/http_microservices/sender
+  version: 1.0.0
+- name: wormhole_receiver
+  repository: file://../../../sample/helm/http_microservices/receiver
+  version: 1.0.0
+description: A Helm chart for Kubernetes
+name: Output
+type: application
+version: 0.1.0
