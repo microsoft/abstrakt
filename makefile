@@ -96,7 +96,7 @@ build:
 	chmod +x abstrakt
 
 visualise: build	
-	./abstrakt visualise -f ./sample/constellation/sample_constellation.yaml | dot -Tpng > result.png
+	./abstrakt visualise -f ./sample/constellation/http_constellation.yaml | dot -Tpng > result.png
 
 
 http-demo: build
