@@ -1,0 +1,11 @@
+Name: "Basic Azure Event Hubs maps"
+Id: "a5a7c413-a020-44a2-bd23-1941adb7ad58"
+Maps:
+- ChartName: "wormhole_sender"
+  Type: "WormholeSender"
+  Location: "file://../../../sample/deps/wormhole_sender"
+  Version: "1.0.0"
+- ChartName: "wormhole_receiver"
+  Type: "WormholeReceiver"
+  Location: "file://../../../sample/deps/wormhole_receiver"
+  Version: "1.0.0"
