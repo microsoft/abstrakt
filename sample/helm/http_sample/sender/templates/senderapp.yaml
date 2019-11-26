@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sender
+  labels:
+    purpose: demonstrate-send-microservice
+    app: sender
+spec:
+  containers:
+  - name: wormholesender    
+    image: jakkaj/wormhole_sender:5
+    env:
+    - name: RECEIVER_URI
+      value: "http://receiver-service:8081/api/EchoBody"
+    - name: CHAIN_ARG
+      value: "aaaa"

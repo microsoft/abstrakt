@@ -53,6 +53,11 @@ test-all: test-prepare test
 
 test-export-all: test-prepare test-export
 
+install-helm:
+	curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > get_helm.sh
+	chmod 700 get_helm.sh
+	./get_helm.sh
+
 create-kindcluster:
 ifeq (,$(shell kind get clusters))
 	@echo "no kind cluster"

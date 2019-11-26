@@ -26,3 +26,4 @@ bin
 
 basic_azure_event_hubs.yaml
 result.png
+get_helm.sh
