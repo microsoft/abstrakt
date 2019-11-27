@@ -102,7 +102,6 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 			defer closure()
 		}
 	}
-	//iterate again to find relservice chart alias names after all charts are loaded
 
 	newChart.Values = values
 	newChart.Metadata.Dependencies = deps
