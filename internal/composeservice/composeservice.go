@@ -30,7 +30,7 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 	}
 
 	serviceMap := make(map[string]int)
-
+	aliasMap := make(map[string]string)
 	deps := make([]*chart.Dependency, 0)
 
 	values := newChart.Values
@@ -59,6 +59,8 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 			dep.Alias = alias
 		}
 
+		aliasMap[string(n.ID)] = alias
+
 		deps = append(deps, dep)
 
 		valMap := make(map[string]interface{})
@@ -79,6 +81,11 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 			foundService := m.DagConfigService.FindServiceByID(toRels.From)
 			toRelations["service"] = string(toRels.ID)
 			toRelations["type"] = foundService.Type
+			closure := func() { //ensure this only runs once all the counting is done
+				relAlias := aliasMap[string(foundService.ID)]
+				toRelations["name"] = relAlias
+			}
+			defer closure()
 		}
 
 		if fromRels != nil {
@@ -88,8 +95,15 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 			foundService := m.DagConfigService.FindServiceByID(fromRels.To)
 			fromRelations["service"] = string(fromRels.ID)
 			fromRelations["type"] = foundService.Type
+			closure := func() { //ensure this only runs once all the counting is done
+				relAlias := aliasMap[string(foundService.ID)]
+				fromRelations["name"] = relAlias
+			}
+			defer closure()
 		}
 	}
+	//iterate again to find relservice chart alias names after all charts are loaded
+
 	newChart.Values = values
 	newChart.Metadata.Dependencies = deps
 

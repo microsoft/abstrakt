@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: sender
+  name: "sender-{{.Values.name}}"
   labels:
     purpose: demonstrate-send-microservice
     app: sender
@@ -11,6 +11,10 @@ spec:
     image: jakkaj/wormhole_sender:5
     env:
     - name: RECEIVER_URI
-      value: "http://receiver-service:8081/api/EchoBody"
+      {{if contains "sender" .Values.relationships.output.name}}
+      value: "http://{{.Values.relationships.output.name}}:8080/api/CallReceiver"
+      {{else}}
+      value: "http://{{.Values.relationships.output.name}}:8080/api/EchoBody"
+      {{end}}
     - name: CHAIN_ARG
-      value: "aaaa"
+      value: "-Chain-{{.Values.name}}"      

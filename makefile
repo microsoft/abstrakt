@@ -102,4 +102,16 @@ visualise: build
 http-demo: build
 	
 	./abstrakt compose -f ./sample/constellation/http_constellation.yaml -m ./sample/constellation/http_constellation_maps.yaml -o ./output/http_sample
-	
+
+http-demo-deploy:
+	helm install wormhole-http-demo ./output/http_sample/Output
+
+http-demo-template:
+	helm template wormhole-http-demo ./output/http_sample/Output
+
+http-demo-delete:
+	helm delete wormhole-http-demo
+
+http-demo-template-all: http-demo http-demo-template
+
+http-demo-deploy-all: http-demo-delete http-demo-deploy
