@@ -4,7 +4,7 @@ metadata:
   name: "sender-{{.Values.name}}"
   labels:
     purpose: demonstrate-send-microservice
-    app: sender
+    app: sender-{{.Values.name}}
 spec:
   containers:
   - name: wormholesender    
