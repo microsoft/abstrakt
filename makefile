@@ -98,6 +98,7 @@ build:
 visualise: build	
 	./abstrakt visualise -f ./sample/constellation/http_constellation.yaml | dot -Tpng > result.png
 
+run-http-demo: http-demo http-demo-deploy
 
 http-demo: build
 	
