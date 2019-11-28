@@ -26,11 +26,11 @@ func TestChartSavesAndLoads(t *testing.T) {
 	defer func() {
 		err = os.RemoveAll(tdir)
 		if err != nil {
-			return
+			t.Error(err)
 		}
 		err = os.RemoveAll(tdir2)
 		if err != nil {
-			return
+			t.Error(err)
 		}
 
 	}()
