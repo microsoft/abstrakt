@@ -84,19 +84,19 @@ var test01WantDag DagConfigService = DagConfigService{
 	Name: "Azure Event Hubs Sample",
 	ID:   guid.GUID("d6e4a5e9-696a-4626-ba7a-534d6ff450a5"),
 	Services: []DagService{
-		DagService{
+		{
 			Name:       "Event Generator",
 			ID:         guid.GUID("9e1bcb3d-ff58-41d4-8779-f71e7b8800f8"),
 			Type:       "EventGenerator",
 			Properties: make(map[string]DagProperty),
 		},
-		DagService{
+		{
 			Name:       "Azure Event Hub",
 			ID:         guid.GUID("3aa1e546-1ed5-4d67-a59c-be0d5905b490"),
 			Type:       "EventHub",
 			Properties: make(map[string]DagProperty),
 		},
-		DagService{
+		{
 			Name:       "Event Logger",
 			ID:         guid.GUID("a268fae5-2a82-4a3e-ada7-a52eeb7019ac"),
 			Type:       "EventLogger",
@@ -104,7 +104,7 @@ var test01WantDag DagConfigService = DagConfigService{
 		},
 	},
 	Relationships: []DagRelationship{
-		DagRelationship{
+		{
 			Name:        "Generator to Event Hubs Link",
 			ID:          guid.GUID("211a55bd-5d92-446c-8be8-190f8f0e623e"),
 			Description: "Event Generator to Event Hub connection",
@@ -112,7 +112,7 @@ var test01WantDag DagConfigService = DagConfigService{
 			To:          guid.GUID("3aa1e546-1ed5-4d67-a59c-be0d5905b490"),
 			Properties:  make(map[string]DagProperty),
 		},
-		DagRelationship{
+		{
 			Name:        "Event Hubs to Event Logger Link",
 			ID:          guid.GUID("08ccbd67-456f-4349-854a-4e6959e5017b"),
 			Description: "Event Hubs to Event Logger connection",

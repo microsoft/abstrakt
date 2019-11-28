@@ -20,7 +20,7 @@ else
 	@echo "golangci-lint is installed"
 endif
 
-lint:
+lint: build
 	@echo "Linting"
 	golangci-lint run ./...
 
@@ -91,9 +91,11 @@ endif
 #  Run Examples    		  #
 ##################
 
-build:
+fmt:
+	gofmt -s -w ./
+
+build:	
 	go build -o abstrakt main.go
-	chmod +x abstrakt
 
 visualise: build	
 	./abstrakt visualise -f ./sample/constellation/http_constellation.yaml | dot -Tpng > result.png

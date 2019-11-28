@@ -61,19 +61,19 @@ var buildMap01 = BuildMapService{
 	Name: "Basic Azure Event Hubs maps",
 	ID:   guid.GUID("a5a7c413-a020-44a2-bd23-1941adb7ad58"),
 	Maps: []BuildMapInfo{
-		BuildMapInfo{
+		{
 			ChartName: "event_hub_sample_event_generator",
 			Type:      "EventGenerator",
 			Location:  "../../helm/basictest",
 			Version:   "1.0.0",
 		},
-		BuildMapInfo{
+		{
 			ChartName: "event_hub_sample_event_logger",
 			Type:      "EventLogger",
 			Location:  "../../helm/basictest",
 			Version:   "1.0.0",
 		},
-		BuildMapInfo{
+		{
 			ChartName: "event_hub_sample_event_hub",
 			Type:      "EventHub",
 			Location:  "../../helm/basictest",

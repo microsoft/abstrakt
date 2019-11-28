@@ -23,8 +23,17 @@ func TestChartSavesAndLoads(t *testing.T) {
 	if err2 != nil {
 		t.Fatal(err2)
 	}
-	defer os.RemoveAll(tdir)
-	defer os.RemoveAll(tdir2)
+	defer func() {
+		err = os.RemoveAll(tdir)
+		if err != nil {
+			return
+		}
+		err = os.RemoveAll(tdir2)
+		if err != nil {
+			return
+		}
+
+	}()
 
 	c, err := CreateChart("foo", tdir)
 
@@ -52,7 +61,13 @@ func TestChartBuildChart(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer os.RemoveAll(tdir)
+
+	defer func() {
+		err = os.RemoveAll(tdir)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}()
 
 	err = exec.Command("cp", "-r", "../../sample/helm/basictest", tdir+"/").Run()
 	if err != nil {
@@ -76,7 +91,12 @@ func checkMd5(t *testing.T, expected, file string) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer f.Close()
+	defer func() {
+		err = f.Close()
+		if err != nil {
+			t.Fatal(err)
+		}
+	}()
 
 	h := md5.New()
 	if _, err := io.Copy(h, f); err != nil {

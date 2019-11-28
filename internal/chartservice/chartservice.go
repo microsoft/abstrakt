@@ -17,19 +17,24 @@ version: 4.3.2
 home: ""`
 
 //CreateChart makes a new chart at the specified location
-func CreateChart(name string, dir string) (*chart.Chart, error) {
+func CreateChart(name string, dir string) (chartReturn *chart.Chart, err error) {
 	tdir, err := ioutil.TempDir("./", "output-")
 
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	defer os.RemoveAll(tdir)
+	defer func() {
+		err = os.RemoveAll(tdir)
+		if err != nil {
+			return
+		}
+	}()
 
 	err = os.Mkdir(path.Join(tdir, "templates"), 0777)
 
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	files := []string{"values.yaml", path.Join("templates", "NOTES.txt")}
@@ -37,14 +42,14 @@ func CreateChart(name string, dir string) (*chart.Chart, error) {
 	for _, k := range files {
 		err = ioutil.WriteFile(path.Join(tdir, k), []byte(""), 0777)
 		if err != nil {
-			return nil, err
+			return
 		}
 	}
 
 	err = ioutil.WriteFile(path.Join(tdir, "Chart.yaml"), []byte(startMeta), 0777)
 
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	cfile := &chart.Metadata{
@@ -59,16 +64,16 @@ func CreateChart(name string, dir string) (*chart.Chart, error) {
 	err = chartutil.CreateFrom(cfile, dir, tdir)
 
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	chart, err := loader.LoadDir(path.Join(dir, name))
+	chartReturn, err = loader.LoadDir(path.Join(dir, name))
 
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	return chart, nil
+	return
 }
 
 // LoadChartFromDir loads a Helm chart from the specified director

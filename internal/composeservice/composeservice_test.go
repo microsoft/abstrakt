@@ -19,7 +19,12 @@ func TestComposeService(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer os.RemoveAll(tdir)
+	defer func() {
+		err = os.RemoveAll(tdir)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}()
 
 	comp := NewComposeService()
 	_, err = comp.Compose("test", tdir)
@@ -54,7 +59,12 @@ func TestHelmLibCompose(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer os.RemoveAll(tdir)
+	defer func() {
+		err = os.RemoveAll(tdir)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}()
 
 	c, err := chartutil.Create("foo", tdir)
 	if err != nil {

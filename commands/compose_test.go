@@ -55,7 +55,12 @@ func TestComposeWithRealFiles(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	defer os.RemoveAll(tdir)
+	defer func() {
+		err = os.RemoveAll(tdir)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}()
 
 	cwd, err2 := os.Getwd()
 	if err2 != nil {
