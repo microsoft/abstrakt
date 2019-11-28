@@ -74,5 +74,6 @@ ENV GO111MODULE=on
 ENV KUBECONFIG="/root/.kube/kind-config-kind"
 COPY ./makefile ./
 RUN make install-kind
+RUN make install-helm
 
 ENV SHELL /bin/bash
