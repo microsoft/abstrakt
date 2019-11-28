@@ -33,7 +33,7 @@ type GUID string
 // EmptyGUID -- equivalent to an uninitialized GUID.
 const EmptyGUID = GUID("")
 
-// IsEmpty - true if GUID represents emtpy value.
+// IsEmpty - true if GUID represents empty value.
 func (LHS GUID) IsEmpty() bool {
 	return EmptyGUID.Equals(LHS)
 }

@@ -36,3 +36,46 @@ You can find sample constellation files in the following location:
 
 Using these files you can test the app binary. 
 
+#### Running the local Helm Microservice Sample
+
+This sample uses the Http Microservice test constellation file located in `sample/constellation/http_constellation.yaml`.
+
+The sample will install three services with relationships between them:
+
+- A sender
+- Another sender
+- A receiver
+
+The concept is that you send a message down the chain. 
+
+- The first sender takes a message via http, adds value to the message and forwards it to the second sender. 
+- The second sender repeats this, also adding a unique value before sending on to the receiver. 
+- The receiver echos back the message
+- Each of the sender returns the message back down the chain before the final message pops out the original http request. 
+
+##### Running the sample
+
+Run:
+
+`make run-http-demo`
+
+This will deploy the demo to the cluster. The templates are output to `output/http_sample/Output`. 
+
+You can test it by:
+
+```
+kubectl wait pod -n default --for condition=ready --timeout=120s --all && kubectl exec -it sender-sender bash
+curl sender:8080/api/CallReceiver?message=yourmessage
+```
+
+You should see the response "yourmessage--Chain-sender--Chain-sender1" which proves the message traversed the chain!
+
+##### Remove the install
+
+You can remove the installed pods and services by calling `make http-demo-delete`
+
+##### Debugging Templates
+
+You can debug the templates by outputting them by running `make http-demo-template-all`
+
+

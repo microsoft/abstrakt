@@ -16,7 +16,13 @@ func TestFileExists(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer os.RemoveAll(tdir)
+
+	defer func() {
+		err = os.RemoveAll(tdir)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}()
 
 	//Setup variables and content for test
 	testValidFilename := filepath.Join(tdir, "testVisualise.out")

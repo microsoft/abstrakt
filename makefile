@@ -20,7 +20,7 @@ else
 	@echo "golangci-lint is installed"
 endif
 
-lint:
+lint: build
 	@echo "Linting"
 	golangci-lint run ./...
 
@@ -52,6 +52,11 @@ test-export:
 test-all: test-prepare test
 
 test-export-all: test-prepare test-export
+
+install-helm:
+	curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > get_helm.sh
+	chmod 700 get_helm.sh
+	./get_helm.sh
 
 create-kindcluster:
 ifeq (,$(shell kind get clusters))
@@ -86,8 +91,30 @@ endif
 #  Run Examples    		  #
 ##################
 
-build:
+fmt:
+	gofmt -s -w ./
+
+build:	
 	go build -o abstrakt main.go
 
 visualise: build	
-	./abstrakt visualise -f ./sample/constellation/sample_constellation.yaml | dot -Tpng > result.png
+	./abstrakt visualise -f ./sample/constellation/http_constellation.yaml | dot -Tpng > result.png
+
+run-http-demo: http-demo http-demo-deploy
+
+http-demo: build
+	
+	./abstrakt compose -f ./sample/constellation/http_constellation.yaml -m ./sample/constellation/http_constellation_maps.yaml -o ./output/http_sample
+
+http-demo-deploy:
+	helm install wormhole-http-demo ./output/http_sample/Output
+
+http-demo-template:
+	helm template wormhole-http-demo ./output/http_sample/Output
+
+http-demo-delete:
+	helm delete wormhole-http-demo
+
+http-demo-template-all: http-demo http-demo-template
+
+http-demo-deploy-all: http-demo-delete http-demo-deploy

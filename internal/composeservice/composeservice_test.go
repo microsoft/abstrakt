@@ -19,7 +19,12 @@ func TestComposeService(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer os.RemoveAll(tdir)
+	defer func() {
+		err = os.RemoveAll(tdir)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}()
 
 	comp := NewComposeService()
 	_, err = comp.Compose("test", tdir)
@@ -54,7 +59,12 @@ func TestHelmLibCompose(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer os.RemoveAll(tdir)
+	defer func() {
+		err = os.RemoveAll(tdir)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}()
 
 	c, err := chartutil.Create("foo", tdir)
 	if err != nil {
@@ -170,14 +180,14 @@ Id: "a5a7c413-a020-44a2-bd23-1941adb7ad58"
 Maps:
 - ChartName: "event_hub_sample_event_generator"
   Type: "EventGenerator"
-  Location: "../../helm"
+  Location: "../../helm/basictest"
   Version: "1.0.0"
 - ChartName: "event_hub_sample_event_logger"
   Type: "EventLogger"
-  Location: "../../helm"
+  Location: "../../helm/basictest"
   Version: "1.0.0"
 - ChartName: "event_hub_sample_event_hub"
   Type: "EventHub"
-  Location: "../../helm"
+  Location: "../../helm/basictest"
   Version: "1.0.0"
 `

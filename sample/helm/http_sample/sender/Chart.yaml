@@ -1,0 +1,7 @@
+apiVersion: v2
+appVersion: 1.16.0
+description: Simple HTTP sender and forwarder. 
+home: https://github.com/microsoft/wormhole/tree/master/samples/devcontainers/azure-functions-cluster
+name: sender
+type: application
+version: 0.0.1

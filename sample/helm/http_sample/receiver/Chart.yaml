@@ -1,0 +1,7 @@
+apiVersion: v2
+appVersion: 1.16.0
+description: Simple HTTP receiver that returns back the result. 
+home: https://github.com/microsoft/wormhole/tree/master/samples/devcontainers/azure-functions-cluster
+name: receiver
+type: application
+version: 0.0.1
