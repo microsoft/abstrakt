@@ -61,6 +61,8 @@ Run:
 
 This will deploy the demo to the cluster. The templates are output to `output/http_sample/Output`. 
 
+Wait for the containers to start by watching `kubectl get pods`. 
+
 You can test it by:
 
 ```

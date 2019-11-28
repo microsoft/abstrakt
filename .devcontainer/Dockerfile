@@ -59,10 +59,8 @@ RUN apt-get update \
     && apt-get install -y docker-ce-cli \
     # Install kubectl
     && curl -sSL -o /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl \
-    && chmod +x /usr/local/bin/kubectl \
-    # Install Helm
-    && curl -s https://raw.githubusercontent.com/helm/helm/master/scripts/get | bash -
-
+    && chmod +x /usr/local/bin/kubectl
+    
 RUN apt-get -y install git procps wget nano zsh inotify-tools jq
 # Verify git, process tools installed
 RUN wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh || true
