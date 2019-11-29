@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
-	// "strings"
+	"strings"
 	"testing"
 )
 
@@ -23,20 +23,20 @@ func executeCommandC(root *cobra.Command, args ...string) (c *cobra.Command, out
 	return
 }
 
-// func checkStringContains(t *testing.T, got, expected string) {
-// 	if !strings.Contains(got, expected) {
-// 		t.Errorf("Expected to contain: \n %v\nGot:\n %v\n", expected, got)
-// 	}
-// }
+func checkStringContains(t *testing.T, got, expected string) {
+	if !strings.Contains(got, expected) {
+		t.Errorf("Expected to contain: \n %v\nGot:\n %v\n", expected, got)
+	}
+}
 
 func TestComposeCmdVerifyRequiredFlags(t *testing.T) {
 	expected := "required flag(s) \"constellationFilePath\", \"mapsFilePath\", \"outputPath\" not set"
-	output, _ := executeCommand(composeCmd, "")
-	// if err != nil {
-	// checkStringContains(t, err.Error(), expected)
-	// } else {
-	t.Errorf("Expecting error: \n %v\nGot:\n %v\n", expected, output)
-	// }
+	output, err := executeCommand(composeCmd, "")
+	if err != nil {
+		checkStringContains(t, err.Error(), expected)
+	} else {
+		t.Errorf("Expecting error: \n %v\nGot:\n %v\n", expected, output)
+	}
 }
 
 func TestComposeCmdWithValidFlags(t *testing.T) {
