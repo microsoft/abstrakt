@@ -53,6 +53,9 @@ test-all: test-prepare test
 
 test-export-all: test-prepare test-export
 
+update-golden-data:
+	go test ./internal/chartservice -update -run TestUpdate
+
 install-helm:
 	curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > get_helm.sh
 	chmod 700 get_helm.sh
@@ -101,9 +104,6 @@ visualise: build
 	./abstrakt visualise -f ./sample/constellation/http_constellation.yaml | dot -Tpng > result.png
 
 run-http-demo: http-demo http-demo-deploy
-
-update-golden-data:
-	go test ./internal/chartservice -update -run TestUpdate
 
 http-demo: build
 	
