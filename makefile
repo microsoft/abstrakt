@@ -102,6 +102,9 @@ visualise: build
 
 run-http-demo: http-demo http-demo-deploy
 
+update-golden-data:
+	go test ./internal/chartservice -update -run TestUpdate
+
 http-demo: build
 	
 	./abstrakt compose -f ./sample/constellation/http_constellation.yaml -m ./sample/constellation/http_constellation_maps.yaml -o ./output/http_sample
