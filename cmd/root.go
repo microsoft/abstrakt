@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	commands "github.com/microsoft/abstrakt/commands"
 	"github.com/microsoft/abstrakt/internal/tools/logger"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
@@ -13,7 +12,7 @@ var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 
-var rootCmd = commands.DefaultRootCommand()
+var rootCmd = DefaultRootCommand()
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
