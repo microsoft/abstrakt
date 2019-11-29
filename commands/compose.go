@@ -5,8 +5,8 @@ import (
 	"github.com/microsoft/abstrakt/internal/chartservice"
 	"github.com/microsoft/abstrakt/internal/composeservice"
 	"github.com/spf13/cobra"
-	"strings"
 	"path"
+	"strings"
 )
 
 var templateType string
@@ -39,14 +39,13 @@ var composeCmd = &cobra.Command{
 			}
 
 			fmt.Printf("Chart was saved to: %v", outputPath)
-			
-			err = chartservice.BuildChart(path.Join(outputPath, "Output"));
+
+			err = chartservice.BuildChart(path.Join(outputPath, "Output"))
 
 			if err != nil {
 				fmt.Printf("There was an error saving the chart: %v", err)
 				return
-			} 
-
+			}
 
 		} else {
 			fmt.Printf("Template type: %v is not known", templateType)

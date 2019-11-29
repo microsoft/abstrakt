@@ -4,7 +4,7 @@ dogo() {
        #wire ./internal/serviceLocator
        go fmt
        go generate       
-       gotest -v ./internal/composeservice
+       gotest -v ./...
 }
 
 

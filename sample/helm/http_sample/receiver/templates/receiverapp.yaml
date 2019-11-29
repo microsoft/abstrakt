@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "receiver-{{.Values.name}}"
+  labels:
+    purpose: demonstrate-send-microservice
+    app: "receiver-{{.Values.name}}"
+spec:
+  containers:
+  - name: wormholereceiver   
+    image: jakkaj/wormhole_receiver:5   
+    
