@@ -55,7 +55,6 @@ func Debugf(format string, args ...interface{}) {
 func Info(args ...interface{}) {
 	lock.Lock()
 	logrus.SetOutput(os.Stdout)
-	logrus.SetLevel(logrus.InfoLevel)
 	logrus.Info(args...)
 	lock.Unlock()
 }
@@ -64,7 +63,6 @@ func Info(args ...interface{}) {
 func Infof(format string, args ...interface{}) {
 	lock.Lock()
 	logrus.SetOutput(os.Stdout)
-	logrus.SetLevel(logrus.InfoLevel)
 	logrus.Infof(format, args...)
 	lock.Unlock()
 }
