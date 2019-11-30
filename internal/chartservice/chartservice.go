@@ -1,6 +1,7 @@
 package chartservice
 
 import (
+	"bytes"
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/chartutil"
@@ -98,10 +99,12 @@ func ZipChartToDir(chart *chart.Chart, dir string) (string, error) {
 }
 
 // BuildChart download charts
-func BuildChart(dir string) (err error) {
+func BuildChart(dir string) (out *bytes.Buffer, err error) {
+
+	out = &bytes.Buffer{}
 
 	manager := downloader.Manager{
-		Out:       os.Stdout,
+		Out:       out,
 		ChartPath: dir,
 	}
 
