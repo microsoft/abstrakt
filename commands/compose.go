@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"bufio"
 	"bytes"
 	"github.com/microsoft/abstrakt/internal/chartservice"
 	"github.com/microsoft/abstrakt/internal/composeservice"
@@ -51,10 +50,7 @@ Example: abstrakt compose -t [template type] -f [constellationFilePath] -m [maps
 				return
 			}
 
-			scanner := bufio.NewScanner(out)
-			for scanner.Scan() {
-				logger.Debug(scanner.Text())
-			}
+			logger.PrintBuffer(out, true)
 
 		} else {
 			logger.Errorf("Template type: %v is not known", templateType)
