@@ -3,6 +3,8 @@
 package logger
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
 	"os"
 	"sync"
@@ -144,6 +146,19 @@ func Panicf(format string, args ...interface{}) {
 	logrus.SetOutput(os.Stderr)
 	logrus.Panicf(format, args...)
 	lock.Unlock()
+}
+
+// PrintBuffer prints from buffer to either Debug or Info
+func PrintBuffer(buffer *bytes.Buffer, logDebug bool) {
+	scanner := bufio.NewScanner(buffer)
+	for scanner.Scan() {
+		message := scanner.Text()
+		if logDebug {
+			Debug(message)
+		} else {
+			Info(message)
+		}
+	}
 }
 
 func init() {
