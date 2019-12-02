@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "event_hub_sample_event_logger.fullname" . }}-test-connection"
+  labels:
+{{ include "event_hub_sample_event_logger.labels" . | indent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args:  ['{{ include "event_hub_sample_event_logger.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never
