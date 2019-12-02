@@ -1,9 +1,10 @@
 package cmd
 
 import (
-	"fmt"
+	"bytes"
 	"github.com/microsoft/abstrakt/internal/chartservice"
 	"github.com/microsoft/abstrakt/internal/composeservice"
+	"github.com/microsoft/abstrakt/internal/tools/logger"
 	"github.com/spf13/cobra"
 	"path"
 	"strings"
@@ -16,9 +17,10 @@ var outputPath string
 
 var composeCmd = &cobra.Command{
 	Use:   "compose",
-	Short: "compose a package into requested template type",
-	Long: "compose is for composing a package based on mapsFilePath and constellationFilePath and template[default value is helm].\n" +
-		"abstrakt compose -t [template type] -f [constellationFilePath] -m [mapsFilePath] -o [outputPath]",
+	Short: "Compose a package into requested template type",
+	Long: `Compose is for composing a package based on mapsFilePath and constellationFilePath and template (default value is helm).
+
+Example: abstrakt compose -t [template type] -f [constellationFilePath] -m [mapsFilePath] -o [outputPath]`,
 
 	Run: func(cmd *cobra.Command, args []string) {
 
@@ -27,36 +29,39 @@ var composeCmd = &cobra.Command{
 			_ = service.LoadFromFile(constellationFilePath, mapsFilePath)
 			chart, err := service.Compose("Output", outputPath)
 			if err != nil {
-				fmt.Printf("Could not compose: %v", err)
+				logger.Errorf("Could not compose: %v", err)
 				return
 			}
 
 			err = chartservice.SaveChartToDir(chart, outputPath)
 
 			if err != nil {
-				fmt.Printf("There was an error saving the chart: %v", err)
+				logger.Errorf("There was an error saving the chart: %v", err)
 				return
 			}
 
-			fmt.Printf("Chart was saved to: %v", outputPath)
+			logger.Infof("Chart was saved to: %v", outputPath)
 
-			err = chartservice.BuildChart(path.Join(outputPath, "Output"))
+			var out *bytes.Buffer
+			out, err = chartservice.BuildChart(path.Join(outputPath, "Output"))
 
 			if err != nil {
-				fmt.Printf("There was an error saving the chart: %v", err)
+				logger.Errorf("There was an error saving the chart: %v", err)
 				return
 			}
 
+			logger.PrintBuffer(out, true)
+
 		} else {
-			fmt.Printf("Template type: %v is not known", templateType)
+			logger.Errorf("Template type: %v is not known", templateType)
 			return
 		}
 
-		fmt.Println("args: " + strings.Join(args, " "))
-		fmt.Println("template: " + templateType)
-		fmt.Println("constellationFilePath: " + constellationFilePath)
-		fmt.Println("mapsFilePath: " + mapsFilePath)
-		fmt.Println("outputPath: " + outputPath)
+		logger.Debugf("args: %v", strings.Join(args, " "))
+		logger.Debugf("template: %v", templateType)
+		logger.Debugf("constellationFilePath: %v", constellationFilePath)
+		logger.Debugf("mapsFilePath: %v", mapsFilePath)
+		logger.Debugf("outputPath: %v", outputPath)
 	},
 }
 

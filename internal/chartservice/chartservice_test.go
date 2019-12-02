@@ -127,7 +127,7 @@ func TestChartBuildChart(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = BuildChart(tdir + "/helm")
+	_, err = BuildChart(tdir + "/helm")
 	if err != nil {
 		t.Fatalf("Failed to BuildChart(): %s", err)
 	}

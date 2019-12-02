@@ -47,8 +47,6 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 			alias = fmt.Sprintf("%v%v", alias, count)
 		}
 
-		fmt.Print(alias)
-
 		serviceMap[service.Type]++
 
 		dep := &chart.Dependency{
