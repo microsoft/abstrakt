@@ -64,6 +64,8 @@ func TestChartSavesAndLoads(t *testing.T) {
 	tdir, err := ioutil.TempDir("./", "output-")
 	tdir2, err2 := ioutil.TempDir("./", "output-")
 
+	t.Fail()
+
 	if err != nil {
 		t.Fatal(err)
 	}
