@@ -1,4 +1,4 @@
-package commands
+package cmd
 
 import (
 	logger "github.com/microsoft/abstrakt/internal/tools/logger"

@@ -1,4 +1,4 @@
-package commands
+package cmd
 
 import (
 	"bytes"
@@ -15,6 +15,7 @@ func executeCommand(root *cobra.Command, args ...string) (output string, err err
 	_, output, err = executeCommandC(root, args...)
 	return output, err
 }
+
 func executeCommandC(root *cobra.Command, args ...string) (c *cobra.Command, output string, err error) {
 	buf := new(bytes.Buffer)
 	root.SetOutput(buf)
