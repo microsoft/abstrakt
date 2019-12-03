@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/microsoft/abstrakt/internal/chartservice"
 	"github.com/microsoft/abstrakt/internal/composeservice"
 	"github.com/microsoft/abstrakt/internal/tools/logger"
@@ -22,46 +23,42 @@ var composeCmd = &cobra.Command{
 
 Example: abstrakt compose -t [template type] -f [constellationFilePath] -m [mapsFilePath] -o [outputPath]`,
 
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 
-		if templateType == "helm" || templateType == "" {
-			service := composeservice.NewComposeService()
-			_ = service.LoadFromFile(constellationFilePath, mapsFilePath)
-			chart, err := service.Compose("Output", outputPath)
-			if err != nil {
-				logger.Errorf("Could not compose: %v", err)
-				return
-			}
-
-			err = chartservice.SaveChartToDir(chart, outputPath)
-
-			if err != nil {
-				logger.Errorf("There was an error saving the chart: %v", err)
-				return
-			}
-
-			logger.Infof("Chart was saved to: %v", outputPath)
-
-			var out *bytes.Buffer
-			out, err = chartservice.BuildChart(path.Join(outputPath, "Output"))
-
-			if err != nil {
-				logger.Errorf("There was an error saving the chart: %v", err)
-				return
-			}
-
-			logger.PrintBuffer(out, true)
-
-		} else {
-			logger.Errorf("Template type: %v is not known", templateType)
-			return
+		if templateType != "helm" && templateType != "" {
+			return fmt.Errorf("Template type: %v is not known", templateType)
 		}
+
+		service := composeservice.NewComposeService()
+		_ = service.LoadFromFile(constellationFilePath, mapsFilePath)
+		chart, err := service.Compose("Output", outputPath)
+		if err != nil {
+			return fmt.Errorf("Could not compose: %v", err)
+		}
+
+		err = chartservice.SaveChartToDir(chart, outputPath)
+
+		if err != nil {
+			return fmt.Errorf("There was an error saving the chart: %v", err)
+		}
+
+		logger.Infof("Chart was saved to: %v", outputPath)
+
+		var out *bytes.Buffer
+		out, err = chartservice.BuildChart(path.Join(outputPath, "Output"))
+
+		if err != nil {
+			return fmt.Errorf("There was an error saving the chart: %v", err)
+		}
+
+		logger.PrintBuffer(out, true)
 
 		logger.Debugf("args: %v", strings.Join(args, " "))
 		logger.Debugf("template: %v", templateType)
 		logger.Debugf("constellationFilePath: %v", constellationFilePath)
 		logger.Debugf("mapsFilePath: %v", mapsFilePath)
 		logger.Debugf("outputPath: %v", outputPath)
+		return nil
 	},
 }
 
