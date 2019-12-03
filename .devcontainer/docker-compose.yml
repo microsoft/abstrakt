@@ -11,7 +11,7 @@ services:
       # Mount go mod cache
       - abstrakt-gomodcache:/go/pkg
       # Cache vscode exentsions installs and homedir
-      - abstrakt-vscodecache:/root/.vscode-server
+      # - abstrakt-vscodecache:/root/.vscode-server
       # Keep command history
       - abstrakt-zshhistory:/root/commandhistory
       # This lets you avoid setting up Git again in the container
@@ -25,5 +25,5 @@ services:
 
 volumes:
   abstrakt-gomodcache:
-  abstrakt-vscodecache:
+  # abstrakt-vscodecache:
   abstrakt-zshhistory:
