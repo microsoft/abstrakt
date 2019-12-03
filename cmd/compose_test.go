@@ -30,6 +30,42 @@ func checkStringContains(t *testing.T, got, expected string) {
 	}
 }
 
+func TestComposeCommandReturnsErrorIfTemplateTypeIsInvalid(t *testing.T) {
+	templateType = "ble"
+	constellationPath, mapsPath, tdir := PrepareRealFilesForTest(t)
+
+	output, err := executeCommand(composeCmd, "-f", constellationPath, "-m", mapsPath, "-o", tdir)
+
+	if err == nil {
+		t.Errorf("Did not received expected error. \nGot:\n %v", output)
+	}
+}
+
+func TestComposeCommandDoesNotErrorIfTemplateTypeIsEmptyOrHelm(t *testing.T) {
+	templateType = ""
+	constellationPath, mapsPath, tdir := PrepareRealFilesForTest(t)
+
+	output, err := executeCommand(composeCmd, "-f", constellationPath, "-m", mapsPath, "-o", tdir)
+
+	if err != nil {
+		t.Errorf("Did not expect error:\n %v\n output: %v", err, output)
+	}
+	templateType = "helm"
+	output, err = executeCommand(composeCmd, "-f", constellationPath, "-m", mapsPath, "-o", tdir)
+
+	if err != nil {
+		t.Errorf("Did not expect error:\n %v\n output: %v", err, output)
+	}
+}
+
+func TestComposeCommandReturnsErrorWithInvalidFilePaths(t *testing.T) {
+	output, err := executeCommand(composeCmd, "-f", "invalid", "-m", "invalid", "-o", "invalid")
+
+	if err == nil {
+		t.Errorf("Did not received expected error. \nGot:\n %v", output)
+	}
+}
+
 func TestComposeCmdVerifyRequiredFlags(t *testing.T) {
 	expected := "required flag(s) \"constellationFilePath\", \"mapsFilePath\", \"outputPath\" not set"
 	output, err := executeCommand(composeCmd, "")
@@ -42,7 +78,9 @@ func TestComposeCmdVerifyRequiredFlags(t *testing.T) {
 
 func TestComposeCmdWithValidFlags(t *testing.T) {
 
-	output, err := executeCommand(composeCmd, "-f", "constellationFilePath", "-m", "mapsFilePath", "-o", "outputPath")
+	constellationPath, mapsPath, tdir := PrepareRealFilesForTest(t)
+
+	output, err := executeCommand(composeCmd, "-f", constellationPath, "-m", mapsPath, "-o", tdir)
 	if err != nil {
 		t.Errorf("error: \n %v\noutput:\n %v\n", err, output)
 	}
@@ -50,6 +88,16 @@ func TestComposeCmdWithValidFlags(t *testing.T) {
 }
 
 func TestComposeWithRealFiles(t *testing.T) {
+	constellationPath, mapsPath, tdir := PrepareRealFilesForTest(t)
+	output, err := executeCommand(composeCmd, "-f", constellationPath, "-m", mapsPath, "-o", tdir)
+
+	if err != nil {
+		t.Errorf("error: \n %v\noutput:\n %v\n", err, output)
+	}
+
+}
+
+func PrepareRealFilesForTest(t *testing.T) (string, string, string) {
 	tdir, err := ioutil.TempDir("./", "output-")
 	if err != nil {
 		t.Fatal(err)
@@ -72,10 +120,5 @@ func TestComposeWithRealFiles(t *testing.T) {
 	constellationPath := path.Join(cwd, "../sample/constellation/sample_constellation.yaml")
 	mapsPath := path.Join(cwd, "../sample/constellation/sample_constellation_maps.yaml")
 
-	output, err := executeCommand(composeCmd, "-f", constellationPath, "-m", mapsPath, "-o", tdir)
-
-	if err != nil {
-		t.Errorf("error: \n %v\noutput:\n %v\n", err, output)
-	}
-
+	return constellationPath, mapsPath, tdir
 }
