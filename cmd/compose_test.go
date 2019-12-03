@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
-	"strings"
 	"testing"
 )
 
@@ -22,12 +21,6 @@ func executeCommandC(root *cobra.Command, args ...string) (c *cobra.Command, out
 	root.SetArgs(args)
 	c, err = root.ExecuteC()
 	return
-}
-
-func checkStringContains(t *testing.T, got, expected string) {
-	if !strings.Contains(got, expected) {
-		t.Errorf("Expected to contain: \n %v\nGot:\n %v\n", expected, got)
-	}
 }
 
 func TestComposeCommandReturnsErrorIfTemplateTypeIsInvalid(t *testing.T) {
@@ -66,7 +59,7 @@ func TestComposeCommandReturnsErrorWithInvalidFilePaths(t *testing.T) {
 	}
 }
 
-// TODO: figure out how to make this test work reliably.
+// TODO bug #43: figure out how to make this test work reliably.
 // Something weird is making this test fail when run along with other tests in the package.
 // It passes whenever it runs on it's own.
 // func TestComposeCmdVerifyRequiredFlags(t *testing.T) {
@@ -77,6 +70,12 @@ func TestComposeCommandReturnsErrorWithInvalidFilePaths(t *testing.T) {
 // 		checkStringContains(t, err.Error(), expected)
 // 	} else {
 // 		t.Errorf("Expecting error: \n %v\nGot:\n %v\n", expected, output)
+// 	}
+// }
+
+// func checkStringContains(t *testing.T, got, expected string) {
+// 	if !strings.Contains(got, expected) {
+// 		t.Errorf("Expected to contain: \n %v\nGot:\n %v\n", expected, got)
 // 	}
 // }
 
