@@ -9,8 +9,8 @@ import (
 func TestRelationshipFinding(t *testing.T) {
 	dag := &DagConfigService{}
 	_ = dag.LoadDagConfigFromString(test01DagStr)
-	rel1 := dag.FindRelationshipByFromID("e1bcb3d-ff58-41d4-8779-f71e7b8800f8")
-	rel2 := dag.FindRelationshipByToID("3aa1e546-1ed5-4d67-a59c-be0d5905b490")
+	rel1 := dag.FindRelationshipByFromName("Event Generator")
+	rel2 := dag.FindRelationshipByToName("Azure Event Hub")
 
 	if rel1.From != rel2.From || rel1.To != rel2.To {
 		t.Error("Relationships were not correctly resolved")
@@ -69,14 +69,14 @@ Relationships:
 - Name: "Generator to Event Hubs Link"
   Id: "211a55bd-5d92-446c-8be8-190f8f0e623e"
   Description: "Event Generator to Event Hub connection"
-  From: "e1bcb3d-ff58-41d4-8779-f71e7b8800f8"
-  To: "3aa1e546-1ed5-4d67-a59c-be0d5905b490"
+  From: "Event Generator"
+  To: "Azure Event Hub"
   Properties: {}
 - Name: "Event Hubs to Event Logger Link"
   Id: "08ccbd67-456f-4349-854a-4e6959e5017b"
   Description: "Event Hubs to Event Logger connection"
-  From: "3aa1e546-1ed5-4d67-a59c-be0d5905b490"
-  To: "a268fae5-2a82-4a3e-ada7-a52eeb7019ac"
+  From: "Azure Event Hub"
+  To: "Event Logger"
   Properties: {}
 `
 
@@ -108,16 +108,16 @@ var test01WantDag DagConfigService = DagConfigService{
 			Name:        "Generator to Event Hubs Link",
 			ID:          guid.GUID("211a55bd-5d92-446c-8be8-190f8f0e623e"),
 			Description: "Event Generator to Event Hub connection",
-			From:        guid.GUID("e1bcb3d-ff58-41d4-8779-f71e7b8800f8"),
-			To:          guid.GUID("3aa1e546-1ed5-4d67-a59c-be0d5905b490"),
+			From:        "Event Generator",
+			To:          "Azure Event Hub",
 			Properties:  make(map[string]DagProperty),
 		},
 		{
 			Name:        "Event Hubs to Event Logger Link",
 			ID:          guid.GUID("08ccbd67-456f-4349-854a-4e6959e5017b"),
 			Description: "Event Hubs to Event Logger connection",
-			From:        guid.GUID("3aa1e546-1ed5-4d67-a59c-be0d5905b490"),
-			To:          guid.GUID("a268fae5-2a82-4a3e-ada7-a52eeb7019ac"),
+			From:        "Azure Event Hub",
+			To:          "Event Logger",
 			Properties:  make(map[string]DagProperty),
 		},
 	},

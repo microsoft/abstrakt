@@ -12,7 +12,6 @@ import (
 
 	"github.com/awalterschulze/gographviz"
 	"github.com/microsoft/abstrakt/internal/dagconfigservice"
-	"github.com/microsoft/abstrakt/internal/tools/guid"
 	"github.com/microsoft/abstrakt/internal/tools/logger"
 )
 
@@ -67,7 +66,7 @@ func generateGraph(readGraph dagconfigservice.DagConfigService) string {
 
 	// Lookup is used to map IDs to names. Names are easier to visualise but IDs are more important to ensure the
 	// presented constellation is correct and IDs are used to link nodes together
-	lookup := make(map[guid.GUID]string)
+	lookup := make(map[string]string)
 
 	g := gographviz.NewGraph()
 
@@ -88,7 +87,7 @@ func generateGraph(readGraph dagconfigservice.DagConfigService) string {
 	for _, v := range readGraph.Services {
 		logger.Debugf("Adding node %s %s\n", v.ID, v.Name)
 		newName := strings.Replace(v.Name, " ", "_", -1)
-		lookup[v.ID] = newName
+		lookup[v.Name] = newName
 		err := g.AddNode(readGraph.Name, newName, nil)
 		if err != nil {
 			logger.Panic(err)

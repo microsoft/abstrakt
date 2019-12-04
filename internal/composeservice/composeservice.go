@@ -69,14 +69,14 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 
 		relationships := make(map[string]interface{})
 		valMap["relationships"] = &relationships
-		toRels := m.DagConfigService.FindRelationshipByToID(n.ID)
-		fromRels := m.DagConfigService.FindRelationshipByFromID(n.ID)
+		toRels := m.DagConfigService.FindRelationshipByToName(n.Name)
+		fromRels := m.DagConfigService.FindRelationshipByFromName(n.Name)
 
 		if toRels != nil {
 			toRelations := make(map[string]string)
 			relationships["input"] = &toRelations
 			//find the target service
-			foundService := m.DagConfigService.FindServiceByID(toRels.From)
+			foundService := m.DagConfigService.FindServiceByName(toRels.From)
 			toRelations["service"] = string(toRels.ID)
 			toRelations["type"] = foundService.Type
 			closure := func() { //ensure this only runs once all the counting is done
@@ -90,7 +90,7 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 			fromRelations := make(map[string]string)
 			relationships["output"] = &fromRelations
 			//find the target service
-			foundService := m.DagConfigService.FindServiceByID(fromRels.To)
+			foundService := m.DagConfigService.FindServiceByName(fromRels.To)
 			fromRelations["service"] = string(fromRels.ID)
 			fromRelations["type"] = foundService.Type
 			closure := func() { //ensure this only runs once all the counting is done

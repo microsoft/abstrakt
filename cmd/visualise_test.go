@@ -71,6 +71,7 @@ func TestGenerateGraph(t *testing.T) {
 	retString := generateGraph(retConfig)
 	if retString != cmpString {
 		t.Errorf("Input graph did not generate expected output graphviz representation")
+		t.Errorf("Expected:\n%v \nGot:\n%v", cmpString, retString)
 	}
 
 }
@@ -132,20 +133,20 @@ Relationships:
 - Name: "Generator to Event Hubs Link"
   Id: "211a55bd-5d92-446c-8be8-190f8f0e623e"
   Description: "Event Generator to Event Hub connection"
-  From: "9e1bcb3d-ff58-41d4-8779-f71e7b8800f8"
-  To: "3aa1e546-1ed5-4d67-a59c-be0d5905b490"
+  From: "Event Generator"
+  To: "Azure Event Hub"
   Properties: {}
 - Name: "Event Hubs to Event Logger Link"
   Id: "08ccbd67-456f-4349-854a-4e6959e5017b"
   Description: "Event Hubs to Event Logger connection"
-  From: "3aa1e546-1ed5-4d67-a59c-be0d5905b490"
-  To: "1d0255d4-5b8c-4a52-b0bb-ac024cda37e5"
+  From: "Azure Event Hub"
+  To: "Event Logger"
   Properties: {}
 - Name: "Event Hubs to Event Logger Link Repeat"
   Id: "c8a719e0-164d-408f-9ed1-06e08dc5abbe"
   Description: "Event Hubs to Event Logger connection"
-  From: "3aa1e546-1ed5-4d67-a59c-be0d5905b490"
-  To: "a268fae5-2a82-4a3e-ada7-a52eeb7019ac"
+  From: "Azure Event Hub"
+  To: "Event Logger"
   Properties: {}`
 
 const test02ConstGraphString = `digraph Azure_Event_Hubs_Sample {

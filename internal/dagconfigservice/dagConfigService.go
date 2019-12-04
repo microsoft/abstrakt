@@ -46,8 +46,8 @@ type DagRelationship struct {
 	Name        string                 `yaml:"Name"`
 	ID          guid.GUID              `yaml:"Id"`
 	Description string                 `yaml:"Description"`
-	From        guid.GUID              `yaml:"From"`
-	To          guid.GUID              `yaml:"To"`
+	From        string                 `yaml:"From"`
+	To          string                 `yaml:"To"`
 	Properties  map[string]DagProperty `yaml:"Properties"`
 }
 
@@ -126,32 +126,30 @@ func (m *DagConfigService) FindRelationshipByID(relationshipID guid.GUID) (res *
 	return nil
 }
 
-// FindRelationshipByToID -- Find a Relationship by the id that is the target of the rel.
-func (m *DagConfigService) FindRelationshipByToID(relationshipToID guid.GUID) (res *DagRelationship) {
-	rid := string(relationshipToID) // no-op conversion, but needed for strings.* functions
+// FindRelationshipByToName -- Find a Relationship by the name that is the target of the rel.
+func (m *DagConfigService) FindRelationshipByToName(relationshipToName string) (res *DagRelationship) {
 	for _, val := range m.Relationships {
 		// try first for an exact match
-		if val.To == relationshipToID {
+		if val.To == relationshipToName {
 			return &val
 		}
 		// if we want to tolerate case being incorrect (e.g., ABC vs. abc),
-		if guid.TolerateMiscasedKey && strings.EqualFold(string(val.ID), rid) {
+		if guid.TolerateMiscasedKey && strings.EqualFold(string(val.To), relationshipToName) {
 			return &val
 		}
 	}
 	return nil
 }
 
-// FindRelationshipByFromID -- Find a Relationship by the id that is the source of the rel.
-func (m *DagConfigService) FindRelationshipByFromID(relationshipToID guid.GUID) (res *DagRelationship) {
-	rid := string(relationshipToID) // no-op conversion, but needed for strings.* functions
+// FindRelationshipByFromName -- Find a Relationship by the name that is the source of the rel.
+func (m *DagConfigService) FindRelationshipByFromName(relationshipFromName string) (res *DagRelationship) {
 	for _, val := range m.Relationships {
 		// try first for an exact match
-		if val.From == relationshipToID {
+		if val.From == relationshipFromName {
 			return &val
 		}
 		// if we want to tolerate case being incorrect (e.g., ABC vs. abc),
-		if guid.TolerateMiscasedKey && strings.EqualFold(string(val.ID), rid) {
+		if guid.TolerateMiscasedKey && strings.EqualFold(string(val.From), relationshipFromName) {
 			return &val
 		}
 	}
