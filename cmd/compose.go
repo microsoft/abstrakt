@@ -14,15 +14,19 @@ var templateType string
 var constellationFilePath string
 var mapsFilePath string
 var outputPath string
+var zipChart *bool
 
 var composeCmd = &cobra.Command{
-	Use:   "compose",
+	Use:   "compose [chart name]",
 	Short: "Compose a package into requested template type",
 	Long: `Compose is for composing a package based on mapsFilePath and constellationFilePath and template (default value is helm).
 
-Example: abstrakt compose -t [template type] -f [constellationFilePath] -m [mapsFilePath] -o [outputPath]`,
+Example: abstrakt compose [chart name] -t [templateType] -f [constellationFilePath] -m [mapsFilePath] -o [outputPath] -z`,
+	Args: cobra.ExactArgs(1),
 
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		chartName := args[0]
 
 		if templateType != "helm" && templateType != "" {
 			return fmt.Errorf("Template type: %v is not known", templateType)
@@ -30,7 +34,7 @@ Example: abstrakt compose -t [template type] -f [constellationFilePath] -m [maps
 
 		service := composeservice.NewComposeService()
 		_ = service.LoadFromFile(constellationFilePath, mapsFilePath)
-		chart, err := service.Compose("Output", outputPath)
+		chart, err := service.Compose(chartName, outputPath)
 		if err != nil {
 			return fmt.Errorf("Could not compose: %v", err)
 		}
@@ -43,10 +47,17 @@ Example: abstrakt compose -t [template type] -f [constellationFilePath] -m [maps
 
 		logger.Infof("Chart was saved to: %v", outputPath)
 
-		out, err := chartservice.BuildChart(path.Join(outputPath, "Output"))
+		out, err := chartservice.BuildChart(path.Join(outputPath, chartName))
 
 		if err != nil {
 			return fmt.Errorf("There was an error saving the chart: %v", err)
+		}
+
+		if *zipChart {
+			_, err = chartservice.ZipChartToDir(chart, outputPath)
+			if err != nil {
+				return fmt.Errorf("There was an error zipping the chart: %v", err)
+			}
 		}
 
 		logger.PrintBuffer(out, true)
@@ -67,5 +78,6 @@ func init() {
 	_ = composeCmd.MarkFlagRequired("mapsFilePath")
 	composeCmd.Flags().StringVarP(&outputPath, "outputPath", "o", "", "destination directory")
 	_ = composeCmd.MarkFlagRequired("outputPath")
-	composeCmd.Flags().StringVarP(&templateType, "template type", "t", "helm", "output template type")
+	composeCmd.Flags().StringVarP(&templateType, "templateType", "t", "helm", "output template type")
+	zipChart = composeCmd.Flags().BoolP("zipChart", "z", false, "zips the chart")
 }

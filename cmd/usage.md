@@ -22,8 +22,61 @@ Abstrakt is a command line utility for processing constellation files. It has a 
 
 `Use "abstrakt [command] --help" for more information about a command.`
 
-### Commands
-#### Visualise
+### abstrakt `compose`
+
+```console
+Compose is for composing a package based on mapsFilePath and constellationFilePath and template (default value is helm).
+
+Example: abstrakt [chart name] compose -t [templateType] -f [constellationFilePath] -m [mapsFilePath] -o [outputPath] -z
+
+Usage:
+  abstrakt compose [chart name] [flags]
+
+Flags:
+  -f, --constellationFilePath string   constellation file path
+  -h, --help                           help for compose
+  -m, --mapsFilePath string            maps file path
+  -o, --outputPath string              destination directory
+  -t, --templateType string            output template type (default "helm")
+  -z, --zipChart                       zips the chart
+
+Global Flags:
+  -v, --verbose   Use verbose output logs
+```
+
+Can compose a Helm chart directory (default) or a __.tgz__ of the produced helm chart (with `-z` flag).
+
+#### Examples
+
+Create a Helm chart named `http-demo` to be generated under ./output.
+
+```bash
+./abstrakt compose http-demo -f ./sample/constellation/http_constellation.yaml -m ./sample/constellation/http_constellation_maps.yaml -o ./output/http-demo 
+```
+
+With __.tgz__
+```bash
+./abstrakt compose http-demo -f ./sample/constellation/http_constellation.yaml -m ./sample/constellation/http_constellation_maps.yaml -o ./output/http-demo -z
+```
+
+
+### abstrakt `visualise`
+
+```console
+Visualise is for producing Graphviz dot notation code of a constellation configuration
+
+Example: abstrakt visualise -f [constellationFilePath]
+
+Usage:
+  abstrakt visualise [flags]
+
+Flags:
+  -f, --constellationFilePath string   constellation file path
+  -h, --help                           help for visualise
+
+Global Flags:
+  -v, --verbose   Use verbose output logs
+```
 
 The output from the visualise subcommand is [Graphviz dot notation](https://www.graphviz.org/doc/info/lang.html)
 
@@ -35,32 +88,7 @@ Alternatively, copy the output and paste into a Graphviz rendering tool to see t
 [Webgraphviz](http://www.webgraphviz.com/)  
 
 
-### Examples
-
-Get help on a command 'visualise'  
-
-    abstrakt visualise --help | abstrakt help visualise
-
-    visualise is for producing Graphviz dot notation code of a constellation configuration
-    abstrakt visualise -f [constellationFilePath]
-
-    Usage:
-    abstrakt visualise [flags]
-
-    Flags:
-    -f, --constellationFilePath string   constellation file path
-    -h, --help                           help for visualise
-
-    Global Flags:
-    -v, --verbose   Use verbose output logs 
-  
-
-
-Show current application version  
-
-    abstract version
-    
-    INFO[15-11-2019 05:01:16] abstrakt version 0.0.1 
+#### Examples
 
 Run visualise on a file  
 	
