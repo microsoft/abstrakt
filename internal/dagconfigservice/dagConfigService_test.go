@@ -12,7 +12,7 @@ func TestRelationshipFinding(t *testing.T) {
 	rel1 := dag.FindRelationshipByFromName("Event Generator")
 	rel2 := dag.FindRelationshipByToName("Azure Event Hub")
 
-	if rel1.From != rel2.From || rel1.To != rel2.To {
+	if rel1[0].From != rel2[0].From || rel1[0].To != rel2[0].To {
 		t.Error("Relationships were not correctly resolved")
 	}
 
@@ -46,6 +46,29 @@ func TestNewDagConfigFromString(t *testing.T) {
 				t.Errorf("LoadDagConfigFromString() =\n%#v,\nWant:\n%#v\n", dag, tt.wantRet)
 			}
 		})
+	}
+}
+
+func TestMultipleInstanceInRelationships(t *testing.T) {
+	testDag := test01DagStr
+	testDag += `- Id: "Event Generator to Event Logger Link"
+  Description: "Event Hubs to Event Logger connection"
+  From: "Event Generator"
+  To: "Event Logger"
+  Properties: {}`
+
+	dag := &DagConfigService{}
+	_ = dag.LoadDagConfigFromString(testDag)
+
+	from := dag.FindRelationshipByFromName("Event Generator")
+	to := dag.FindRelationshipByToName("Event Logger")
+
+	if len(from) != 2 {
+		t.Error("Event Generator did not have the correct number of `From` relationships")
+	}
+
+	if len(to) != 2 {
+		t.Error("Event Logger did not have the correct number of `To` relationships")
 	}
 }
 

@@ -83,9 +83,7 @@ func (m *DagConfigService) FindRelationship(relationshipID string) (res *DagRela
 		// try first for an exact match
 		if val.ID == relationshipID {
 			return &val
-		}
-		// if we want to tolerate case being incorrect (e.g., ABC vs. abc) ...
-		if guid.TolerateMiscasedKey && strings.EqualFold(val.ID, relationshipID) {
+		} else if guid.TolerateMiscasedKey && strings.EqualFold(val.ID, relationshipID) {
 			return &val
 		}
 	}
@@ -93,33 +91,29 @@ func (m *DagConfigService) FindRelationship(relationshipID string) (res *DagRela
 }
 
 // FindRelationshipByToName -- Find a Relationship by the name that is the target of the rel.
-func (m *DagConfigService) FindRelationshipByToName(relationshipToName string) (res *DagRelationship) {
+func (m *DagConfigService) FindRelationshipByToName(relationshipToName string) (res []DagRelationship) {
 	for _, val := range m.Relationships {
 		// try first for an exact match
 		if val.To == relationshipToName {
-			return &val
-		}
-		// if we want to tolerate case being incorrect (e.g., ABC vs. abc),
-		if guid.TolerateMiscasedKey && strings.EqualFold(string(val.To), relationshipToName) {
-			return &val
+			res = append(res, val)
+		} else if guid.TolerateMiscasedKey && strings.EqualFold(string(val.To), relationshipToName) {
+			res = append(res, val)
 		}
 	}
-	return nil
+	return
 }
 
 // FindRelationshipByFromName -- Find a Relationship by the name that is the source of the rel.
-func (m *DagConfigService) FindRelationshipByFromName(relationshipFromName string) (res *DagRelationship) {
+func (m *DagConfigService) FindRelationshipByFromName(relationshipFromName string) (res []DagRelationship) {
 	for _, val := range m.Relationships {
 		// try first for an exact match
 		if val.From == relationshipFromName {
-			return &val
-		}
-		// if we want to tolerate case being incorrect (e.g., ABC vs. abc),
-		if guid.TolerateMiscasedKey && strings.EqualFold(string(val.From), relationshipFromName) {
-			return &val
+			res = append(res, val)
+		} else if guid.TolerateMiscasedKey && strings.EqualFold(string(val.From), relationshipFromName) {
+			res = append(res, val)
 		}
 	}
-	return nil
+	return
 }
 
 // LoadDagConfigFromFile -- New DAG info instance from the named file.
