@@ -62,10 +62,22 @@ RUN apt-get update \
     && chmod +x /usr/local/bin/kubectl
     
 RUN apt-get -y install git procps wget nano zsh inotify-tools jq
+
 # Verify git, process tools installed
 RUN wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh || true
 
+# Add useful aliases
 RUN echo "alias k=kubectl" >> "/root/.zshrc"
+
+RUN git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions \
+    && git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting \
+    && sed -i 's/plugins=(git)/plugins=(git zsh-autosuggestions zsh-syntax-highlighting)/g' ~/.zshrc
+
+# Save command line history 
+RUN echo "export HISTFILE=/root/commandhistory/.zsh_history" >> "/root/.zshrc" \
+    && echo "export PROMPT_COMMAND='history -a'" >> "/root/.zshrc" \
+    && mkdir -p /root/commandhistory \
+    && touch /root/commandhistory/.zsh_history
 
 ENV PATH="/usr/local/kubebuilder/bin:${PATH}"
 
@@ -76,4 +88,4 @@ COPY ./makefile ./
 RUN make install-kind
 RUN make install-helm
 
-ENV SHELL /bin/bash
+ENV SHELL /bin/zsh

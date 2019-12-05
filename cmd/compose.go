@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"bytes"
 	"fmt"
 	"github.com/microsoft/abstrakt/internal/chartservice"
 	"github.com/microsoft/abstrakt/internal/composeservice"
@@ -44,8 +43,7 @@ Example: abstrakt compose -t [template type] -f [constellationFilePath] -m [maps
 
 		logger.Infof("Chart was saved to: %v", outputPath)
 
-		var out *bytes.Buffer
-		out, err = chartservice.BuildChart(path.Join(outputPath, "Output"))
+		out, err := chartservice.BuildChart(path.Join(outputPath, "Output"))
 
 		if err != nil {
 			return fmt.Errorf("There was an error saving the chart: %v", err)
