@@ -12,7 +12,7 @@ func TestRelationshipFinding(t *testing.T) {
 	rel1 := dag.FindRelationshipByFromName("Event Generator")
 	rel2 := dag.FindRelationshipByToName("Azure Event Hub")
 
-	if rel1.From != rel2.From || rel1.To != rel2.To {
+	if rel1[0].From != rel2[0].From || rel1[0].To != rel2[0].To {
 		t.Error("Relationships were not correctly resolved")
 	}
 
