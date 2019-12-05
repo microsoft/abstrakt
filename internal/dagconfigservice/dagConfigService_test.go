@@ -49,6 +49,29 @@ func TestNewDagConfigFromString(t *testing.T) {
 	}
 }
 
+func TestMultipleInstanceInRelationships(t *testing.T) {
+	testDag := test01DagStr
+	testDag += `- Id: "Event Generator to Event Logger Link"
+  Description: "Event Hubs to Event Logger connection"
+  From: "Event Generator"
+  To: "Event Logger"
+  Properties: {}`
+
+	dag := &DagConfigService{}
+	_ = dag.LoadDagConfigFromString(testDag)
+
+	from := dag.FindRelationshipByFromName("Event Generator")
+	to := dag.FindRelationshipByToName("Event Logger")
+
+	if len(from) != 2 {
+		t.Error("Event Generator did not have the correct number of `From` relationships")
+	}
+
+	if len(to) != 2 {
+		t.Error("Event Logger did not have the correct number of `To` relationships")
+	}
+}
+
 // Sample DAG file data
 const test01DagStr = `Name: "Azure Event Hubs Sample"
 Id: "d6e4a5e9-696a-4626-ba7a-534d6ff450a5"
