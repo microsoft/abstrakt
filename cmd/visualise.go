@@ -85,9 +85,9 @@ func generateGraph(readGraph dagconfigservice.DagConfigService) string {
 	// Add all nodes to the graph storing the lookup from ID to name (for later adding relationships)
 	// Replace spaces in names with underscores, names with spaces can break graphviz engines)
 	for _, v := range readGraph.Services {
-		logger.Debugf("Adding node %s %s\n", v.ID, v.Name)
-		newName := strings.Replace(v.Name, " ", "_", -1)
-		lookup[v.Name] = newName
+		logger.Debugf("Adding node %s\n", v.ID)
+		newName := strings.Replace(v.ID, " ", "_", -1)
+		lookup[v.ID] = newName
 		err := g.AddNode(readGraph.Name, newName, nil)
 		if err != nil {
 			logger.Panic(err)

@@ -1,29 +1,24 @@
 Name: "HTTP Microservice Sample"
 Id: "d6e4a5e9-696a-4626-ba7a-534d6ff450a5"
 Services:
-- Name: "Sender 1"
-  Id: "9e1bcb3d-ff58-41d4-8779-f71e7b8800f8"
+- Id: "Sender 1"
   Type: "WormholeSender"
   Properties:
     CHAIN_ARG: "1"
-- Name: "Sender 2"
-  Id: "5d43a954-7214-4872-9d8f-758bb4238aee"
+- Id: "Sender 2"
   Type: "WormholeSender"
   Properties:
     CHAIN_ARG: "2"
-- Name: "Receiver"
-  Id: "aa382e25-8662-4d11-bca9-d9a230c22487"
+- Id: "Receiver"
   Type: "WormholeReceiver"
   Properties: {}
 Relationships:
-- Name: "Sender to Sender Link"
-  Id: "211a55bd-5d92-446c-8be8-190f8f0e623e"
+- Id: "Sender to Sender Link"
   Description: "Link between the first and second senders"
   From: "Sender 1"
   To: "Sender 2"
   Properties: {}
-- Name: "Sender to Receiver Link"
-  Id: "ff5444b5-35b7-4688-98ef-56c2587b314d"
+- Id: "Sender to Receiver Link"
   Description: "Link between the second sender and receiver"
   From: "Sender 2"
   To: "Receiver"

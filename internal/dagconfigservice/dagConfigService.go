@@ -35,16 +35,14 @@ type DagProperty interface{}
 
 // DagService -- a DAG Service description
 type DagService struct {
-	Name       string                 `yaml:"Name"`
-	ID         guid.GUID              `yaml:"Id"`
+	ID         string                 `yaml:"Id"`
 	Type       string                 `yaml:"Type"`
 	Properties map[string]DagProperty `yaml:"Properties"`
 }
 
 // DagRelationship -- a relationship between Services
 type DagRelationship struct {
-	Name        string                 `yaml:"Name"`
-	ID          guid.GUID              `yaml:"Id"`
+	ID          string                 `yaml:"Id"`
 	Description string                 `yaml:"Description"`
 	From        string                 `yaml:"From"`
 	To          string                 `yaml:"To"`
@@ -64,62 +62,30 @@ func NewDagConfigService() DagConfigService {
 	return DagConfigService{}
 }
 
-// FindServiceByName -- Find a Service by name.
-func (m *DagConfigService) FindServiceByName(serviceName string) (res *DagService) {
-	for _, val := range m.Services {
-		// try first for an exact match
-		if val.Name == serviceName {
-			return &val
-		}
-		// if we want to tolerate case being incorrect (e.g., ABC vs. abc) ...
-		if guid.TolerateMiscasedKey && strings.EqualFold(val.Name, serviceName) {
-			return &val
-		}
-	}
-	return nil
-}
-
-// FindServiceByID -- Find a Service by id.
-func (m *DagConfigService) FindServiceByID(serviceID guid.GUID) (res *DagService) {
-	sid := string(serviceID) // no-op conversion, but needed for strings.* functions
+// FindService -- Find a Service by id.
+func (m *DagConfigService) FindService(serviceID string) (res *DagService) {
 	for _, val := range m.Services {
 		// try first for an exact match
 		if val.ID == serviceID {
 			return &val
 		}
-		// if we want to tolerate case being incorrect (e.g., ABC vs. abc),
-		if guid.TolerateMiscasedKey && strings.EqualFold(string(val.ID), sid) {
-			return &val
-		}
-	}
-	return nil
-}
-
-// FindRelationshipByName -- Find a Relationship by name.
-func (m *DagConfigService) FindRelationshipByName(relationshipName string) (res *DagRelationship) {
-	for _, val := range m.Relationships {
-		// try first for an exact match
-		if val.Name == relationshipName {
-			return &val
-		}
 		// if we want to tolerate case being incorrect (e.g., ABC vs. abc) ...
-		if guid.TolerateMiscasedKey && strings.EqualFold(val.Name, relationshipName) {
+		if guid.TolerateMiscasedKey && strings.EqualFold(val.ID, serviceID) {
 			return &val
 		}
 	}
 	return nil
 }
 
-// FindRelationshipByID -- Find a Relationship by id.
-func (m *DagConfigService) FindRelationshipByID(relationshipID guid.GUID) (res *DagService) {
-	rid := string(relationshipID) // no-op conversion, but needed for strings.* functions
-	for _, val := range m.Services {
+// FindRelationship -- Find a Relationship by id.
+func (m *DagConfigService) FindRelationship(relationshipID string) (res *DagRelationship) {
+	for _, val := range m.Relationships {
 		// try first for an exact match
 		if val.ID == relationshipID {
 			return &val
 		}
-		// if we want to tolerate case being incorrect (e.g., ABC vs. abc),
-		if guid.TolerateMiscasedKey && strings.EqualFold(string(val.ID), rid) {
+		// if we want to tolerate case being incorrect (e.g., ABC vs. abc) ...
+		if guid.TolerateMiscasedKey && strings.EqualFold(val.ID, relationshipID) {
 			return &val
 		}
 	}

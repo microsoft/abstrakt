@@ -53,27 +53,22 @@ func TestNewDagConfigFromString(t *testing.T) {
 const test01DagStr = `Name: "Azure Event Hubs Sample"
 Id: "d6e4a5e9-696a-4626-ba7a-534d6ff450a5"
 Services:
-- Name: "Event Generator"
-  Id: "9e1bcb3d-ff58-41d4-8779-f71e7b8800f8"
+- Id: "Event Generator"
   Type: "EventGenerator"
   Properties: {}
-- Name: "Azure Event Hub"
-  Id: "3aa1e546-1ed5-4d67-a59c-be0d5905b490"
+- Id: "Azure Event Hub"
   Type: "EventHub"
   Properties: {}
-- Name: "Event Logger"
-  Id: "a268fae5-2a82-4a3e-ada7-a52eeb7019ac"
+- Id: "Event Logger"
   Type: "EventLogger"
   Properties: {}
 Relationships:
-- Name: "Generator to Event Hubs Link"
-  Id: "211a55bd-5d92-446c-8be8-190f8f0e623e"
+- Id: "Generator to Event Hubs Link"
   Description: "Event Generator to Event Hub connection"
   From: "Event Generator"
   To: "Azure Event Hub"
   Properties: {}
-- Name: "Event Hubs to Event Logger Link"
-  Id: "08ccbd67-456f-4349-854a-4e6959e5017b"
+- Id: "Event Hubs to Event Logger Link"
   Description: "Event Hubs to Event Logger connection"
   From: "Azure Event Hub"
   To: "Event Logger"
@@ -85,36 +80,31 @@ var test01WantDag DagConfigService = DagConfigService{
 	ID:   guid.GUID("d6e4a5e9-696a-4626-ba7a-534d6ff450a5"),
 	Services: []DagService{
 		{
-			Name:       "Event Generator",
-			ID:         guid.GUID("9e1bcb3d-ff58-41d4-8779-f71e7b8800f8"),
+			ID:         "Event Generator",
 			Type:       "EventGenerator",
 			Properties: make(map[string]DagProperty),
 		},
 		{
-			Name:       "Azure Event Hub",
-			ID:         guid.GUID("3aa1e546-1ed5-4d67-a59c-be0d5905b490"),
+			ID:         "Azure Event Hub",
 			Type:       "EventHub",
 			Properties: make(map[string]DagProperty),
 		},
 		{
-			Name:       "Event Logger",
-			ID:         guid.GUID("a268fae5-2a82-4a3e-ada7-a52eeb7019ac"),
+			ID:         "Event Logger",
 			Type:       "EventLogger",
 			Properties: make(map[string]DagProperty),
 		},
 	},
 	Relationships: []DagRelationship{
 		{
-			Name:        "Generator to Event Hubs Link",
-			ID:          guid.GUID("211a55bd-5d92-446c-8be8-190f8f0e623e"),
+			ID:          "Generator to Event Hubs Link",
 			Description: "Event Generator to Event Hub connection",
 			From:        "Event Generator",
 			To:          "Azure Event Hub",
 			Properties:  make(map[string]DagProperty),
 		},
 		{
-			Name:        "Event Hubs to Event Logger Link",
-			ID:          guid.GUID("08ccbd67-456f-4349-854a-4e6959e5017b"),
+			ID:          "Event Hubs to Event Logger Link",
 			Description: "Event Hubs to Event Logger connection",
 			From:        "Azure Event Hub",
 			To:          "Event Logger",
