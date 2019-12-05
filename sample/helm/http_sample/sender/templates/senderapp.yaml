@@ -11,10 +11,10 @@ spec:
     image: jakkaj/wormhole_sender:5
     env:
     - name: RECEIVER_URI
-      {{if contains "sender" .Values.relationships.output.name}}
-      value: "http://{{.Values.relationships.output.name}}:8080/api/CallReceiver"
+      {{if contains "sender" (index .Values.relationships.output 0).name }}
+      value: "http://{{ (index .Values.relationships.output 0).name }}:8080/api/CallReceiver"
       {{else}}
-      value: "http://{{.Values.relationships.output.name}}:8080/api/EchoBody"
+      value: "http://{{ (index .Values.relationships.output 0).name }}:8080/api/EchoBody"
       {{end}}
     - name: CHAIN_ARG
       value: "-Chain-{{.Values.name}}"      
