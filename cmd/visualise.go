@@ -15,39 +15,48 @@ import (
 	"github.com/microsoft/abstrakt/internal/tools/logger"
 )
 
-var visualiseCmd = &cobra.Command{
-	Use:   "visualise",
-	Short: "Format a constellation configuration as Graphviz dot notation",
-	Long: `Visualise is for producing Graphviz dot notation code of a constellation configuration
-
-Example: abstrakt visualise -f [constellationFilePath]`,
-
-	Run: func(cmd *cobra.Command, args []string) {
-		logger.Debug("args: " + strings.Join(args, " "))
-		logger.Debug("constellationFilePath: " + constellationFilePath)
-
-		if !fileExists(constellationFilePath) {
-			logger.Error("Could not open YAML input file for reading")
-			os.Exit(-1)
-		}
-
-		dsGraph := dagconfigservice.NewDagConfigService()
-		err := dsGraph.LoadDagConfigFromFile(constellationFilePath)
-		if err != nil {
-			logger.Fatalf("dagConfigService failed to load file %q: %s", constellationFilePath, err)
-		}
-
-		resString := generateGraph(dsGraph)
-		logger.Output(resString)
-	},
+type visualiseCmd struct {
+	constellationFilePath string
+	*baseCmd
 }
 
-func init() {
-	visualiseCmd.Flags().StringVarP(&constellationFilePath, "constellationFilePath", "f", "", "constellation file path")
-	err := visualiseCmd.MarkFlagRequired("constellationFilePath")
+func newVisualiseCmd() *visualiseCmd {
+	cc := &visualiseCmd{}
+
+	cc.baseCmd = newBaseCmd(&cobra.Command{
+		Use:   "visualise",
+		Short: "Format a constellation configuration as Graphviz dot notation",
+		Long: `Visualise is for producing Graphviz dot notation code of a constellation configuration
+	
+Example: abstrakt visualise -f [constellationFilePath]`,
+
+		Run: func(cmd *cobra.Command, args []string) {
+			logger.Debug("args: " + strings.Join(args, " "))
+			logger.Debug("constellationFilePath: " + cc.constellationFilePath)
+
+			if !fileExists(cc.constellationFilePath) {
+				logger.Error("Could not open YAML input file for reading")
+				os.Exit(-1)
+			}
+
+			dsGraph := dagconfigservice.NewDagConfigService()
+			err := dsGraph.LoadDagConfigFromFile(cc.constellationFilePath)
+			if err != nil {
+				logger.Fatalf("dagConfigService failed to load file %q: %s", cc.constellationFilePath, err)
+			}
+
+			resString := generateGraph(dsGraph)
+			logger.Output(resString)
+		},
+	})
+
+	cc.cmd.Flags().StringVarP(&cc.constellationFilePath, "constellationFilePath", "f", "", "constellation file path")
+	err := cc.cmd.MarkFlagRequired("constellationFilePath")
 	if err != nil {
 		logger.Panic(err)
 	}
+
+	return cc
 }
 
 // fileExists - basic utility function to check the provided filename can be opened and is not a folder/directory

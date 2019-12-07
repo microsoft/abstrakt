@@ -5,13 +5,23 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var versionCmd = &cobra.Command{
-	Use:   "version",
-	Short: "The version of Abstrakt being used",
-	Long:  "The version of Abstrakt being used",
-	Run: func(cmd *cobra.Command, args []string) {
-		PrintVersion()
-	},
+type versionCmd struct {
+	*baseCmd
+}
+
+func newVersionCmd() *versionCmd {
+	cc := &versionCmd{}
+
+	cc.baseCmd = newBaseCmd(&cobra.Command{
+		Use:   "version",
+		Short: "The version of Abstrakt being used",
+		Long:  "The version of Abstrakt being used",
+		Run: func(cmd *cobra.Command, args []string) {
+			PrintVersion()
+		},
+	})
+
+	return cc
 }
 
 // PrintVersion prints the current version of Abstrakt being used.
