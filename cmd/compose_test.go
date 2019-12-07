@@ -8,6 +8,7 @@ import (
 	"os"
 	"path"
 	"testing"
+	"strings"
 )
 
 func executeCommand(root *cobra.Command, args ...string) (output string, err error) {
@@ -24,10 +25,10 @@ func executeCommandC(root *cobra.Command, args ...string) (c *cobra.Command, out
 }
 
 func TestComposeCommandReturnsErrorIfTemplateTypeIsInvalid(t *testing.T) {
-	templateType = "ble"
+	templateType := "ble"
 	constellationPath, mapsPath, tdir := PrepareRealFilesForTest(t)
 
-	output, err := executeCommand(composeCmd, "test-compose-cmd-returns-error-if-template-type-is-invalid", "-f", constellationPath, "-m", mapsPath, "-o", tdir)
+	output, err := executeCommand(newComposeCmd().cmd, "test-compose-cmd-returns-error-if-template-type-is-invalid", "-f", constellationPath, "-m", mapsPath, "-t", templateType, "-o", tdir)
 
 	if err == nil {
 		t.Errorf("Did not received expected error. \nGot:\n %v", output)
@@ -35,16 +36,16 @@ func TestComposeCommandReturnsErrorIfTemplateTypeIsInvalid(t *testing.T) {
 }
 
 func TestComposeCommandDoesNotErrorIfTemplateTypeIsEmptyOrHelm(t *testing.T) {
-	templateType = ""
+	templateType := ""
 	constellationPath, mapsPath, tdir := PrepareRealFilesForTest(t)
 
-	output, err := executeCommand(composeCmd, "test-compose-cmd-does-not-error-if-template-type-is-empty-or-helm", "-f", constellationPath, "-m", mapsPath, "-o", tdir)
+	output, err := executeCommand(newComposeCmd().cmd, "test-compose-cmd-does-not-error-if-template-type-is-empty-or-helm", "-f", constellationPath, "-m", mapsPath, "-t", templateType, "-o", tdir)
 
 	if err != nil {
 		t.Errorf("Did not expect error:\n %v\n output: %v", err, output)
 	}
 	templateType = "helm"
-	output, err = executeCommand(composeCmd, "test-compose-cmd-does-not-error-if-template-type-is-empty-or-helm", "-f", constellationPath, "-m", mapsPath, "-o", tdir)
+	output, err = executeCommand(newComposeCmd().cmd, "test-compose-cmd-does-not-error-if-template-type-is-empty-or-helm", "-f", constellationPath, "-m", mapsPath, "-t", templateType, "-o", tdir)
 
 	if err != nil {
 		t.Errorf("Did not expect error:\n %v\n output: %v", err, output)
@@ -52,7 +53,7 @@ func TestComposeCommandDoesNotErrorIfTemplateTypeIsEmptyOrHelm(t *testing.T) {
 }
 
 func TestComposeCommandReturnsErrorWithInvalidFilePaths(t *testing.T) {
-	output, err := executeCommand(composeCmd, "test-compose-cmd-returns-error-with-invalid-files", "-f", "invalid", "-m", "invalid", "-o", "invalid")
+	output, err := executeCommand(newComposeCmd().cmd, "test-compose-cmd-returns-error-with-invalid-files", "-f", "invalid", "-m", "invalid", "-o", "invalid")
 
 	if err == nil {
 		t.Errorf("Did not received expected error. \nGot:\n %v", output)
@@ -62,28 +63,28 @@ func TestComposeCommandReturnsErrorWithInvalidFilePaths(t *testing.T) {
 // TODO bug #43: figure out how to make this test work reliably.
 // Something weird is making this test fail when run along with other tests in the package.
 // It passes whenever it runs on it's own.
-// func TestComposeCmdVerifyRequiredFlags(t *testing.T) {
-// 	expected := "required flag(s) \"constellationFilePath\", \"mapsFilePath\", \"outputPath\" not set"
+func TestComposeCmdVerifyRequiredFlags(t *testing.T) {
+	expected := "required flag(s) \"constellationFilePath\", \"mapsFilePath\", \"outputPath\" not set"
 
-// 	output, err := executeCommand(composeCmd, "")
-// 	if err != nil {
-// 		checkStringContains(t, err.Error(), expected)
-// 	} else {
-// 		t.Errorf("Expecting error: \n %v\nGot:\n %v\n", expected, output)
-// 	}
-// }
+	output, err := executeCommand(newComposeCmd().cmd, "")
+	if err != nil {
+		checkStringContains(t, err.Error(), expected)
+	} else {
+		t.Errorf("Expecting error: \n %v\nGot:\n %v\n", expected, output)
+	}
+}
 
-// func checkStringContains(t *testing.T, got, expected string) {
-// 	if !strings.Contains(got, expected) {
-// 		t.Errorf("Expected to contain: \n %v\nGot:\n %v\n", expected, got)
-// 	}
-// }
+func checkStringContains(t *testing.T, got, expected string) {
+	if !strings.Contains(got, expected) {
+		t.Errorf("Expected to contain: \n %v\nGot:\n %v\n", expected, got)
+	}
+}
 
 func TestComposeCmdWithValidFlags(t *testing.T) {
 
 	constellationPath, mapsPath, tdir := PrepareRealFilesForTest(t)
 
-	output, err := executeCommand(composeCmd, "test-compose-cmd-with-flags", "-f", constellationPath, "-m", mapsPath, "-o", tdir)
+	output, err := executeCommand(newComposeCmd().cmd, "test-compose-cmd-with-flags", "-f", constellationPath, "-m", mapsPath, "-o", tdir)
 	if err != nil {
 		t.Errorf("error: \n %v\noutput:\n %v\n", err, output)
 	}
@@ -92,7 +93,7 @@ func TestComposeCmdWithValidFlags(t *testing.T) {
 
 func TestComposeWithRealFiles(t *testing.T) {
 	constellationPath, mapsPath, tdir := PrepareRealFilesForTest(t)
-	output, err := executeCommand(composeCmd, "test-compose-cmd-with-real-files", "-f", constellationPath, "-m", mapsPath, "-o", tdir)
+	output, err := executeCommand(newComposeCmd().cmd, "test-compose-cmd-with-real-files", "-f", constellationPath, "-m", mapsPath, "-o", tdir)
 
 	if err != nil {
 		t.Errorf("error: \n %v\noutput:\n %v\n", err, output)
