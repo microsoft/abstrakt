@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
-	"testing"
 	"strings"
+	"testing"
 )
 
 func executeCommand(root *cobra.Command, args ...string) (output string, err error) {
