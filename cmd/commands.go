@@ -5,6 +5,32 @@ import (
 	cobra "github.com/spf13/cobra"
 )
 
+type baseCmd struct {
+	cmd *cobra.Command
+}
+
+func newBaseCmd(cmd *cobra.Command) *baseCmd {
+	return &baseCmd{cmd: cmd}
+}
+
+func (c *baseCmd) getCommand() *cobra.Command {
+	return c.cmd
+}
+
+type cmder interface {
+	getCommand() *cobra.Command
+}
+
+func addCommands(root *cobra.Command, commands ...cmder) {
+	for _, command := range commands {
+		cmd := command.getCommand()
+		if cmd == nil {
+			continue
+		}
+		root.AddCommand(cmd)
+	}
+}
+
 // DefaultRootCommand returns the default (aka root) command for  command.
 func DefaultRootCommand() *cobra.Command {
 
@@ -26,9 +52,7 @@ func DefaultRootCommand() *cobra.Command {
 		return nil
 	}
 
-	c.AddCommand(
-		composeCmd, versionCmd, visualiseCmd,
-	)
+	addCommands(c, newComposeCmd(), newVersionCmd(), newVisualiseCmd())
 
 	return c
 }
