@@ -35,11 +35,11 @@ Example: abstrakt validate -f [constellationFilePath]`,
 
 			service := validationservice.Validator{Config: &d}
 
-			valid := service.CheckDuplicates()
+			duplicates := service.CheckDuplicates()
 
-			if len(valid) > 0 {
+			if duplicates != nil {
 				logger.Error("Duplicate IDs found:")
-				for _, i := range valid {
+				for _, i := range duplicates {
 					logger.Error(i)
 				}
 				err = error(fmt.Errorf("Constellation is invalid"))
