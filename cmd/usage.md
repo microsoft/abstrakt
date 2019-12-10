@@ -5,26 +5,27 @@ Scalable, config driven data pipelines for Kubernetes.
 
 Abstrakt is a command line utility for processing constellation files. It has a number of subcommands shown below.
 
+```bash
+Usage:
+  abstrakt [command]
 
-    Usage:
-    abstrakt [command]
+Available Commands:
+  compose     Compose a package into requested template type
+  help        Help about any command
+  validate    Validate a constellation file for correct schema and ensure correctness.
+  version     The version of Abstrakt being used
+  visualise   Format a constellation configuration as Graphviz dot notation
 
-    Available Commands:
-    compose   -  compose a package into requested template type 
-    help - Help about any command
-    version - The version of Abstrakt being used
-    visualise  - format a constellation configuration as Graphviz dot notation
+Flags:
+  -h, --help      help for abstrakt
+  -v, --verbose   Use verbose output logs
 
-    Flags:
-    -h, --help      help for abstrakt
-    -v, --verbose   Use verbose output logs`
-
-
-`Use "abstrakt [command] --help" for more information about a command.`
+Use "abstrakt [command] --help" for more information about a command.
+```
 
 ### abstrakt `compose`
 
-```console
+```bash
 Compose is for composing a package based on mapsFilePath and constellationFilePath and template (default value is helm).
 
 Example: abstrakt [chart name] compose -t [templateType] -f [constellationFilePath] -m [mapsFilePath] -o [outputPath] -z
@@ -59,10 +60,27 @@ With __.tgz__
 ./abstrakt compose http-demo -f ./sample/constellation/http_constellation.yaml -m ./sample/constellation/http_constellation_maps.yaml -o ./output/http-demo -z
 ```
 
+### abstrakt `validate`
+
+```bash
+Validate is used to ensure the correctness of a constellation file.
+
+Example: abstrakt validate -f [constellationFilePath]
+
+Usage:
+  abstrakt validate [flags]
+
+Flags:
+  -f, --constellationFilePath string   constellation file path
+  -h, --help                           help for validate
+
+Global Flags:
+  -v, --verbose   Use verbose output logs
+```
 
 ### abstrakt `visualise`
 
-```console
+```bash
 Visualise is for producing Graphviz dot notation code of a constellation configuration
 
 Example: abstrakt visualise -f [constellationFilePath]
