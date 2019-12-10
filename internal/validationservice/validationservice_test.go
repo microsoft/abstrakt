@@ -89,6 +89,52 @@ func TestServicesExists(t *testing.T) {
 	}
 }
 
+func TestSchemaChecks(t *testing.T) {
+	testData := &config.DagConfigService{}
+	_ = testData.LoadDagConfigFromString(test01DagStr)
+
+	service := Validator{Config: testData}
+	err := service.ValidateModel()
+
+	if err != nil {
+		t.Errorf("Model validation should not return errors: %v", err.Error())
+	}
+
+	testData.Name = ""
+	err = service.ValidateModel()
+
+	if err == nil {
+		t.Error("Model validation should be invalid")
+	}
+}
+
+func TestSchemaMissingService(t *testing.T) {
+	testData := &config.DagConfigService{}
+	_ = testData.LoadDagConfigFromString(test01DagStr)
+
+	service := Validator{Config: testData}
+	testData.Services[2].ID = ""
+	err := service.ValidateModel()
+
+	if err == nil {
+		t.Error("Model validation should be invalid")
+	}
+
+	testData.Services[2].ID = "Test"
+	err = service.ValidateModel()
+
+	if err != nil {
+		t.Error("Model validation should be valid")
+	}
+
+	testData.Services = nil
+	err = service.ValidateModel()
+
+	if err == nil {
+		t.Error("Model validation should be invalid")
+	}
+}
+
 const test01DagStr = `Name: "Azure Event Hubs Sample"
 Id: "d6e4a5e9-696a-4626-ba7a-534d6ff450a5"
 Services:
