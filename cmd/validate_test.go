@@ -14,7 +14,7 @@ func TestValidateCommand(t *testing.T) {
 		t.Errorf("Did not received expected error. \nGot:\n %v", output)
 	}
 
-	output, err = executeCommand(newValidateCmd().cmd, "-f", "does-not-exist")
+	_, err = executeCommand(newValidateCmd().cmd, "-f", "does-not-exist")
 
 	if err != nil {
 		checkStringContains(t, err.Error(), expected)
