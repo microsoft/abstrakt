@@ -35,6 +35,12 @@ Example: abstrakt validate -f [constellationFilePath]`,
 
 			service := validationservice.Validator{Config: &d}
 
+			err = service.ValidateModel()
+
+			if err != nil {
+				return
+			}
+
 			duplicates := service.CheckDuplicates()
 
 			if duplicates != nil {

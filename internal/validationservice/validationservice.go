@@ -1,6 +1,9 @@
 package validationservice
 
-import "github.com/microsoft/abstrakt/internal/dagconfigservice"
+import (
+	"github.com/microsoft/abstrakt/internal/dagconfigservice"
+	"gopkg.in/dealancer/validate.v2"
+)
 
 // Validator is a service
 type Validator struct {
@@ -54,6 +57,11 @@ func (dag *Validator) CheckServiceExists() (missing map[string][]string) {
 	}
 
 	return
+}
+
+// ValidateModel checks if constellation has all required felids
+func (dag *Validator) ValidateModel() error {
+	return validate.Validate(dag.Config)
 }
 
 // Find takes a slice and looks for an element in it. If found it will

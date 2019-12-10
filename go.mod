@@ -18,6 +18,7 @@ require (
 	github.com/spf13/viper v1.4.0
 	golang.org/x/sys v0.0.0-20191112214154-59a1497f0cea // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
+	gopkg.in/dealancer/validate.v2 v2.1.0
 	gopkg.in/yaml.v2 v2.2.5
 	helm.sh/helm/v3 v3.0.0
 )

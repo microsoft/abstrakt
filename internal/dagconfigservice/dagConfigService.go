@@ -35,25 +35,25 @@ type DagProperty interface{}
 
 // DagService -- a DAG Service description
 type DagService struct {
-	ID         string                 `yaml:"Id"`
-	Type       string                 `yaml:"Type"`
+	ID         string                 `yaml:"Id" validate:"empty=false"`
+	Type       string                 `yaml:"Type" validate:"empty=false"`
 	Properties map[string]DagProperty `yaml:"Properties"`
 }
 
 // DagRelationship -- a relationship between Services
 type DagRelationship struct {
-	ID          string                 `yaml:"Id"`
+	ID          string                 `yaml:"Id" validate:"empty=false"`
 	Description string                 `yaml:"Description"`
-	From        string                 `yaml:"From"`
-	To          string                 `yaml:"To"`
+	From        string                 `yaml:"From" validate:"empty=false"`
+	To          string                 `yaml:"To" validate:"empty=false"`
 	Properties  map[string]DagProperty `yaml:"Properties"`
 }
 
 // DagConfigService -- The DAG config for a deployment
 type DagConfigService struct {
-	Name          string            `yaml:"Name"`
-	ID            guid.GUID         `yaml:"Id"`
-	Services      []DagService      `yaml:"Services"`
+	Name          string            `yaml:"Name" validate:"empty=false"`
+	ID            guid.GUID         `yaml:"Id" validate:"empty=false"`
+	Services      []DagService      `yaml:"Services" validate:"empty=false"`
 	Relationships []DagRelationship `yaml:"Relationships"`
 }
 
