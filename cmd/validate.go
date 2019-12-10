@@ -30,7 +30,7 @@ Example: abstrakt validate -f [constellationFilePath]`,
 			err = d.LoadDagConfigFromFile(cc.constellationFilePath)
 
 			if err != nil {
-				return err
+				return
 			}
 
 			service := validationservice.Validator{Config: &d}
