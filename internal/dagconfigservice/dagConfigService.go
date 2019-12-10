@@ -44,8 +44,8 @@ type DagService struct {
 type DagRelationship struct {
 	ID          string                 `yaml:"Id" validate:"empty=false"`
 	Description string                 `yaml:"Description"`
-	From        string                 `yaml:"From" validate:"empty=false"`
-	To          string                 `yaml:"To" validate:"empty=false"`
+	From        string                 `yaml:"From"`
+	To          string                 `yaml:"To"`
 	Properties  map[string]DagProperty `yaml:"Properties"`
 }
 
@@ -129,9 +129,5 @@ func (m *DagConfigService) LoadDagConfigFromFile(fileName string) (err error) {
 
 // LoadDagConfigFromString -- New DAG info instance from the given yaml string.
 func (m *DagConfigService) LoadDagConfigFromString(yamlString string) (err error) {
-	err = nil
-	//tp := &DagConfigService{}
-	err = yamlParser.Unmarshal([]byte(yamlString), m)
-
-	return err
+	return yamlParser.Unmarshal([]byte(yamlString), m)
 }
