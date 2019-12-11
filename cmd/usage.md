@@ -37,6 +37,7 @@ Flags:
   -f, --constellationFilePath string   constellation file path
   -h, --help                           help for compose
   -m, --mapsFilePath string            maps file path
+      --noChecks                       turn off validation checks of constellation file before composing
   -o, --outputPath string              destination directory
   -t, --templateType string            output template type (default "helm")
   -z, --zipChart                       zips the chart
