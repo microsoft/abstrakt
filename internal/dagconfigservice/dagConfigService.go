@@ -44,8 +44,8 @@ type DagService struct {
 type DagRelationship struct {
 	ID          string                 `yaml:"Id" validate:"empty=false"`
 	Description string                 `yaml:"Description"`
-	From        string                 `yaml:"From"`
-	To          string                 `yaml:"To"`
+	From        string                 `yaml:"From" validate:"empty=false"`
+	To          string                 `yaml:"To" validate:"empty=false"`
 	Properties  map[string]DagProperty `yaml:"Properties"`
 }
 
