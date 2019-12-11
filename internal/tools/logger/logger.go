@@ -6,6 +6,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"io"
 	"os"
 	"sync"
 
@@ -14,6 +15,26 @@ import (
 
 // lock is a global mutex lock to gain control of logrus.<SetLevel|SetOutput>
 var lock = sync.RWMutex{}
+var output io.Writer
+
+// SetOutput sets the logger output. Used primarily for testing
+func SetOutput(out io.Writer) {
+	output = out
+}
+
+func outputStdOut() io.Writer {
+	if output != nil {
+		return output
+	}
+	return os.Stdout
+}
+
+func outputStdErr() io.Writer {
+	if output != nil {
+		return output
+	}
+	return os.Stderr
+}
 
 // SetLevelDebug sets the standard logger level to Debug
 func SetLevelDebug() {
@@ -32,7 +53,7 @@ func SetLevelInfo() {
 // Trace logs a message at level Trace to stdout.
 func Trace(args ...interface{}) {
 	lock.Lock()
-	logrus.SetOutput(os.Stdout)
+	logrus.SetOutput(outputStdOut())
 	logrus.Trace(args...)
 	lock.Unlock()
 }
@@ -40,7 +61,7 @@ func Trace(args ...interface{}) {
 // Debug logs a message at level Debug to stdout.
 func Debug(args ...interface{}) {
 	lock.Lock()
-	logrus.SetOutput(os.Stdout)
+	logrus.SetOutput(outputStdOut())
 	logrus.Debug(args...)
 	lock.Unlock()
 }
@@ -48,7 +69,7 @@ func Debug(args ...interface{}) {
 // Debugf formats according to a format specifier and logs message at level Debug to stdout.
 func Debugf(format string, args ...interface{}) {
 	lock.Lock()
-	logrus.SetOutput(os.Stdout)
+	logrus.SetOutput(outputStdOut())
 	logrus.Debugf(format, args...)
 	lock.Unlock()
 }
@@ -56,7 +77,7 @@ func Debugf(format string, args ...interface{}) {
 // Info logs a message at level Info to stdout.
 func Info(args ...interface{}) {
 	lock.Lock()
-	logrus.SetOutput(os.Stdout)
+	logrus.SetOutput(outputStdOut())
 	logrus.Info(args...)
 	lock.Unlock()
 }
@@ -64,7 +85,7 @@ func Info(args ...interface{}) {
 // Infof logs a formatted message at level Info to stdout.
 func Infof(format string, args ...interface{}) {
 	lock.Lock()
-	logrus.SetOutput(os.Stdout)
+	logrus.SetOutput(outputStdOut())
 	logrus.Infof(format, args...)
 	lock.Unlock()
 }
@@ -87,7 +108,7 @@ func Outputf(format string, args ...interface{}) {
 // Warn logs a message at level Warn to stdout.
 func Warn(args ...interface{}) {
 	lock.Lock()
-	logrus.SetOutput(os.Stdout)
+	logrus.SetOutput(outputStdOut())
 	logrus.Warn(args...)
 	lock.Unlock()
 }
@@ -95,7 +116,7 @@ func Warn(args ...interface{}) {
 // Warnf logs a formatted message at level Warn to stdout.
 func Warnf(format string, args ...interface{}) {
 	lock.Lock()
-	logrus.SetOutput(os.Stdout)
+	logrus.SetOutput(outputStdOut())
 	logrus.Warnf(format, args...)
 	lock.Unlock()
 }
@@ -103,7 +124,7 @@ func Warnf(format string, args ...interface{}) {
 // Error logs a message at level Error to stderr.
 func Error(args ...interface{}) {
 	lock.Lock()
-	logrus.SetOutput(os.Stderr)
+	logrus.SetOutput(outputStdErr())
 	logrus.Error(args...)
 	lock.Unlock()
 }
@@ -111,7 +132,7 @@ func Error(args ...interface{}) {
 // Errorf logs a formatted message at level Error to stderr.
 func Errorf(format string, args ...interface{}) {
 	lock.Lock()
-	logrus.SetOutput(os.Stderr)
+	logrus.SetOutput(outputStdErr())
 	logrus.Errorf(format, args...)
 	lock.Unlock()
 }
@@ -119,7 +140,7 @@ func Errorf(format string, args ...interface{}) {
 // Fatal logs a message at level Fatal to stderr then the process will exit with status set to 1.
 func Fatal(args ...interface{}) {
 	lock.Lock()
-	logrus.SetOutput(os.Stderr)
+	logrus.SetOutput(outputStdErr())
 	logrus.Fatal(args...)
 	lock.Unlock()
 }
@@ -127,7 +148,7 @@ func Fatal(args ...interface{}) {
 // Fatalf logs a formatted message at level Fatal to stderr then the process will exit with status set to 1.
 func Fatalf(format string, args ...interface{}) {
 	lock.Lock()
-	logrus.SetOutput(os.Stderr)
+	logrus.SetOutput(outputStdErr())
 	logrus.Fatalf(format, args...)
 	lock.Unlock()
 }
@@ -135,7 +156,7 @@ func Fatalf(format string, args ...interface{}) {
 // Panic logs a message at level Panic to stderr; calls panic() after logging.
 func Panic(args ...interface{}) {
 	lock.Lock()
-	logrus.SetOutput(os.Stderr)
+	logrus.SetOutput(outputStdErr())
 	logrus.Panic(args...)
 	lock.Unlock()
 }
@@ -143,7 +164,7 @@ func Panic(args ...interface{}) {
 // Panicf logs a formatted message at level Panic to stderr; calls panic() after logging.
 func Panicf(format string, args ...interface{}) {
 	lock.Lock()
-	logrus.SetOutput(os.Stderr)
+	logrus.SetOutput(outputStdErr())
 	logrus.Panicf(format, args...)
 	lock.Unlock()
 }
@@ -167,6 +188,6 @@ func init() {
 	formatter.TimestampFormat = "02-01-2006 15:04:05"
 	formatter.FullTimestamp = true
 	logrus.SetFormatter(formatter)
-	logrus.SetOutput(os.Stdout) // Set output to stdout; set to stderr by default
+	logrus.SetOutput(outputStdOut()) // Set output to stdout; set to stderr by default
 	logrus.SetLevel(logrus.InfoLevel)
 }
