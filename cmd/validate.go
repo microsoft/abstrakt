@@ -33,41 +33,13 @@ Example: abstrakt validate -f [constellationFilePath]`,
 				return
 			}
 
-			service := validationservice.Validator{Config: &d}
-
-			err = service.ValidateModel()
-
-			if err != nil {
-				return
-			}
-
-			duplicates := service.CheckDuplicates()
-
-			if duplicates != nil {
-				logger.Error("Duplicate IDs found:")
-				for _, i := range duplicates {
-					logger.Error(i)
-				}
-				err = error(fmt.Errorf("Constellation is invalid"))
-			}
-
-			connections := service.CheckServiceExists()
-
-			if len(connections) > 0 {
-				for key, i := range connections {
-					logger.Errorf("Relationship '%v' has missing Services:", key)
-					for _, j := range i {
-						logger.Error(j)
-					}
-				}
-				err = error(fmt.Errorf("Constellation is invalid"))
-			}
+			err = validateDag(&d)
 
 			if err == nil {
 				logger.Info("Constellation is valid.")
 			}
 
-			return err
+			return
 		},
 	})
 
@@ -75,4 +47,39 @@ Example: abstrakt validate -f [constellationFilePath]`,
 	_ = cc.cmd.MarkFlagRequired("constellationFilePath")
 
 	return cc
+}
+
+// validateDag takes a constellation dag and returns any errors.
+func validateDag(dag *dagconfigservice.DagConfigService) (err error) {
+	service := validationservice.Validator{Config: dag}
+
+	err = service.ValidateModel()
+
+	if err != nil {
+		return
+	}
+
+	duplicates := service.CheckDuplicates()
+
+	if duplicates != nil {
+		logger.Error("Duplicate IDs found:")
+		for _, i := range duplicates {
+			logger.Error(i)
+		}
+		err = error(fmt.Errorf("Constellation is invalid"))
+	}
+
+	connections := service.CheckServiceExists()
+
+	if len(connections) > 0 {
+		for key, i := range connections {
+			logger.Errorf("Relationship '%v' has missing Services:", key)
+			for _, j := range i {
+				logger.Error(j)
+			}
+		}
+		err = error(fmt.Errorf("Constellation is invalid"))
+	}
+
+	return
 }
