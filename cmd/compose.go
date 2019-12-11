@@ -16,7 +16,7 @@ type composeCmd struct {
 	mapsFilePath          string
 	outputPath            string
 	zipChart              *bool
-	noValidation          *bool
+	noChecks              *bool
 	*baseCmd
 }
 
@@ -28,7 +28,7 @@ func newComposeCmd() *composeCmd {
 		Short: "Compose a package into requested template type",
 		Long: `Compose is for composing a package based on mapsFilePath and constellationFilePath and template (default value is helm).
 	
-Example: abstrakt compose [chart name] -t [templateType] -f [constellationFilePath] -m [mapsFilePath] -o [outputPath] -z`,
+Example: abstrakt compose [chart name] -t [templateType] -f [constellationFilePath] -m [mapsFilePath] -o [outputPath] -z --noChecks`,
 		Args:          cobra.ExactArgs(1),
 		SilenceUsage:  true,
 		SilenceErrors: true,
@@ -46,9 +46,9 @@ Example: abstrakt compose [chart name] -t [templateType] -f [constellationFilePa
 			service := composeservice.NewComposeService()
 			_ = service.LoadFromFile(cc.constellationFilePath, cc.mapsFilePath)
 
-			logger.Debugf("noValidation is set to %t", *cc.noValidation)
+			logger.Debugf("noChecks is set to %t", *cc.noChecks)
 
-			if !*cc.noValidation {
+			if !*cc.noChecks {
 				logger.Debug("Starting validating constellation")
 
 				err = validateDag(&service.DagConfigService)
@@ -105,7 +105,7 @@ Example: abstrakt compose [chart name] -t [templateType] -f [constellationFilePa
 	_ = cc.cmd.MarkFlagRequired("outputPath")
 	cc.cmd.Flags().StringVarP(&cc.templateType, "template type", "t", "helm", "output template type")
 	cc.zipChart = cc.cmd.Flags().BoolP("zipChart", "z", false, "zips the chart")
-	cc.noValidation = cc.cmd.Flags().Bool("noValidation", false, "turn off validation of constellation file before composing")
+	cc.noChecks = cc.cmd.Flags().Bool("noChecks", false, "turn off validation checks of constellation file before composing")
 
 	return cc
 }
