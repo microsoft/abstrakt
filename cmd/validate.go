@@ -64,7 +64,7 @@ func validateDag(dag *dagconfigservice.DagConfigService) (err error) {
 	if duplicates != nil {
 		logger.Error("Duplicate IDs found:")
 		for _, i := range duplicates {
-			logger.Error(i)
+			logger.Errorf("'%v'", i)
 		}
 		err = error(fmt.Errorf("Constellation is invalid"))
 	}
@@ -75,7 +75,7 @@ func validateDag(dag *dagconfigservice.DagConfigService) (err error) {
 		for key, i := range connections {
 			logger.Errorf("Relationship '%v' has missing Services:", key)
 			for _, j := range i {
-				logger.Error(j)
+				logger.Errorf("'%v'", j)
 			}
 		}
 		err = error(fmt.Errorf("Constellation is invalid"))
