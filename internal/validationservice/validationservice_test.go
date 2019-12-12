@@ -7,90 +7,19 @@ import (
 
 func TestForDuplicatIDsInServices(t *testing.T) {
 	testData := &config.DagConfigService{}
-	_ = testData.LoadDagConfigFromString(test01DagStr)
+	_ = testData.LoadDagConfigFromFile("testdata/valid.yaml")
 
 	service := Validator{Config: testData}
 	duplicates := service.CheckDuplicates()
 
 	if duplicates != nil {
 		t.Error("No duplicates should be found.")
-	}
-}
-
-func TestForDuplicatIDsInServicesFail(t *testing.T) {
-	testData := &config.DagConfigService{}
-	_ = testData.LoadDagConfigFromString(test01DagStr)
-
-	for i := range testData.Services {
-		testData.Services[i].ID = "Test"
-	}
-
-	service := Validator{Config: testData}
-	duplicates := service.CheckDuplicates()
-
-	if duplicates == nil {
-		t.Errorf("There should be %v duplicate IDs found", len(testData.Services))
-	}
-}
-
-func TestForDuplicatIDsInRelationships(t *testing.T) {
-	testData := &config.DagConfigService{}
-	_ = testData.LoadDagConfigFromString(test01DagStr)
-
-	service := Validator{Config: testData}
-	duplicates := service.CheckDuplicates()
-
-	if duplicates != nil {
-		t.Error("No duplicates should be found.")
-	}
-}
-
-func TestForDuplicatIDsInRelationshipsFail(t *testing.T) {
-	testData := &config.DagConfigService{}
-	_ = testData.LoadDagConfigFromString(test01DagStr)
-
-	for i := range testData.Relationships {
-		testData.Relationships[i].ID = "Test"
-	}
-
-	service := Validator{Config: testData}
-	duplicates := service.CheckDuplicates()
-
-	if duplicates == nil {
-		t.Errorf("There should be %v duplicate IDs found", len(testData.Relationships))
-	}
-}
-
-func TestForDuplicatIDs(t *testing.T) {
-	testData := &config.DagConfigService{}
-	_ = testData.LoadDagConfigFromString(test01DagStr)
-
-	service := Validator{Config: testData}
-	duplicates := service.CheckDuplicates()
-
-	if duplicates != nil {
-		t.Error("No duplicates should be found.")
-	}
-}
-
-func TestForDuplicatIDsFail(t *testing.T) {
-	testData := &config.DagConfigService{}
-	_ = testData.LoadDagConfigFromString(test01DagStr)
-
-	testData.Services[0].ID = "Test"
-	testData.Relationships[0].ID = "Test"
-
-	service := Validator{Config: testData}
-	duplicates := service.CheckDuplicates()
-
-	if duplicates == nil {
-		t.Error("There should be 2 duplicate IDs found")
 	}
 }
 
 func TestServicesExists(t *testing.T) {
 	testData := &config.DagConfigService{}
-	_ = testData.LoadDagConfigFromString(test01DagStr)
+	_ = testData.LoadDagConfigFromFile("testdata/valid.yaml")
 
 	service := Validator{Config: testData}
 	missing := service.CheckServiceExists()
@@ -100,25 +29,9 @@ func TestServicesExists(t *testing.T) {
 	}
 }
 
-func TestServicesExistsFail(t *testing.T) {
-	testData := &config.DagConfigService{}
-	_ = testData.LoadDagConfigFromString(test01DagStr)
-
-	for i := range testData.Services {
-		testData.Services[i].ID = "Test"
-	}
-
-	service := Validator{Config: testData}
-	missing := service.CheckServiceExists()
-
-	if len(missing) == 0 {
-		t.Errorf("There should be %v missing services found", len(testData.Services))
-	}
-}
-
 func TestSchemaChecks(t *testing.T) {
 	testData := &config.DagConfigService{}
-	_ = testData.LoadDagConfigFromString(test01DagStr)
+	_ = testData.LoadDagConfigFromFile("testdata/valid.yaml")
 
 	service := Validator{Config: testData}
 	err := service.ValidateModel()
@@ -128,39 +41,57 @@ func TestSchemaChecks(t *testing.T) {
 	}
 }
 
-func TestSchemaChecksFail(t *testing.T) {
+func TestForDuplicatIDsInServicesFail(t *testing.T) {
 	testData := &config.DagConfigService{}
-	_ = testData.LoadDagConfigFromString(test01DagStr)
-
-	testData.Name = ""
+	_ = testData.LoadDagConfigFromFile("testdata/duplicate/servIds.yaml")
 
 	service := Validator{Config: testData}
-	err := service.ValidateModel()
+	duplicates := service.CheckDuplicates()
 
-	if err == nil {
-		t.Error("Model validation should be invalid")
+	if duplicates == nil {
+		t.Errorf("There should be %v duplicate IDs found", len(testData.Services))
 	}
 }
 
-func TestSchemaMissingService(t *testing.T) {
+func TestForDuplicatIDsInRelationshipsFail(t *testing.T) {
 	testData := &config.DagConfigService{}
-	_ = testData.LoadDagConfigFromString(test01DagStr)
-
-	testData.Services = nil
+	_ = testData.LoadDagConfigFromFile("testdata/duplicate/relIds.yaml")
 
 	service := Validator{Config: testData}
-	err := service.ValidateModel()
+	duplicates := service.CheckDuplicates()
 
-	if err == nil {
-		t.Error("Model validation should be invalid")
+	if duplicates == nil {
+		t.Errorf("There should be %v duplicate IDs found", len(testData.Relationships))
 	}
 }
 
-func TestSchemaMissingServiceID(t *testing.T) {
+func TestForDuplicatIDsFail(t *testing.T) {
 	testData := &config.DagConfigService{}
-	_ = testData.LoadDagConfigFromString(test01DagStr)
+	_ = testData.LoadDagConfigFromFile("testdata/duplicate/servRelIds.yaml")
 
-	testData.Services[2].ID = ""
+	service := Validator{Config: testData}
+	duplicates := service.CheckDuplicates()
+
+	if duplicates == nil {
+		t.Error("There should be 2 duplicate IDs found")
+	}
+}
+
+func TestServicesExistsFail(t *testing.T) {
+	testData := &config.DagConfigService{}
+	_ = testData.LoadDagConfigFromFile("testdata/duplicate/servIds.yaml")
+
+	service := Validator{Config: testData}
+	missing := service.CheckServiceExists()
+
+	if len(missing) == 0 {
+		t.Errorf("There should be %v missing services found", len(testData.Services))
+	}
+}
+
+func TestSchemaMissingDagName(t *testing.T) {
+	testData := &config.DagConfigService{}
+	_ = testData.LoadDagConfigFromFile("testdata/missingName.yaml")
 
 	service := Validator{Config: testData}
 	err := service.ValidateModel()
@@ -172,9 +103,7 @@ func TestSchemaMissingServiceID(t *testing.T) {
 
 func TestSchemaMissingDagID(t *testing.T) {
 	testData := &config.DagConfigService{}
-	_ = testData.LoadDagConfigFromString(test01DagStr)
-
-	testData.ID = ""
+	_ = testData.LoadDagConfigFromFile("testdata/missing/id.yaml")
 
 	service := Validator{Config: testData}
 	err := service.ValidateModel()
@@ -184,11 +113,21 @@ func TestSchemaMissingDagID(t *testing.T) {
 	}
 }
 
-func TestSchemaMissingDagName(t *testing.T) {
+func TestSchemaMissingService(t *testing.T) {
 	testData := &config.DagConfigService{}
-	_ = testData.LoadDagConfigFromString(test01DagStr)
+	_ = testData.LoadDagConfigFromFile("testdata/missing/serv.yaml")
 
-	testData.Name = ""
+	service := Validator{Config: testData}
+	err := service.ValidateModel()
+
+	if err == nil {
+		t.Error("Model validation should be invalid")
+	}
+}
+
+func TestSchemaMissingServiceID(t *testing.T) {
+	testData := &config.DagConfigService{}
+	_ = testData.LoadDagConfigFromFile("testdata/missing/servId.yaml")
 
 	service := Validator{Config: testData}
 	err := service.ValidateModel()
@@ -200,9 +139,7 @@ func TestSchemaMissingDagName(t *testing.T) {
 
 func TestSchemaMissingRelationshipID(t *testing.T) {
 	testData := &config.DagConfigService{}
-	_ = testData.LoadDagConfigFromString(test01DagStr)
-
-	testData.Relationships[1].ID = ""
+	_ = testData.LoadDagConfigFromFile("testdata/missing/relId.yaml")
 
 	service := Validator{Config: testData}
 	err := service.ValidateModel()
@@ -211,28 +148,3 @@ func TestSchemaMissingRelationshipID(t *testing.T) {
 		t.Error("Model validation should be invalid")
 	}
 }
-
-const test01DagStr = `Name: "Azure Event Hubs Sample"
-Id: "d6e4a5e9-696a-4626-ba7a-534d6ff450a5"
-Services:
-- Id: "Event Generator"
-  Type: "EventGenerator"
-  Properties: {}
-- Id: "Azure Event Hub"
-  Type: "EventHub"
-  Properties: {}
-- Id: "Event Logger"
-  Type: "EventLogger"
-  Properties: {}
-Relationships:
-- Id: "Generator to Event Hubs Link"
-  Description: "Event Generator to Event Hub connection"
-  From: "Event Generator"
-  To: "Azure Event Hub"
-  Properties: {}
-- Id: "Event Hubs to Event Logger Link"
-  Description: "Event Hubs to Event Logger connection"
-  From: "Azure Event Hub"
-  To: "Event Logger"
-  Properties: {}
-`
