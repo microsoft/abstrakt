@@ -1,0 +1,23 @@
+Name: "Azure Event Hubs Sample"
+Id: "d6e4a5e9-696a-4626-ba7a-534d6ff450a5"
+Services:
+- Id: "Event Generator"
+  Type: "EventGenerator"
+  Properties: {}
+- Id: "Azure Event Hub"
+  Type: "EventHub"
+  Properties: {}
+- Id: "Event Logger"
+  Type: "EventLogger"
+  Properties: {}
+Relationships:
+- Id: ""
+  Description: "Event Generator to Event Hub connection"
+  From: "Event Generator"
+  To: "Azure Event Hub"
+  Properties: {}
+- Id: "Event Hubs to Event Logger Link"
+  Description: "Event Hubs to Event Logger connection"
+  From: "Azure Event Hub"
+  To: "Event Logger"
+  Properties: {}
