@@ -31,3 +31,4 @@ get_helm.sh
 output
 
 __debug_bin
+cmd/test.dot

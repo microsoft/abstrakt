@@ -84,6 +84,10 @@ func generateGraph(readGraph dagconfigservice.DagConfigService) string {
 		logger.Fatalf("error: %v", err)
 		logger.Panic(err)
 	}
+	if err := g.AddAttr(g.Name, "rankdir", "LR"); err != nil {
+		logger.Fatalf("error adding attribute: %v", err)
+		logger.Panic(err)
+	}
 
 	// Make the graph directed (a constellation is  DAG)
 	if err := g.SetDir(true); err != nil {
@@ -96,9 +100,12 @@ func generateGraph(readGraph dagconfigservice.DagConfigService) string {
 	for _, v := range readGraph.Services {
 		logger.Debugf("Adding node %s", v.ID)
 		newName := strings.Replace(v.ID, " ", "_", -1)
-		logger.Debugf("Changing %s to %s", v.ID, newName)
+
+		if strings.Compare(newName, v.ID) != 0 {
+			logger.Debugf("Changing %s to %s", v.ID, newName)
+		}
 		lookup[v.ID] = newName
-		err := g.AddNode(readGraph.Name, newName, nil)
+		err := g.AddNode(readGraph.Name, "\""+newName+"\"", nil)
 		if err != nil {
 			logger.Panic(err)
 		}
@@ -108,8 +115,8 @@ func generateGraph(readGraph dagconfigservice.DagConfigService) string {
 	// Replace spaces in names with underscores, names with spaces can break graphviz engines)
 	for _, v := range readGraph.Relationships {
 		logger.Debugf("Adding relationship from %s ---> %s", v.From, v.To)
-		localFrom := lookup[v.From]
-		localTo := lookup[v.To]
+		localFrom := "\"" + lookup[v.From] + "\""
+		localTo := "\"" + lookup[v.To] + "\""
 		err := g.AddEdge(localFrom, localTo, true, nil)
 		if err != nil {
 			logger.Panic(err)
