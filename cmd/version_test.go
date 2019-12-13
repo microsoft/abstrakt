@@ -1,8 +1,7 @@
 package cmd
 
 import (
-	"bytes"
-	logger "github.com/microsoft/abstrakt/internal/tools/logger"
+	"github.com/sirupsen/logrus/hooks/test"
 	"os"
 	"testing" // based on standard golang testing library https://golang.org/pkg/testing/
 )
@@ -24,14 +23,13 @@ func TestVersion(t *testing.T) {
 
 func TestVersionCmd(t *testing.T) {
 	expected := "0.0.1"
-	buf := bytes.Buffer{}
 
-	logger.SetOutput(&buf)
+	hook := test.NewGlobal()
 	_, err := executeCommand(newVersionCmd().cmd)
 
 	if err != nil {
 		t.Error(err)
 	} else {
-		checkStringContains(t, buf.String(), expected)
+		checkStringContains(t, hook.LastEntry().Message, expected)
 	}
 }

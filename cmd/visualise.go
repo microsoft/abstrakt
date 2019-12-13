@@ -6,6 +6,7 @@ package cmd
 // has to be run through a graphviz visualisation tool/utiliyy
 
 import (
+	"fmt"
 	"github.com/spf13/cobra"
 	"os"
 	"strings"
@@ -30,31 +31,29 @@ func newVisualiseCmd() *visualiseCmd {
 	
 Example: abstrakt visualise -f [constellationFilePath]`,
 
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			logger.Debug("args: " + strings.Join(args, " "))
 			logger.Debug("constellationFilePath: " + cc.constellationFilePath)
 
 			if !fileExists(cc.constellationFilePath) {
-				logger.Error("Could not open YAML input file for reading")
-				os.Exit(-1)
+				return fmt.Errorf("Could not open YAML input file for reading")
 			}
 
 			dsGraph := dagconfigservice.NewDagConfigService()
 			err := dsGraph.LoadDagConfigFromFile(cc.constellationFilePath)
 			if err != nil {
-				logger.Fatalf("dagConfigService failed to load file %q: %s", cc.constellationFilePath, err)
+				return fmt.Errorf("dagConfigService failed to load file %q: %s", cc.constellationFilePath, err)
 			}
 
 			resString := generateGraph(dsGraph)
 			logger.Output(resString)
+
+			return nil
 		},
 	})
 
 	cc.cmd.Flags().StringVarP(&cc.constellationFilePath, "constellationFilePath", "f", "", "constellation file path")
-	err := cc.cmd.MarkFlagRequired("constellationFilePath")
-	if err != nil {
-		logger.Panic(err)
-	}
+	_ = cc.cmd.MarkFlagRequired("constellationFilePath")
 
 	return cc
 }
