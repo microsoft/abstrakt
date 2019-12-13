@@ -78,14 +78,19 @@ func TestForDuplicatIDsFail(t *testing.T) {
 }
 
 func TestServicesExistsFail(t *testing.T) {
+	expected := "Azure Event Hub"
 	testData := &config.DagConfigService{}
-	_ = testData.LoadDagConfigFromFile("testdata/duplicate/servIds.yaml")
+	_ = testData.LoadDagConfigFromFile("testdata/missing/relServRefId.yaml")
 
 	service := Validator{Config: testData}
 	missing := service.CheckServiceExists()
 
-	if len(missing) == 0 {
-		t.Errorf("There should be %v missing services found", len(testData.Services))
+	foundID := missing["Event Hubs to Event Logger Link"][0]
+
+	if len(missing) != 1 {
+		t.Error("There should be only 1 missing services found")
+	} else if foundID != expected {
+		t.Errorf("Incorrect reference found. Expected: %v \nGot: %v", expected, foundID)
 	}
 }
 
