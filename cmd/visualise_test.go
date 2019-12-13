@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-func TestVisualiseCmd(t *testing.T) {
+func TestVisualiseCmdWithAllRequirementsNoError(t *testing.T) {
 	constellationPath, _, _ := PrepareRealFilesForTest(t)
 
 	hook := test.NewGlobal()
