@@ -54,7 +54,7 @@ Example: abstrakt visualise -f [constellationFilePath]`,
 	cc.cmd.Flags().StringVarP(&cc.constellationFilePath, "constellationFilePath", "f", "", "constellation file path")
 	err := cc.cmd.MarkFlagRequired("constellationFilePath")
 	if err != nil {
-		logger.Panic(err)
+		logger.Fatalf("error: %v", err)
 	}
 
 	return cc
@@ -83,17 +83,14 @@ func generateGraph(readGraph dagconfigservice.DagConfigService) string {
 	// Replace spaces with underscores, names with spaces can break graphviz engines
 	if err := g.SetName(strings.Replace(readGraph.Name, " ", "_", -1)); err != nil {
 		logger.Fatalf("error: %v", err)
-		logger.Panic(err)
 	}
 	if err := g.AddAttr(g.Name, "rankdir", "LR"); err != nil {
 		logger.Fatalf("error adding attribute: %v", err)
-		logger.Panic(err)
 	}
 
 	// Make the graph directed (a constellation is  DAG)
 	if err := g.SetDir(true); err != nil {
 		logger.Fatalf("error: %v", err)
-		logger.Panic(err)
 	}
 
 	// Add all nodes to the graph storing the lookup from ID to name (for later adding relationships)
@@ -108,7 +105,7 @@ func generateGraph(readGraph dagconfigservice.DagConfigService) string {
 		lookup[v.ID] = newName
 		err := g.AddNode(readGraph.Name, "\""+newName+"\"", nil)
 		if err != nil {
-			logger.Panic(err)
+			logger.Fatalf("error: %v", err)
 		}
 	}
 
@@ -120,7 +117,7 @@ func generateGraph(readGraph dagconfigservice.DagConfigService) string {
 		localTo := "\"" + lookup[v.To] + "\""
 		err := g.AddEdge(localFrom, localTo, true, nil)
 		if err != nil {
-			logger.Panic(err)
+			logger.Fatalf("error: %v", err)
 		}
 	}
 

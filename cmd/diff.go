@@ -106,11 +106,9 @@ Example: abstrakt diff -o [constellationFilePathOriginal] -n [constellationFileP
 	cc.cmd.Flags().Bool("showNewOutput", false, "will additionally produce dot notation for new constellation")
 	if err := cc.cmd.MarkFlagRequired("constellationFilePathOriginal"); err != nil {
 		logger.Fatalf("error adding node: %v", err)
-		logger.Panic(err)
 	}
 	if err := cc.cmd.MarkFlagRequired("constellationFilePathNew"); err != nil {
 		logger.Fatalf("error adding node: %v", err)
-		logger.Panic(err)
 	}
 
 	return cc
@@ -179,18 +177,15 @@ func createGraphWithChanges(newGraph dagconfigservice.DagConfigService, sets *se
 	// Replace spaces with underscores, names with spaces can break graphviz engines
 	if err := g.SetName(strings.Replace(newGraph.Name, " ", "_", -1) + "_diff"); err != nil {
 		logger.Fatalf("error setting graph name: %v", err)
-		logger.Panic(err)
 	}
 	// Attribute in graphviz to change graph orientation - LR indicates Left to Right. Default is top to bottom
 	if err := g.AddAttr(g.Name, "rankdir", "LR"); err != nil {
 		logger.Fatalf("error adding node: %v", err)
-		logger.Panic(err)
 	}
 
 	// Make the graph directed (a constellation is  DAG)
 	if err := g.SetDir(true); err != nil {
 		logger.Fatalf("error: %v", err)
-		logger.Panic(err)
 	}
 
 	// Add all services from the new constellation
@@ -214,7 +209,7 @@ func createGraphWithChanges(newGraph dagconfigservice.DagConfigService, sets *se
 		lookup[v.ID] = newName
 		err := g.AddNode(newGraph.Name, "\""+newName+"\"", attrs) //Surround names/labels with quotes, stops graphviz seeing special characters and breaking
 		if err != nil {
-			logger.Panic(err)
+			logger.Fatalf("error: %v", err)
 		}
 
 	}
@@ -231,7 +226,6 @@ func createGraphWithChanges(newGraph dagconfigservice.DagConfigService, sets *se
 		logger.Debug("Adding deleted service ", newName)
 		if err := g.AddNode(newGraph.Name, "\""+newName+"\"", attrs); err != nil {
 			logger.Fatalf("error adding node: %v", err)
-			logger.Panic(err)
 		}
 
 	}
@@ -257,7 +251,7 @@ func createGraphWithChanges(newGraph dagconfigservice.DagConfigService, sets *se
 
 		err := g.AddEdge(localFrom, localTo, true, attrs)
 		if err != nil {
-			logger.Panic(err)
+			logger.Fatalf("error: %v", err)
 		}
 	}
 
@@ -277,7 +271,7 @@ func createGraphWithChanges(newGraph dagconfigservice.DagConfigService, sets *se
 		logger.Debug("Adding deleted service  relationship from ", newFrom, " to ", newTo)
 		err := g.AddEdge(newFrom, newTo, true, attrs)
 		if err != nil {
-			logger.Panic(err)
+			logger.Fatalf("error: %v", err)
 		}
 	}
 
