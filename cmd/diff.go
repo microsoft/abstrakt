@@ -104,12 +104,8 @@ Example: abstrakt diff -o [constellationFilePathOriginal] -n [constellationFileP
 	cc.cmd.Flags().StringVarP(&cc.constellationFilePathNew, "constellationFilePathNew", "n", "", "new or changed constellation file path")
 	cc.cmd.Flags().Bool("showOriginalOutput", false, "will additionally produce dot notation for original constellation")
 	cc.cmd.Flags().Bool("showNewOutput", false, "will additionally produce dot notation for new constellation")
-	if err := cc.cmd.MarkFlagRequired("constellationFilePathOriginal"); err != nil {
-		logger.Fatalf("error adding node: %v", err)
-	}
-	if err := cc.cmd.MarkFlagRequired("constellationFilePathNew"); err != nil {
-		logger.Fatalf("error adding node: %v", err)
-	}
+	_ = cc.cmd.MarkFlagRequired("constellationFilePathOriginal")
+	_ = cc.cmd.MarkFlagRequired("constellationFilePathNew")
 
 	return cc
 }

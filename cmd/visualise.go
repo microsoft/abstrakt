@@ -52,10 +52,7 @@ Example: abstrakt visualise -f [constellationFilePath]`,
 	})
 
 	cc.cmd.Flags().StringVarP(&cc.constellationFilePath, "constellationFilePath", "f", "", "constellation file path")
-	err := cc.cmd.MarkFlagRequired("constellationFilePath")
-	if err != nil {
-		logger.Fatalf("error: %v", err)
-	}
+	_ = cc.cmd.MarkFlagRequired("constellationFilePath")
 
 	return cc
 }
