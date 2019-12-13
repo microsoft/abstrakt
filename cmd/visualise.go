@@ -6,13 +6,13 @@ package cmd
 // has to be run through a graphviz visualisation tool/utiliyy
 
 import (
-	"github.com/spf13/cobra"
-	"os"
-	"strings"
-
+	"fmt"
 	"github.com/awalterschulze/gographviz"
 	"github.com/microsoft/abstrakt/internal/dagconfigservice"
 	"github.com/microsoft/abstrakt/internal/tools/logger"
+	"github.com/spf13/cobra"
+	"os"
+	"strings"
 )
 
 type visualiseCmd struct {
@@ -30,13 +30,12 @@ func newVisualiseCmd() *visualiseCmd {
 	
 Example: abstrakt visualise -f [constellationFilePath]`,
 
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			logger.Debug("args: " + strings.Join(args, " "))
 			logger.Debug("constellationFilePath: " + cc.constellationFilePath)
 
 			if !fileExists(cc.constellationFilePath) {
-				logger.Error("Could not open YAML input file for reading")
-				os.Exit(-1)
+				return fmt.Errorf("Could not open YAML input file for reading %v", cc.constellationFilePath)
 			}
 
 			dsGraph := dagconfigservice.NewDagConfigService()
@@ -47,6 +46,8 @@ Example: abstrakt visualise -f [constellationFilePath]`,
 
 			resString := generateGraph(dsGraph)
 			logger.Output(resString)
+
+			return nil
 		},
 	})
 

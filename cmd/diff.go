@@ -6,14 +6,14 @@ package cmd
 // has to be run through a graphviz visualisation tool/utiliyy
 
 import (
-	"github.com/spf13/cobra"
-	"os"
-	"strings"
-
+	"fmt"
 	"github.com/awalterschulze/gographviz"
 	set "github.com/deckarep/golang-set"
 	"github.com/microsoft/abstrakt/internal/dagconfigservice"
 	"github.com/microsoft/abstrakt/internal/tools/logger"
+	"github.com/spf13/cobra"
+	// "os"
+	"strings"
 )
 
 type diffCmd struct {
@@ -43,7 +43,7 @@ func newDiffCmd() *diffCmd {
 	
 Example: abstrakt diff -o [constellationFilePathOriginal] -n [constellationFilePathNew]`,
 
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			logger.Debug("args: " + strings.Join(args, " "))
 			logger.Debug("constellationFilePathOrg: " + cc.constellationFilePathOrg)
 			logger.Debug("constellationFilePathNew: " + cc.constellationFilePathNew)
@@ -64,13 +64,11 @@ Example: abstrakt diff -o [constellationFilePathOriginal] -n [constellationFileP
 			}
 
 			if !fileExists(cc.constellationFilePathOrg) {
-				logger.Error("Could not open original YAML input file for reading (-o argument)")
-				os.Exit(-1)
+				return fmt.Errorf("Could not open original YAML input file for reading %v", cc.constellationFilePathOrg)
 			}
 
 			if !fileExists(cc.constellationFilePathNew) {
-				logger.Error("Could not open new YAML input file for reading (-n argument)")
-				os.Exit(-1)
+				return fmt.Errorf("Could not open new YAML input file for reading %v", cc.constellationFilePathNew)
 			}
 
 			dsGraphOrg := dagconfigservice.NewDagConfigService()
@@ -98,6 +96,7 @@ Example: abstrakt diff -o [constellationFilePathOriginal] -n [constellationFileP
 			resStringDiff := compareConstellations(dsGraphOrg, dsGraphNew)
 			logger.Output(resStringDiff)
 
+			return nil
 		},
 	})
 
