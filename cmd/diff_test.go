@@ -4,6 +4,7 @@ import (
 	// "fmt"
 	set "github.com/deckarep/golang-set"
 	"github.com/microsoft/abstrakt/internal/dagconfigservice"
+	"strings"
 	"testing"
 )
 
@@ -57,6 +58,35 @@ func TestGetComparisonSets(t *testing.T) {
 		t.Errorf("Deleted relationships - did not match between expected result and input yaml")
 	}
 
+}
+
+// testGraphWithChanges - test diff comparison function
+func TestGraphWithChanges(t *testing.T) {
+
+	dsGraphOrg := dagconfigservice.NewDagConfigService()
+	err := dsGraphOrg.LoadDagConfigFromString(testOrgDagStr)
+	if err != nil {
+		t.Errorf("dagConfigService failed to load dag from test string %s", err)
+	}
+
+	dsGraphNew := dagconfigservice.NewDagConfigService()
+	err = dsGraphNew.LoadDagConfigFromString(testNewDagStr)
+	if err != nil {
+		t.Errorf("dagConfigService failed to load file %s", err)
+	}
+
+	//construct sets struct for loaded constellation
+	loadedSets := &setsForComparison{}
+
+	// function being tested
+	fillComparisonSets(dsGraphOrg, dsGraphNew, loadedSets)
+
+	resString := createGraphWithChanges(dsGraphNew, loadedSets)
+
+	resComparison := strings.Compare(resString, testDiffComparisonOutputString)
+	if resComparison != 0 {
+		t.Errorf("Resulting output string does not match the reference comparison string DIFF %v \n RESULT \n%s EXPECTED \n%s", resComparison, resString, testDiffComparisonOutputString)
+	}
 }
 
 // Utility to populate comparison sets with expected/known result
@@ -179,3 +209,26 @@ Relationships:
   To: "b268fae5-2a82-4a3e-ada7-a52eeb7019ac"
   Properties: {}
   `
+
+const testDiffComparisonOutputString = `digraph Azure_Event_Hubs_Sample_Changed_diff {
+	rankdir=LR;
+	"9f1bcb3d-ff58-41d4-8779-f71e7b8800f8"->"3aa1e546-1ed5-4d67-a59c-be0d5905b490"[ color="#d8ffa8" ];
+	"3aa1e546-1ed5-4d67-a59c-be0d5905b490"->"1d0255d4-5b8c-4a52-b0bb-ac024cda37e5";
+	"1d0255d4-5b8c-4a52-b0bb-ac024cda37e5"->"a268fae5-2a82-4a3e-ada7-a52eeb7019ac"[ color="#d8ffa8" ];
+	"a268fae5-2a82-4a3e-ada7-a52eeb7019ac"->"b268fae5-2a82-4a3e-ada7-a52eeb7019ac"[ color="#d8ffa8" ];
+	"3aa1e546-1ed5-4d67-a59c-be0d5905b490"->"a268fae5-2a82-4a3e-ada7-a52eeb7019ac"[ color="#ff9494" ];
+	"9e1bcb3d-ff58-41d4-8779-f71e7b8800f8"->"3aa1e546-1ed5-4d67-a59c-be0d5905b490"[ color="#ff9494" ];
+	"1d0255d4-5b8c-4a52-b0bb-ac024cda37e5" [ label="EventLogger
+1d0255d4-5b8c-4a52-b0bb-ac024cda37e5", shape=rectangle, style="rounded, filled" ];
+	"3aa1e546-1ed5-4d67-a59c-be0d5905b490" [ label="EventHub
+3aa1e546-1ed5-4d67-a59c-be0d5905b490", shape=rectangle, style="rounded, filled" ];
+	"9e1bcb3d-ff58-41d4-8779-f71e7b8800f8" [ color="#ff9494", shape=rectangle, style="rounded, filled" ];
+	"9f1bcb3d-ff58-41d4-8779-f71e7b8800f8" [ color="#d8ffa8", label="EventGenerator
+9f1bcb3d-ff58-41d4-8779-f71e7b8800f8", shape=rectangle, style="rounded, filled" ];
+	"a268fae5-2a82-4a3e-ada7-a52eeb7019ac" [ label="EventLogger
+a268fae5-2a82-4a3e-ada7-a52eeb7019ac", shape=rectangle, style="rounded, filled" ];
+	"b268fae5-2a82-4a3e-ada7-a52eeb7019ac" [ color="#d8ffa8", label="EventLogger
+b268fae5-2a82-4a3e-ada7-a52eeb7019ac", shape=rectangle, style="rounded, filled" ];
+
+}
+`
