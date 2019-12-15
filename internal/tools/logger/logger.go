@@ -5,7 +5,6 @@ package logger
 import (
 	"bufio"
 	"bytes"
-	"fmt"
 	"os"
 	"sync"
 
@@ -72,15 +71,20 @@ func Infof(format string, args ...interface{}) {
 // Output logs a message to stdout without formatting.
 func Output(args ...interface{}) {
 	lock.Lock()
-	fmt.Printf("%v", args...)
-	fmt.Println(args...)
+	logrus.SetOutput(os.Stdout)
+	logrus.WithFields(logrus.Fields{
+		"decorations": false,
+	}).Info(args...)
 	lock.Unlock()
 }
 
 // Outputf formats according to a format specifier and writes to standard output.
 func Outputf(format string, args ...interface{}) {
 	lock.Lock()
-	fmt.Printf(format, args...)
+	logrus.SetOutput(os.Stdout)
+	logrus.WithFields(logrus.Fields{
+		"decorations": false,
+	}).Infof(format, args...)
 	lock.Unlock()
 }
 
@@ -163,7 +167,7 @@ func PrintBuffer(buffer *bytes.Buffer, logDebug bool) {
 
 func init() {
 	// Setup logger defaults
-	formatter := new(logrus.TextFormatter)
+	formatter := new(TextFormatter)
 	formatter.TimestampFormat = "02-01-2006 15:04:05"
 	formatter.FullTimestamp = true
 	logrus.SetFormatter(formatter)

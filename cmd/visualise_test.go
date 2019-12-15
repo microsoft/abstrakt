@@ -1,14 +1,51 @@
 package cmd
 
 import (
-	// "bufio"
 	"fmt"
 	"github.com/microsoft/abstrakt/internal/dagconfigservice"
+	"github.com/sirupsen/logrus/hooks/test"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
 )
+
+func TestVisualiseCmdWithAllRequirementsNoError(t *testing.T) {
+	constellationPath, _, _ := PrepareRealFilesForTest(t)
+
+	hook := test.NewGlobal()
+	_, err := executeCommand(newVisualiseCmd().cmd, "-f", constellationPath)
+
+	if err != nil {
+		t.Error("Did not receive output")
+	} else {
+		checkStringContains(t, hook.LastEntry().Message, validGraphString)
+	}
+}
+
+func TestVisualiseCmdFailYaml(t *testing.T) {
+	expected := "Could not open YAML input file for reading"
+
+	output, err := executeCommand(newVisualiseCmd().cmd, "-f", "constellationPath")
+
+	if err != nil {
+		checkStringContains(t, err.Error(), expected)
+	} else {
+		t.Errorf("Did not fail. Expected: %v \nGot: %v", expected, output)
+	}
+}
+
+func TestVisualiseCmdFailNotYaml(t *testing.T) {
+	expected := "dagConfigService failed to load file"
+
+	output, err := executeCommand(newVisualiseCmd().cmd, "-f", "visualise.go")
+
+	if err != nil {
+		checkStringContains(t, err.Error(), expected)
+	} else {
+		t.Errorf("Did not fail. Expected: %v \nGot: %v", expected, output)
+	}
+}
 
 func TestFileExists(t *testing.T) {
 
@@ -152,4 +189,16 @@ Services:
     Name: "Event Generator"
 To: 3aa1e546-1ed5-4d67-a59c-be0d5905b490
 Type: EventGenerator
+`
+
+const validGraphString = `digraph Azure_Event_Hubs_Sample {
+	9e1bcb3d-ff58-41d4-8779-f71e7b8800f8->3aa1e546-1ed5-4d67-a59c-be0d5905b490;
+	3aa1e546-1ed5-4d67-a59c-be0d5905b490->1d0255d4-5b8c-4a52-b0bb-ac024cda37e5;
+	3aa1e546-1ed5-4d67-a59c-be0d5905b490->a268fae5-2a82-4a3e-ada7-a52eeb7019ac;
+	1d0255d4-5b8c-4a52-b0bb-ac024cda37e5;
+	3aa1e546-1ed5-4d67-a59c-be0d5905b490;
+	9e1bcb3d-ff58-41d4-8779-f71e7b8800f8;
+	a268fae5-2a82-4a3e-ada7-a52eeb7019ac;
+
+}
 `

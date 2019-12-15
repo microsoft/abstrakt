@@ -41,7 +41,7 @@ Example: abstrakt visualise -f [constellationFilePath]`,
 			dsGraph := dagconfigservice.NewDagConfigService()
 			err := dsGraph.LoadDagConfigFromFile(cc.constellationFilePath)
 			if err != nil {
-				logger.Fatalf("dagConfigService failed to load file %q: %s", cc.constellationFilePath, err)
+				return fmt.Errorf("dagConfigService failed to load file %q: %s", cc.constellationFilePath, err)
 			}
 
 			resString := generateGraph(dsGraph)
