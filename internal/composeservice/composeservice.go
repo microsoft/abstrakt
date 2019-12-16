@@ -38,7 +38,7 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 	for _, n := range m.DagConfigService.Services {
 		service := m.BuildMapService.FindByType(n.Type)
 		if service == nil {
-			return nil, fmt.Errorf("Could not find service: %v", service)
+			return nil, fmt.Errorf("Could not find service %v", service)
 		}
 
 		count := serviceMap[service.Type]
@@ -78,6 +78,11 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 
 			//find the target service
 			foundService := m.DagConfigService.FindService(i.From)
+
+			if foundService == nil {
+				return nil, fmt.Errorf("Service '%v' referenced in relationship '%v' not found", i.From, i.ID)
+			}
+
 			toRelations["service"] = string(i.ID)
 			toRelations["type"] = foundService.Type
 
@@ -95,6 +100,11 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 
 			//find the target service
 			foundService := m.DagConfigService.FindService(i.To)
+
+			if foundService == nil {
+				return nil, fmt.Errorf("Service '%v' referenced in relationship '%v' not found", i.To, i.ID)
+			}
+
 			fromRelations["service"] = string(i.ID)
 			fromRelations["type"] = foundService.Type
 
