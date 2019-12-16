@@ -16,6 +16,7 @@ type composeCmd struct {
 	mapsFilePath          string
 	outputPath            string
 	zipChart              *bool
+	noChecks              *bool
 	*baseCmd
 }
 
@@ -27,10 +28,12 @@ func newComposeCmd() *composeCmd {
 		Short: "Compose a package into requested template type",
 		Long: `Compose is for composing a package based on mapsFilePath and constellationFilePath and template (default value is helm).
 	
-Example: abstrakt compose [chart name] -t [templateType] -f [constellationFilePath] -m [mapsFilePath] -o [outputPath] -z`,
-		Args: cobra.ExactArgs(1),
+Example: abstrakt compose [chart name] -t [templateType] -f [constellationFilePath] -m [mapsFilePath] -o [outputPath] -z --noChecks`,
+		Args:          cobra.ExactArgs(1),
+		SilenceUsage:  true,
+		SilenceErrors: true,
 
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
 			chartName := args[0]
 
@@ -42,6 +45,21 @@ Example: abstrakt compose [chart name] -t [templateType] -f [constellationFilePa
 
 			service := composeservice.NewComposeService()
 			_ = service.LoadFromFile(cc.constellationFilePath, cc.mapsFilePath)
+
+			logger.Debugf("noChecks is set to %t", *cc.noChecks)
+
+			if !*cc.noChecks {
+				logger.Debug("Starting validating constellation")
+
+				err = validateDag(&service.DagConfigService)
+
+				if err != nil {
+					return
+				}
+
+				logger.Debug("Finished validating constellation")
+			}
+
 			chart, err := service.Compose(chartName, cc.outputPath)
 			if err != nil {
 				return fmt.Errorf("Could not compose: %v", err)
@@ -87,6 +105,7 @@ Example: abstrakt compose [chart name] -t [templateType] -f [constellationFilePa
 	_ = cc.cmd.MarkFlagRequired("outputPath")
 	cc.cmd.Flags().StringVarP(&cc.templateType, "template type", "t", "helm", "output template type")
 	cc.zipChart = cc.cmd.Flags().BoolP("zipChart", "z", false, "zips the chart")
+	cc.noChecks = cc.cmd.Flags().Bool("noChecks", false, "turn off validation checks of constellation file before composing")
 
 	return cc
 }
