@@ -28,6 +28,8 @@ func TestComposeCommandReturnsErrorIfTemplateTypeIsInvalid(t *testing.T) {
 	templateType := "ble"
 	constellationPath, mapsPath, tdir := PrepareRealFilesForTest(t)
 
+	defer CleanTempTestFiles(t, tdir)
+
 	output, err := executeCommand(newComposeCmd().cmd, "test-compose-cmd-returns-error-if-template-type-is-invalid", "-f", constellationPath, "-m", mapsPath, "-t", templateType, "-o", tdir)
 
 	if err == nil {
@@ -38,6 +40,8 @@ func TestComposeCommandReturnsErrorIfTemplateTypeIsInvalid(t *testing.T) {
 func TestComposeCommandDoesNotErrorIfTemplateTypeIsEmptyOrHelm(t *testing.T) {
 	templateType := ""
 	constellationPath, mapsPath, tdir := PrepareRealFilesForTest(t)
+
+	defer CleanTempTestFiles(t, tdir)
 
 	output, err := executeCommand(newComposeCmd().cmd, "test-compose-cmd-does-not-error-if-template-type-is-empty-or-helm", "-f", constellationPath, "-m", mapsPath, "-t", templateType, "-o", tdir)
 
@@ -81,20 +85,22 @@ func checkStringContains(t *testing.T, got, expected string) {
 }
 
 func TestComposeCmdWithValidFlags(t *testing.T) {
-
 	constellationPath, mapsPath, tdir := PrepareRealFilesForTest(t)
+
+	defer CleanTempTestFiles(t, tdir)
 
 	output, err := executeCommand(newComposeCmd().cmd, "test-compose-cmd-with-flags", "-f", constellationPath, "-m", mapsPath, "-o", tdir)
 	if err != nil {
 		t.Errorf("error: \n %v\noutput:\n %v\n", err, output)
 	}
-
 }
 
 func TestComposeWithRealFiles(t *testing.T) {
 	constellationPath, mapsPath, tdir := PrepareRealFilesForTest(t)
-	output, err := executeCommand(newComposeCmd().cmd, "test-compose-cmd-with-real-files", "-f", constellationPath, "-m", mapsPath, "-o", tdir)
 
+	defer CleanTempTestFiles(t, tdir)
+
+	output, err := executeCommand(newComposeCmd().cmd, "test-compose-cmd-with-real-files", "-f", constellationPath, "-m", mapsPath, "-o", tdir)
 	if err != nil {
 		t.Errorf("error: \n %v\noutput:\n %v\n", err, output)
 	}
@@ -107,13 +113,6 @@ func PrepareRealFilesForTest(t *testing.T) (string, string, string) {
 		t.Fatal(err)
 	}
 
-	defer func() {
-		err = os.RemoveAll(tdir)
-		if err != nil {
-			t.Fatal(err)
-		}
-	}()
-
 	cwd, err2 := os.Getwd()
 	if err2 != nil {
 		t.Fatal(err2)
@@ -125,4 +124,11 @@ func PrepareRealFilesForTest(t *testing.T) (string, string, string) {
 	mapsPath := path.Join(cwd, "../sample/constellation/sample_constellation_maps.yaml")
 
 	return constellationPath, mapsPath, tdir
+}
+
+func CleanTempTestFiles(t *testing.T, temp string) {
+	err := os.RemoveAll(temp)
+	if err != nil {
+		t.Fatal(err)
+	}
 }
