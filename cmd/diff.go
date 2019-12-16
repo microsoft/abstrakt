@@ -74,7 +74,7 @@ Example: abstrakt diff -o [constellationFilePathOriginal] -n [constellationFileP
 			dsGraphOrg := dagconfigservice.NewDagConfigService()
 			err := dsGraphOrg.LoadDagConfigFromFile(cc.constellationFilePathOrg)
 			if err != nil {
-				logger.Fatalf("dagConfigService failed to load file %q: %s", cc.constellationFilePathOrg, err)
+				return fmt.Errorf("dagConfigService failed to load file %q: %s", cc.constellationFilePathOrg, err)
 			}
 
 			if cc.showOriginal {
@@ -85,7 +85,7 @@ Example: abstrakt diff -o [constellationFilePathOriginal] -n [constellationFileP
 			dsGraphNew := dagconfigservice.NewDagConfigService()
 			err = dsGraphNew.LoadDagConfigFromFile(cc.constellationFilePathNew)
 			if err != nil {
-				logger.Fatalf("dagConfigService failed to load file %q: %s", cc.constellationFilePathNew, err)
+				return fmt.Errorf("dagConfigService failed to load file %q: %s", cc.constellationFilePathNew, err)
 			}
 
 			if cc.showNew {
@@ -94,7 +94,10 @@ Example: abstrakt diff -o [constellationFilePathOriginal] -n [constellationFileP
 			}
 
 			resStringDiff := compareConstellations(dsGraphOrg, dsGraphNew)
+			// logger.Output is also outputting a timestamp and 'level' message when used on the command line which causes
+			// graphviz to fail !?
 			logger.Output(resStringDiff)
+			// fmt.Println(resStringDiff)
 
 			return nil
 		},

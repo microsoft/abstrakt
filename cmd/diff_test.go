@@ -1,12 +1,139 @@
 package cmd
 
 import (
-	// "fmt"
+	"fmt"
 	set "github.com/deckarep/golang-set"
 	"github.com/microsoft/abstrakt/internal/dagconfigservice"
+	"github.com/sirupsen/logrus/hooks/test"
+	"io/ioutil"
+	"os"
+	"path"
 	"strings"
 	"testing"
 )
+
+// TestDiffCmdWithAllRequirementsNoError - test diff command parameters
+// use valid arguments so expect no failures
+func TestDiffCmdWithAllRequirementsNoError(t *testing.T) {
+	constellationPathOrg, constellationPathNew, _, _ := localPrepareRealFilesForTest(t)
+
+	hook := test.NewGlobal()
+	_, err := executeCommand(newDiffCmd().cmd, "-o", constellationPathOrg, "-n", constellationPathNew)
+
+	// fmt.Println(hook.LastEntry().Message)
+	// fmt.Println(testDiffComparisonOutputString)
+
+	if err != nil {
+		t.Error("Did not receive output")
+	} else {
+		if !compareGraphOutputAsSets(testDiffComparisonOutputString, hook.LastEntry().Message) {
+			t.Errorf("Expcted output and produced output do not match : expected %s produced %s", testDiffComparisonOutputString, hook.LastEntry().Message)
+		}
+		// Did use this initially but wont work with the strongs output from the graphviz library as the sequence of entries in the output can change
+		// while the sequence may change the result is still valid and the same so am usinga  local comparison function to get around this problem
+		// checkStringContains(t, hook.LastEntry().Message, testDiffComparisonOutputString)
+	}
+}
+
+// localPrepareRealFilesForTest - global function assumes only a single input file, this use the two required for the diff command
+func localPrepareRealFilesForTest(t *testing.T) (string, string, string, string) {
+	tdir, err := ioutil.TempDir("./", "output-")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer func() {
+		err = os.RemoveAll(tdir)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}()
+
+	cwd, err2 := os.Getwd()
+	if err2 != nil {
+		t.Fatal(err2)
+	}
+
+	fmt.Print(cwd)
+
+	constellationPathOrg := path.Join(cwd, "../sample/constellation/sample_constellation.yaml")
+	constellationPathNew := path.Join(cwd, "../sample/constellation/sample_constellation_changed.yaml")
+	mapsPath := path.Join(cwd, "../sample/constellation/sample_constellation_maps.yaml")
+
+	return constellationPathOrg, constellationPathNew, mapsPath, tdir
+}
+
+// compareGraphOutputAsSets - the graphviz library does not always output the result string with nodes and edges
+// in the same order (it can vary between calls). This does not impact using the result but makes testing the result a
+// headache as the assumption is that the expected string and the produced string would match exactly. When the sequence
+// changes they dont match. This function converts the strings into sets of lines and compares if the lines in the two outputs
+// are the same
+func compareGraphOutputAsSets(expected, produced string) bool {
+
+	lstExpected := strings.Split(expected, "\n")
+	lstProduced := strings.Split(produced, "\n")
+
+	setExpected := set.NewSet()
+	setProduced := set.NewSet()
+
+	for l := range lstExpected {
+		setExpected.Add(l)
+	}
+
+	for l := range lstProduced {
+		setProduced.Add(l)
+	}
+
+	return setProduced.Equal(setExpected)
+
+}
+
+// TestDffCmdFailYaml - test diff command parameters
+// Test both required command line parameters (-o, -n) failing each in turn
+func TestDffCmdFailYaml(t *testing.T) {
+	expected := "Could not open original YAML input file for reading constellationPathOrg"
+
+	output, err := executeCommand(newDiffCmd().cmd, "-o", "constellationPathOrg", "-n", "constellationPathNew")
+
+	if err != nil {
+		checkStringContains(t, err.Error(), expected)
+	} else {
+		t.Errorf("Did not fail and it should have. Expected: %v \nGot: %v", expected, output)
+	}
+
+	expected = "Could not open new YAML input file for reading constellationPathNew"
+
+	output, err = executeCommand(newDiffCmd().cmd, "-o", "/workspace/sample/constellation/sample_constellation.yaml", "-n", "constellationPathNew")
+
+	if err != nil {
+		checkStringContains(t, err.Error(), expected)
+	} else {
+		t.Errorf("Did not fail and it should have. Expected: %v \nGot: %v", expected, output)
+	}
+
+}
+
+// TestDiffCmdFailNotYaml - test diff command parameters
+// Test both required command line parameter files fail when provided with invalid input files (-o, -n) failing each in turn
+func TestDiffCmdFailNotYaml(t *testing.T) {
+	expected := "dagConfigService failed to load file"
+
+	output, err := executeCommand(newDiffCmd().cmd, "-o", "diff.go", "-n", "diff.go")
+
+	if err != nil {
+		checkStringContains(t, err.Error(), expected)
+	} else {
+		t.Errorf("Did not fail. Expected: %v \nGot: %v", expected, output)
+	}
+
+	output, err = executeCommand(newDiffCmd().cmd, "-o", "/workspace/sample/constellation/sample_constellation.yaml", "-n", "diff.go")
+
+	if err != nil {
+		checkStringContains(t, err.Error(), expected)
+	} else {
+		t.Errorf("Did not fail. Expected: %v \nGot: %v", expected, output)
+	}
+}
 
 // TestGetComparisonSets - generate sets of common, added and removed services and relationships from  input YAML
 // and compare to manually created sets with a known or expected outcome
@@ -83,9 +210,8 @@ func TestGraphWithChanges(t *testing.T) {
 
 	resString := createGraphWithChanges(dsGraphNew, loadedSets)
 
-	resComparison := strings.Compare(resString, testDiffComparisonOutputString)
-	if resComparison != 0 {
-		t.Errorf("Resulting output string does not match the reference comparison string DIFF %v \n RESULT \n%s EXPECTED \n%s", resComparison, resString, testDiffComparisonOutputString)
+	if !compareGraphOutputAsSets(testDiffComparisonOutputString, resString) {
+		t.Errorf("Resulting output does not match the reference comparison input \n RESULT \n%s EXPECTED \n%s", resString, testDiffComparisonOutputString)
 	}
 }
 
