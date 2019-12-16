@@ -7,7 +7,10 @@ import (
 func TestValidateCommand(t *testing.T) {
 	expected := "open does-not-exist: no such file or directory"
 
-	constellationPath, _, _ := PrepareRealFilesForTest(t)
+	constellationPath, _, tdir := PrepareRealFilesForTest(t)
+
+	defer CleanTempTestFiles(t, tdir)
+
 	output, err := executeCommand(newValidateCmd().cmd, "-f", constellationPath)
 
 	if err != nil {
