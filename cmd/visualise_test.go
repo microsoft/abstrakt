@@ -19,7 +19,9 @@ func TestVisualiseCmdWithAllRequirementsNoError(t *testing.T) {
 	if err != nil {
 		t.Error("Did not receive output")
 	} else {
-		checkStringContains(t, hook.LastEntry().Message, validGraphString)
+		if !compareGraphOutputAsSets(validGraphString, hook.LastEntry().Message) {
+			t.Errorf("Expcted output and produced output do not match : expected %s produced %s", validGraphString, hook.LastEntry().Message)
+		}
 	}
 }
 
@@ -98,6 +100,7 @@ func TestFileExists(t *testing.T) {
 }
 
 func TestGenerateGraph(t *testing.T) {
+
 	retConfig := dagconfigservice.NewDagConfigService()
 	err := retConfig.LoadDagConfigFromString(test01DagStr)
 	if err != nil {
@@ -106,7 +109,8 @@ func TestGenerateGraph(t *testing.T) {
 
 	cmpString := test02ConstGraphString
 	retString := generateGraph(retConfig)
-	if retString != cmpString {
+
+	if !compareGraphOutputAsSets(cmpString, retString) {
 		t.Errorf("Input graph did not generate expected output graphviz representation")
 		t.Errorf("Expected:\n%v \nGot:\n%v", cmpString, retString)
 	}
@@ -114,22 +118,6 @@ func TestGenerateGraph(t *testing.T) {
 }
 
 func TestParseYaml(t *testing.T) {
-
-	testValidYAMLString := `
-Description: "Event Generator to Event Hub connection"
-From: 9e1bcb3d-ff58-41d4-8779-f71e7b8800f8
-Id: 211a55bd-5d92-446c-8be8-190f8f0e623e
-Name: "Azure Event Hubs Sample"
-Properties: {}
-Relationships: 
-  - 
-    Name: "Generator to Event Hubs Link"
-Services: 
-  - 
-    Name: "Event Generator"
-To: 3aa1e546-1ed5-4d67-a59c-be0d5905b490
-Type: EventGenerator
-`
 
 	retConfig := dagconfigservice.NewDagConfigService()
 	err := retConfig.LoadDagConfigFromString(testValidYAMLString)
@@ -180,24 +168,41 @@ Relationships:
   Properties: {}`
 
 const test02ConstGraphString = `digraph Azure_Event_Hubs_Sample {
-	Event_Generator->Azure_Event_Hub;
-	Azure_Event_Hub->Event_Logger;
-	Azure_Event_Hub->Event_Logger;
-	Azure_Event_Hub;
-	Event_Generator;
-	Event_Logger;
+	rankdir=LR;
+	"Event_Generator"->"Azure_Event_Hub";
+	"Azure_Event_Hub"->"Event_Logger";
+	"Azure_Event_Hub"->"Event_Logger";
+	"Azure_Event_Hub";
+	"Event_Generator";
+	"Event_Logger";
 
 }
 `
+const testValidYAMLString = `
+Description: "Event Generator to Event Hub connection"
+From: 9e1bcb3d-ff58-41d4-8779-f71e7b8800f8
+Id: 211a55bd-5d92-446c-8be8-190f8f0e623e
+Name: "Azure Event Hubs Sample"
+Properties: {}
+Relationships: 
+  - 
+    Name: "Generator to Event Hubs Link"
+Services: 
+  - 
+    Name: "Event Generator"
+To: 3aa1e546-1ed5-4d67-a59c-be0d5905b490
+Type: EventGenerator
+`
 
 const validGraphString = `digraph Azure_Event_Hubs_Sample {
-	9e1bcb3d-ff58-41d4-8779-f71e7b8800f8->3aa1e546-1ed5-4d67-a59c-be0d5905b490;
-	3aa1e546-1ed5-4d67-a59c-be0d5905b490->1d0255d4-5b8c-4a52-b0bb-ac024cda37e5;
-	3aa1e546-1ed5-4d67-a59c-be0d5905b490->a268fae5-2a82-4a3e-ada7-a52eeb7019ac;
-	1d0255d4-5b8c-4a52-b0bb-ac024cda37e5;
-	3aa1e546-1ed5-4d67-a59c-be0d5905b490;
-	9e1bcb3d-ff58-41d4-8779-f71e7b8800f8;
-	a268fae5-2a82-4a3e-ada7-a52eeb7019ac;
+	rankdir=LR;
+	"9e1bcb3d-ff58-41d4-8779-f71e7b8800f8"->"3aa1e546-1ed5-4d67-a59c-be0d5905b490";
+	"3aa1e546-1ed5-4d67-a59c-be0d5905b490"->"1d0255d4-5b8c-4a52-b0bb-ac024cda37e5";
+	"3aa1e546-1ed5-4d67-a59c-be0d5905b490"->"a268fae5-2a82-4a3e-ada7-a52eeb7019ac";
+	"1d0255d4-5b8c-4a52-b0bb-ac024cda37e5";
+	"3aa1e546-1ed5-4d67-a59c-be0d5905b490";
+	"9e1bcb3d-ff58-41d4-8779-f71e7b8800f8";
+	"a268fae5-2a82-4a3e-ada7-a52eeb7019ac";
 
 }
 `

@@ -11,6 +11,7 @@ Usage:
 
 Available Commands:
   compose     Compose a package into requested template type
+  diff        Graphviz dot notation comparing two constellations
   help        Help about any command
   validate    Validate a constellation file for correct schema and ensure correctness.
   version     The version of Abstrakt being used
@@ -106,6 +107,25 @@ Alternatively, copy the output and paste into a Graphviz rendering tool to see t
 [Graphviz online](https://dreampuf.github.io/GraphvizOnline/)  
 [Webgraphviz](http://www.webgraphviz.com/)  
 
+### abstrakt diff
+```console
+diff produces graphiviz dot language output showing changes to a constellation. Defaults to showing final diff only, command line
+switches can also produce either or both of the original or changed constellation inputs
+
+Usage:
+  abstrakt diff [flags]
+
+Flags:
+  -n, --constellationFilePathNew string        new or changed constellation file path
+  -o, --constellationFilePathOriginal string   original or base constellation file path
+  -h, --help                                   help for diff
+      --showNewOutput                          will additionally produce dot notation for new/changed constellation
+      --showOriginalOutput                     will additionally produce dot notation for original constellation
+
+Global Flags:
+  -v, --verbose   Use verbose output logs
+
+```
 
 #### Examples
 

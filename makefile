@@ -102,6 +102,9 @@ build:
 visualise: build	
 	./abstrakt visualise -f ./sample/constellation/http_constellation.yaml | dot -Tpng > result.png
 
+diff: build
+	./abstrakt diff -o ./sample/constellation/sample_constellation.yaml -n ./sample/constellation/sample_constellation_changed.yaml | dot -Tpng > result.png
+
 run-http-demo: http-demo http-demo-deploy
 
 http-demo: build	

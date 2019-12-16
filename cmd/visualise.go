@@ -7,13 +7,12 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
-	"os"
-	"strings"
-
 	"github.com/awalterschulze/gographviz"
 	"github.com/microsoft/abstrakt/internal/dagconfigservice"
 	"github.com/microsoft/abstrakt/internal/tools/logger"
+	"github.com/spf13/cobra"
+	"os"
+	"strings"
 )
 
 type visualiseCmd struct {
@@ -36,7 +35,7 @@ Example: abstrakt visualise -f [constellationFilePath]`,
 			logger.Debug("constellationFilePath: " + cc.constellationFilePath)
 
 			if !fileExists(cc.constellationFilePath) {
-				return fmt.Errorf("Could not open YAML input file for reading")
+				return fmt.Errorf("Could not open YAML input file for reading %v", cc.constellationFilePath)
 			}
 
 			dsGraph := dagconfigservice.NewDagConfigService()
@@ -81,13 +80,14 @@ func generateGraph(readGraph dagconfigservice.DagConfigService) string {
 	// Replace spaces with underscores, names with spaces can break graphviz engines
 	if err := g.SetName(strings.Replace(readGraph.Name, " ", "_", -1)); err != nil {
 		logger.Fatalf("error: %v", err)
-		logger.Panic(err)
+	}
+	if err := g.AddAttr(g.Name, "rankdir", "LR"); err != nil {
+		logger.Fatalf("error adding attribute: %v", err)
 	}
 
 	// Make the graph directed (a constellation is  DAG)
 	if err := g.SetDir(true); err != nil {
 		logger.Fatalf("error: %v", err)
-		logger.Panic(err)
 	}
 
 	// Add all nodes to the graph storing the lookup from ID to name (for later adding relationships)
@@ -95,11 +95,14 @@ func generateGraph(readGraph dagconfigservice.DagConfigService) string {
 	for _, v := range readGraph.Services {
 		logger.Debugf("Adding node %s", v.ID)
 		newName := strings.Replace(v.ID, " ", "_", -1)
-		logger.Debugf("Changing %s to %s", v.ID, newName)
+
+		if strings.Compare(newName, v.ID) != 0 {
+			logger.Debugf("Changing %s to %s", v.ID, newName)
+		}
 		lookup[v.ID] = newName
-		err := g.AddNode(readGraph.Name, newName, nil)
+		err := g.AddNode(readGraph.Name, "\""+newName+"\"", nil)
 		if err != nil {
-			logger.Panic(err)
+			logger.Fatalf("error: %v", err)
 		}
 	}
 
@@ -107,11 +110,11 @@ func generateGraph(readGraph dagconfigservice.DagConfigService) string {
 	// Replace spaces in names with underscores, names with spaces can break graphviz engines)
 	for _, v := range readGraph.Relationships {
 		logger.Debugf("Adding relationship from %s ---> %s", v.From, v.To)
-		localFrom := lookup[v.From]
-		localTo := lookup[v.To]
+		localFrom := "\"" + lookup[v.From] + "\""
+		localTo := "\"" + lookup[v.To] + "\""
 		err := g.AddEdge(localFrom, localTo, true, nil)
 		if err != nil {
-			logger.Panic(err)
+			logger.Fatalf("error: %v", err)
 		}
 	}
 
