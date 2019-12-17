@@ -79,7 +79,7 @@ else
 	@exit 111
 endif
 	make create-kindcluster
-	kubectl apply -f /workspace/rbac.yaml
+	kubectl apply -f /workspace/.scripts/rbac.yaml
 
 install-kind:
 ifeq (,$(shell which kind))
