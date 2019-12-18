@@ -121,6 +121,9 @@ type TextFormatter struct {
 	// Whether the logger's out is to a terminal.
 	isTerminal bool
 
+	// Outputs raw message without timestamp or log level.
+	DisableDecorations bool
+
 	sync.Once
 }
 
@@ -231,6 +234,7 @@ func (f *TextFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 func (f *TextFormatter) printColored(b *bytes.Buffer, entry *logrus.Entry, keys []string, timestampFormat string, colorScheme *compiledColorScheme) {
 	var levelColor func(string) string
 	var levelText string
+
 	switch entry.Level {
 	case logrus.InfoLevel:
 		levelColor = colorScheme.InfoLevelColor
@@ -274,18 +278,12 @@ func (f *TextFormatter) printColored(b *bytes.Buffer, entry *logrus.Entry, keys 
 		}
 	}
 
-	decorations := true
-
-	if prefixValue, ok := entry.Data["decorations"]; ok {
-		decorations = prefixValue.(bool)
-	}
-
 	messageFormat := "%s"
 	if f.SpacePadding != 0 {
 		messageFormat = fmt.Sprintf("%%-%ds", f.SpacePadding)
 	}
 
-	if !decorations {
+	if f.DisableDecorations {
 		fmt.Fprint(b, message)
 	} else if f.DisableTimestamp {
 		fmt.Fprintf(b, "%s%s "+messageFormat, level, prefix, message)
@@ -299,7 +297,7 @@ func (f *TextFormatter) printColored(b *bytes.Buffer, entry *logrus.Entry, keys 
 		fmt.Fprintf(b, "%s%s%s "+messageFormat, colorScheme.TimestampColor(timestamp), level, prefix, message)
 	}
 
-	if decorations {
+	if !f.DisableDecorations {
 		for _, k := range keys {
 			if k != "prefix" {
 				v := entry.Data[k]

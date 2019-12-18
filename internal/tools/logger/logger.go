@@ -13,6 +13,7 @@ import (
 
 // lock is a global mutex lock to gain control of logrus.<SetLevel|SetOutput>
 var lock = sync.RWMutex{}
+var formatter *TextFormatter
 
 // SetLevelDebug sets the standard logger level to Debug
 func SetLevelDebug() {
@@ -72,9 +73,9 @@ func Infof(format string, args ...interface{}) {
 func Output(args ...interface{}) {
 	lock.Lock()
 	logrus.SetOutput(os.Stdout)
-	logrus.WithFields(logrus.Fields{
-		"decorations": false,
-	}).Info(args...)
+	formatter.DisableDecorations = true
+	logrus.Info(args...)
+	formatter.DisableDecorations = false
 	lock.Unlock()
 }
 
@@ -82,9 +83,9 @@ func Output(args ...interface{}) {
 func Outputf(format string, args ...interface{}) {
 	lock.Lock()
 	logrus.SetOutput(os.Stdout)
-	logrus.WithFields(logrus.Fields{
-		"decorations": false,
-	}).Infof(format, args...)
+	formatter.DisableDecorations = true
+	logrus.Infof(format, args...)
+	formatter.DisableDecorations = false
 	lock.Unlock()
 }
 
@@ -167,7 +168,7 @@ func PrintBuffer(buffer *bytes.Buffer, logDebug bool) {
 
 func init() {
 	// Setup logger defaults
-	formatter := new(TextFormatter)
+	formatter = new(TextFormatter)
 	formatter.TimestampFormat = "02-01-2006 15:04:05"
 	formatter.FullTimestamp = true
 	logrus.SetFormatter(formatter)
