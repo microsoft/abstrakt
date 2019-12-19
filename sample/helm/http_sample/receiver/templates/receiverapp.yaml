@@ -5,7 +5,11 @@ metadata:
   labels:
     purpose: demonstrate-send-microservice
     app: "receiver-{{.Values.name}}"
+  annotations:
+    {{ template "abstrakt-annotation" . }}
 spec:
+  initContainers:
+  {{ template "abstrakt-initContainer" . }}
   containers:
   - name: wormholereceiver   
     image: jakkaj/wormhole_receiver:5   

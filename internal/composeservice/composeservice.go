@@ -11,6 +11,27 @@ import (
 	"helm.sh/helm/v3/pkg/chart"
 )
 
+// AbstraktTpl _abstrakt.tpl helper file
+var AbstraktTpl string = `
+{{- define "abstrakt-annotation" -}}
+abstrakt/dependency-name: "{{.Values.name -}}"
+{{- end -}}
+{{- define "abstrakt-initContainer" -}}
+    - name: awayt
+    image: jmost/awayt
+    args:    
+    - "{{ .Values.waitseconds }}"    
+    - "{{ .Release.Namespace }}"
+    - "abstrakt/dependency-name"
+    {{- range .Values.relationships.output }}
+    - "{{ .name }}"    
+    {{- end }}
+{{- end -}}
+`
+
+// DefaultWaitSeconds total time to wait for dependant services to start
+var DefaultWaitSeconds = 60
+
 //ComposeService takes maps and configs and builds out the helm chart
 type ComposeService struct {
 	DagConfigService dagconfigservice.DagConfigService
@@ -66,7 +87,7 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 
 		valMap["name"] = alias
 		valMap["type"] = service.Type
-
+		valMap["waitseconds"] = DefaultWaitSeconds
 		relationships := make(map[string][]interface{})
 		valMap["relationships"] = &relationships
 		toRels := m.DagConfigService.FindRelationshipByToName(n.ID)
@@ -119,6 +140,12 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 
 	newChart.Values = values
 	newChart.Metadata.Dependencies = deps
+	newChart.Templates = []*chart.File{
+		{
+			Name: "templates/_abstrakt.tpl",
+			Data: []byte(AbstraktTpl),
+		},
+	}
 
 	return newChart, nil
 

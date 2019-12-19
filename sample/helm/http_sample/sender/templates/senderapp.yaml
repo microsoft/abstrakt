@@ -5,17 +5,20 @@ metadata:
   labels:
     purpose: demonstrate-send-microservice
     app: sender-{{.Values.name}}
+  annotations:
+    {{ template "abstrakt-annotation" . }}
 spec:
+  initContainers:
+  {{ template "abstrakt-initContainer" . }}
   containers:
   - name: wormholesender    
     image: jakkaj/wormhole_sender:5
     env:
-    - name: RECEIVER_URI
-      {{if contains "sender" (index .Values.relationships.output 0).name }}
+    - name: RECEIVER_URI     
+      {{- if contains "sender" (index .Values.relationships.output 0).name }}
       value: "http://{{ (index .Values.relationships.output 0).name }}:8080/api/CallReceiver"
-      {{else}}
+      {{- else }}
       value: "http://{{ (index .Values.relationships.output 0).name }}:8080/api/EchoBody"
-      {{end}}
+      {{- end }}
     - name: CHAIN_ARG
       value: "-Chain-{{.Values.name}}"      
-      
