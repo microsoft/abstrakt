@@ -1,4 +1,4 @@
-package chartservice
+package chart_test
 
 import (
 	"archive/tar"
@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"compress/gzip"
 	"flag"
+	"github.com/microsoft/abstrakt/internal/platform/chart"
 	"io"
 	"io/ioutil"
 	"os"
@@ -83,25 +84,24 @@ func TestChartSavesAndLoads(t *testing.T) {
 
 	}()
 
-	c, err := CreateChart("foo", tdir)
+	c, err := chart.Create("foo", tdir)
 
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	err = SaveChartToDir(c, tdir2)
+	err = chart.SaveToDir(c, tdir2)
 	if err != nil {
 		t.Fatalf("Failed to save newly created chart %q: %s", tdir2, err)
 	}
 
 	newPath := filepath.Join(tdir2, "foo")
 
-	_, err = LoadChartFromDir(newPath)
+	_, err = chart.LoadFromDir(newPath)
 
 	if err != nil {
 		t.Fatalf("Failed to load newly created chart %q: %s", newPath, err)
 	}
-
 }
 
 func TestChartBuildChart(t *testing.T) {
@@ -127,7 +127,7 @@ func TestChartBuildChart(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	_, err = BuildChart(tdir + "/helm")
+	_, err = chart.Build(tdir + "/helm")
 	if err != nil {
 		t.Fatalf("Failed to BuildChart(): %s", err)
 	}
@@ -151,12 +151,12 @@ func TestZipChartToDir(t *testing.T) {
 		}
 	}()
 
-	chart, err := LoadChartFromDir("testdata/sample/helm")
+	helm, err := chart.LoadFromDir("testdata/sample/helm")
 	if err != nil {
 		t.Fatalf("Failed on LoadChartFromDir(): %s", err)
 	}
 
-	_, err = ZipChartToDir(chart, tdir)
+	_, err = chart.ZipToDir(helm, tdir)
 	if err != nil {
 		t.Fatalf("Failed on ZipChartToDir(): %s", err)
 	}

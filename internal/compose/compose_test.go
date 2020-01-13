@@ -1,9 +1,8 @@
-package composeservice
-
-//"helm.sh/helm/v3/pkg/chart"
+package compose_test
 
 import (
 	"fmt"
+	"github.com/microsoft/abstrakt/internal/compose"
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/chartutil"
@@ -26,16 +25,16 @@ func TestComposeService(t *testing.T) {
 		}
 	}()
 
-	comp := NewComposeService()
-	_, err = comp.Compose("test", tdir)
+	comp := new(compose.Composer)
+	_, err = comp.Build("test", tdir)
 
 	if err == nil {
 		t.Errorf("Compose should fail if not yet loaded")
 	}
 
-	_ = comp.LoadFromString(test01DagStr, configMapTest01String)
+	_ = comp.LoadString(test01DagStr, configMapTest01String)
 
-	h, err := comp.Compose("test", tdir)
+	h, err := comp.Build("test", tdir)
 
 	if err != nil {
 		t.Errorf("Compose should have loaded")
@@ -48,9 +47,6 @@ func TestComposeService(t *testing.T) {
 			fmt.Print(string(raw.Data))
 		}
 	}
-
-	//chartYaml = ioutil.ReadFile(filepath.Join(tdir, "test", "Chart.yaml"))
-
 }
 
 func TestHelmLibCompose(t *testing.T) {
@@ -116,19 +112,19 @@ func TestHelmLibCompose(t *testing.T) {
 }
 
 func TestLoadFromString(t *testing.T) {
-	comp := NewComposeService()
-	err := comp.LoadFromString(test01DagStr, configMapTest01String)
+	comp := new(compose.Composer)
+	err := comp.LoadString(test01DagStr, configMapTest01String)
 
 	if err != nil {
 		t.Errorf("Error: %v", err)
 	}
 
-	err = comp.LoadFromString("sfdsd", configMapTest01String)
+	err = comp.LoadString("sfdsd", configMapTest01String)
 	if err == nil {
 		t.Errorf("Didn't get error when should")
 	}
 
-	err = comp.LoadFromString(test01DagStr, "sdfsdf")
+	err = comp.LoadString(test01DagStr, "sdfsdf")
 	if err == nil {
 		t.Errorf("Didn't get error when should")
 	}

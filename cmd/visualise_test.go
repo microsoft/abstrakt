@@ -2,7 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/microsoft/abstrakt/internal/dagconfigservice"
+	"github.com/microsoft/abstrakt/internal/platform/constellation"
+	"github.com/microsoft/abstrakt/internal/tools/helpers"
 	"github.com/sirupsen/logrus/hooks/test"
 	"io/ioutil"
 	"os"
@@ -11,15 +12,17 @@ import (
 )
 
 func TestVisualiseCmdWithAllRequirementsNoError(t *testing.T) {
-	constellationPath, _, _ := PrepareRealFilesForTest(t)
+	constellationPath, _, tdir := helpers.PrepareRealFilesForTest(t)
+
+	defer helpers.CleanTempTestFiles(t, tdir)
 
 	hook := test.NewGlobal()
-	_, err := executeCommand(newVisualiseCmd().cmd, "-f", constellationPath)
+	_, err := helpers.ExecuteCommand(newVisualiseCmd().cmd, "-f", constellationPath)
 
 	if err != nil {
 		t.Error("Did not receive output")
 	} else {
-		if !compareGraphOutputAsSets(validGraphString, hook.LastEntry().Message) {
+		if !helpers.CompareGraphOutputAsSets(validGraphString, hook.LastEntry().Message) {
 			t.Errorf("Expcted output and produced output do not match : expected %s produced %s", validGraphString, hook.LastEntry().Message)
 		}
 	}
@@ -28,10 +31,10 @@ func TestVisualiseCmdWithAllRequirementsNoError(t *testing.T) {
 func TestVisualiseCmdFailYaml(t *testing.T) {
 	expected := "Could not open YAML input file for reading"
 
-	output, err := executeCommand(newVisualiseCmd().cmd, "-f", "constellationPath")
+	output, err := helpers.ExecuteCommand(newVisualiseCmd().cmd, "-f", "constellationPath")
 
 	if err != nil {
-		checkStringContains(t, err.Error(), expected)
+		helpers.CheckStringContains(t, err.Error(), expected)
 	} else {
 		t.Errorf("Did not fail. Expected: %v \nGot: %v", expected, output)
 	}
@@ -40,10 +43,10 @@ func TestVisualiseCmdFailYaml(t *testing.T) {
 func TestVisualiseCmdFailNotYaml(t *testing.T) {
 	expected := "dagConfigService failed to load file"
 
-	output, err := executeCommand(newVisualiseCmd().cmd, "-f", "visualise.go")
+	output, err := helpers.ExecuteCommand(newVisualiseCmd().cmd, "-f", "visualise.go")
 
 	if err != nil {
-		checkStringContains(t, err.Error(), expected)
+		helpers.CheckStringContains(t, err.Error(), expected)
 	} else {
 		t.Errorf("Did not fail. Expected: %v \nGot: %v", expected, output)
 	}
@@ -51,17 +54,9 @@ func TestVisualiseCmdFailNotYaml(t *testing.T) {
 
 func TestFileExists(t *testing.T) {
 
-	tdir, err := ioutil.TempDir("", "helm-")
-	if err != nil {
-		t.Fatal(err)
-	}
+	_, _, tdir := helpers.PrepareRealFilesForTest(t)
 
-	defer func() {
-		err = os.RemoveAll(tdir)
-		if err != nil {
-			t.Fatal(err)
-		}
-	}()
+	defer helpers.CleanTempTestFiles(t, tdir)
 
 	//Setup variables and content for test
 	testValidFilename := filepath.Join(tdir, "testVisualise.out")
@@ -69,20 +64,20 @@ func TestFileExists(t *testing.T) {
 	testData := []byte("A file to test with")
 
 	//Create a file to test against
-	err = ioutil.WriteFile(testValidFilename, testData, 0644)
+	err := ioutil.WriteFile(testValidFilename, testData, 0644)
 	if err != nil {
 		fmt.Println("Could not create output testing file, cannot proceed")
 		t.Error(err)
 	}
 
 	//Test that a valid file (created above) can be seen
-	var result bool = fileExists(testValidFilename) //Expecting true - file does exists
+	var result bool = helpers.FileExists(testValidFilename) //Expecting true - file does exists
 	if result == false {
 		t.Errorf("Test file does exist but testFile returns that it does not")
 	}
 
 	//Test that an invalid file (does not exist) is not seen
-	result = fileExists(testInvalidFilename) //Expecting false - file does not exist
+	result = helpers.FileExists(testInvalidFilename) //Expecting false - file does not exist
 	if result != false {
 		t.Errorf("Test file does not exist but testFile says it does")
 	}
@@ -92,35 +87,17 @@ func TestFileExists(t *testing.T) {
 		panic(err)
 	}
 
-	result = fileExists(testValidFilename) //Expecting false - file has been removed
+	result = helpers.FileExists(testValidFilename) //Expecting false - file has been removed
 	if result == true {
 		t.Errorf("Test file has been removed but fileExists is finding it")
 	}
 
 }
 
-func TestGenerateGraph(t *testing.T) {
-
-	retConfig := dagconfigservice.NewDagConfigService()
-	err := retConfig.LoadDagConfigFromString(test01DagStr)
-	if err != nil {
-		panic(err)
-	}
-
-	cmpString := test02ConstGraphString
-	retString := generateGraph(retConfig)
-
-	if !compareGraphOutputAsSets(cmpString, retString) {
-		t.Errorf("Input graph did not generate expected output graphviz representation")
-		t.Errorf("Expected:\n%v \nGot:\n%v", cmpString, retString)
-	}
-
-}
-
 func TestParseYaml(t *testing.T) {
 
-	retConfig := dagconfigservice.NewDagConfigService()
-	err := retConfig.LoadDagConfigFromString(testValidYAMLString)
+	retConfig := new(constellation.Config)
+	err := retConfig.LoadString(testValidYAMLString)
 	if err != nil {
 		panic(err)
 	}

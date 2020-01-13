@@ -6,21 +6,22 @@ package cmd
 // has to be run through a graphviz visualisation tool/utiliyy
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/awalterschulze/gographviz"
 	set "github.com/deckarep/golang-set"
-	"github.com/microsoft/abstrakt/internal/dagconfigservice"
+	"github.com/microsoft/abstrakt/internal/platform/constellation"
+	"github.com/microsoft/abstrakt/internal/tools/helpers"
 	"github.com/microsoft/abstrakt/internal/tools/logger"
 	"github.com/spf13/cobra"
-	// "os"
 	"strings"
 )
 
 type diffCmd struct {
 	constellationFilePathOrg string
 	constellationFilePathNew string
-	showOriginal             bool
-	showNew                  bool
+	showOriginal             *bool
+	showNew                  *bool
 	*baseCmd
 }
 
@@ -45,59 +46,52 @@ Example: abstrakt diff -o [constellationFilePathOriginal] -n [constellationFileP
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			logger.Debug("args: " + strings.Join(args, " "))
-			logger.Debug("constellationFilePathOrg: " + cc.constellationFilePathOrg)
-			logger.Debug("constellationFilePathNew: " + cc.constellationFilePathNew)
+			logger.Debugf("constellationFilePathOrg: %v", cc.constellationFilePathOrg)
+			logger.Debugf("constellationFilePathNew: %v", cc.constellationFilePathNew)
 
-			if cmd.Flag("showOriginalOutput").Value.String() == "true" {
-				logger.Debug("showOriginalOutput: true")
-				cc.showOriginal = true
-			} else {
-				logger.Debug("showOriginalOutput: false")
-				cc.showOriginal = false
-			}
-			if cmd.Flag("showNewOutput").Value.String() == "true" {
-				logger.Debug("showNewOutput: true")
-				cc.showNew = true
-			} else {
-				logger.Debug("showNewOutput: false")
-				cc.showNew = false
-			}
+			logger.Debugf("showOriginalOutput: %t", *cc.showOriginal)
+			logger.Debugf("showNewOutput: %t", *cc.showNew)
 
-			if !fileExists(cc.constellationFilePathOrg) {
+			if !helpers.FileExists(cc.constellationFilePathOrg) {
 				return fmt.Errorf("Could not open original YAML input file for reading %v", cc.constellationFilePathOrg)
 			}
 
-			if !fileExists(cc.constellationFilePathNew) {
+			if !helpers.FileExists(cc.constellationFilePathNew) {
 				return fmt.Errorf("Could not open new YAML input file for reading %v", cc.constellationFilePathNew)
 			}
 
-			dsGraphOrg := dagconfigservice.NewDagConfigService()
-			err := dsGraphOrg.LoadDagConfigFromFile(cc.constellationFilePathOrg)
+			dsGraphOrg := new(constellation.Config)
+			err := dsGraphOrg.LoadFile(cc.constellationFilePathOrg)
 			if err != nil {
 				return fmt.Errorf("dagConfigService failed to load file %q: %s", cc.constellationFilePathOrg, err)
 			}
 
-			if cc.showOriginal {
-				resStringOrg := generateGraph(dsGraphOrg)
+			if *cc.showOriginal {
+				out := &bytes.Buffer{}
+				resStringOrg, err := dsGraphOrg.GenerateGraph(out)
+				if err != nil {
+					return err
+				}
 				logger.Output(resStringOrg)
 			}
 
-			dsGraphNew := dagconfigservice.NewDagConfigService()
-			err = dsGraphNew.LoadDagConfigFromFile(cc.constellationFilePathNew)
+			dsGraphNew := new(constellation.Config)
+			err = dsGraphNew.LoadFile(cc.constellationFilePathNew)
 			if err != nil {
 				return fmt.Errorf("dagConfigService failed to load file %q: %s", cc.constellationFilePathNew, err)
 			}
 
-			if cc.showNew {
-				resStringNew := generateGraph(dsGraphNew)
+			if *cc.showNew {
+				out := &bytes.Buffer{}
+				resStringNew, err := dsGraphNew.GenerateGraph(out)
+				if err != nil {
+					return err
+				}
 				logger.Output(resStringNew)
 			}
 
 			resStringDiff := compareConstellations(dsGraphOrg, dsGraphNew)
-			// logger.Output is also outputting a timestamp and 'level' message when used on the command line which causes
-			// graphviz to fail !?
 			logger.Output(resStringDiff)
-			// fmt.Println(resStringDiff)
 
 			return nil
 		},
@@ -105,8 +99,8 @@ Example: abstrakt diff -o [constellationFilePathOriginal] -n [constellationFileP
 
 	cc.cmd.Flags().StringVarP(&cc.constellationFilePathOrg, "constellationFilePathOriginal", "o", "", "original or base constellation file path")
 	cc.cmd.Flags().StringVarP(&cc.constellationFilePathNew, "constellationFilePathNew", "n", "", "new or changed constellation file path")
-	cc.cmd.Flags().Bool("showOriginalOutput", false, "will additionally produce dot notation for original constellation")
-	cc.cmd.Flags().Bool("showNewOutput", false, "will additionally produce dot notation for new constellation")
+	cc.showOriginal = cc.cmd.Flags().Bool("showOriginalOutput", false, "will additionally produce dot notation for original constellation")
+	cc.showNew = cc.cmd.Flags().Bool("showNewOutput", false, "will additionally produce dot notation for new constellation")
 	_ = cc.cmd.MarkFlagRequired("constellationFilePathOriginal")
 	_ = cc.cmd.MarkFlagRequired("constellationFilePathNew")
 
@@ -114,7 +108,7 @@ Example: abstrakt diff -o [constellationFilePathOriginal] -n [constellationFileP
 }
 
 //compareConstellations
-func compareConstellations(dsOrg dagconfigservice.DagConfigService, dsNew dagconfigservice.DagConfigService) string {
+func compareConstellations(dsOrg *constellation.Config, dsNew *constellation.Config) string {
 	sets := &setsForComparison{}
 
 	// populate comparison sets with changes between original and new graph
@@ -128,7 +122,7 @@ func compareConstellations(dsOrg dagconfigservice.DagConfigService, dsNew dagcon
 
 // fillComparisonSets - loads provided set struct with data from the constellations and then determines the various differences between the
 // sets (original constellation and new) to help detemine what has been added, removed or changed.
-func fillComparisonSets(dsOrg dagconfigservice.DagConfigService, dsNew dagconfigservice.DagConfigService, sets *setsForComparison) {
+func fillComparisonSets(dsOrg *constellation.Config, dsNew *constellation.Config, sets *setsForComparison) {
 	setOrgSvcs, setOrgRel := createSet(dsOrg)
 	setNewSvcs, setNewRel := createSet(dsNew)
 
@@ -145,7 +139,7 @@ func fillComparisonSets(dsOrg dagconfigservice.DagConfigService, dsNew dagconfig
 }
 
 // createSet - utility function used to create a pair of result sets (services + relationships) based on an input constellation DAG
-func createSet(dsGraph dagconfigservice.DagConfigService) (set.Set, set.Set) {
+func createSet(dsGraph *constellation.Config) (set.Set, set.Set) {
 
 	// Create sets to hold services and relationships - used to find differences between old and new using intersection and difference operations
 	retSetServices := set.NewSet()
@@ -167,7 +161,7 @@ func createSet(dsGraph dagconfigservice.DagConfigService) (set.Set, set.Set) {
 // createGraphWithChanges - use both input constellations (new and original) as well as the comparison sets to create
 // a dag that can be visualised. It uses the comparison sets to identify additions, deletions and changes between the original
 // and new constellations.
-func createGraphWithChanges(newGraph dagconfigservice.DagConfigService, sets *setsForComparison) string {
+func createGraphWithChanges(newGraph *constellation.Config, sets *setsForComparison) string {
 	// Lookup is used to map IDs to names. Names are easier to visualise but IDs are more important to ensure the
 	// presented constellation is correct and IDs are used to link nodes together
 	lookup := make(map[string]string)

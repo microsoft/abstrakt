@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/microsoft/abstrakt/internal/chartservice"
-	"github.com/microsoft/abstrakt/internal/composeservice"
+	"github.com/microsoft/abstrakt/internal/compose"
+	"github.com/microsoft/abstrakt/internal/platform/chart"
 	"github.com/microsoft/abstrakt/internal/tools/logger"
 	"github.com/spf13/cobra"
 	"path"
@@ -43,15 +43,15 @@ Example: abstrakt compose [chart name] -t [templateType] -f [constellationFilePa
 				return fmt.Errorf("Template type: %v is not known", cc.templateType)
 			}
 
-			service := composeservice.NewComposeService()
-			_ = service.LoadFromFile(cc.constellationFilePath, cc.mapsFilePath)
+			service := new(compose.Composer)
+			_ = service.LoadFile(cc.constellationFilePath, cc.mapsFilePath)
 
 			logger.Debugf("noChecks is set to %t", *cc.noChecks)
 
 			if !*cc.noChecks {
 				logger.Debug("Starting validating constellation")
 
-				err = validateDag(&service.DagConfigService)
+				err = validateDag(&service.Constellation)
 
 				if err != nil {
 					return
@@ -60,12 +60,12 @@ Example: abstrakt compose [chart name] -t [templateType] -f [constellationFilePa
 				logger.Debug("Finished validating constellation")
 			}
 
-			chart, err := service.Compose(chartName, cc.outputPath)
+			helm, err := service.Build(chartName, cc.outputPath)
 			if err != nil {
 				return fmt.Errorf("Could not compose: %v", err)
 			}
 
-			err = chartservice.SaveChartToDir(chart, cc.outputPath)
+			err = chart.SaveToDir(helm, cc.outputPath)
 
 			if err != nil {
 				return fmt.Errorf("There was an error saving the chart: %v", err)
@@ -73,14 +73,14 @@ Example: abstrakt compose [chart name] -t [templateType] -f [constellationFilePa
 
 			logger.Infof("Chart was saved to: %v", cc.outputPath)
 
-			out, err := chartservice.BuildChart(path.Join(cc.outputPath, chartName))
+			out, err := chart.Build(path.Join(cc.outputPath, chartName))
 
 			if err != nil {
 				return fmt.Errorf("There was an error saving the chart: %v", err)
 			}
 
 			if *cc.zipChart {
-				_, err = chartservice.ZipChartToDir(chart, cc.outputPath)
+				_, err = chart.ZipToDir(helm, cc.outputPath)
 				if err != nil {
 					return fmt.Errorf("There was an error zipping the chart: %v", err)
 				}

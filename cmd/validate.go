@@ -2,9 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/microsoft/abstrakt/internal/dagconfigservice"
+	"github.com/microsoft/abstrakt/internal/platform/constellation"
 	"github.com/microsoft/abstrakt/internal/tools/logger"
-	"github.com/microsoft/abstrakt/internal/validationservice"
 	"github.com/spf13/cobra"
 )
 
@@ -26,14 +25,14 @@ Example: abstrakt validate -f [constellationFilePath]`,
 		SilenceErrors: true,
 
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			d := dagconfigservice.NewDagConfigService()
-			err = d.LoadDagConfigFromFile(cc.constellationFilePath)
+			d := new(constellation.Config)
+			err = d.LoadFile(cc.constellationFilePath)
 
 			if err != nil {
 				return
 			}
 
-			err = validateDag(&d)
+			err = validateDag(d)
 
 			if err == nil {
 				logger.Info("Constellation is valid.")
@@ -50,16 +49,14 @@ Example: abstrakt validate -f [constellationFilePath]`,
 }
 
 // validateDag takes a constellation dag and returns any errors.
-func validateDag(dag *dagconfigservice.DagConfigService) (err error) {
-	service := validationservice.Validator{Config: dag}
-
-	err = service.ValidateModel()
+func validateDag(dag *constellation.Config) (err error) {
+	err = dag.ValidateModel()
 
 	if err != nil {
 		return
 	}
 
-	duplicates := service.CheckDuplicates()
+	duplicates := dag.CheckDuplicates()
 
 	if duplicates != nil {
 		logger.Error("Duplicate IDs found:")
@@ -69,7 +66,7 @@ func validateDag(dag *dagconfigservice.DagConfigService) (err error) {
 		err = error(fmt.Errorf("Constellation is invalid"))
 	}
 
-	connections := service.CheckServiceExists()
+	connections := dag.CheckServiceExists()
 
 	if len(connections) > 0 {
 		for key, i := range connections {

@@ -1,29 +1,27 @@
-package composeservice
+package compose
 
 import (
 	"errors"
 	"fmt"
-
-	"github.com/microsoft/abstrakt/internal/buildmapservice"
-	"github.com/microsoft/abstrakt/internal/chartservice"
-	"github.com/microsoft/abstrakt/internal/dagconfigservice"
-
-	"helm.sh/helm/v3/pkg/chart"
+	"github.com/microsoft/abstrakt/internal/chart"
+	"github.com/microsoft/abstrakt/internal/platform/constellation"
+	"github.com/microsoft/abstrakt/internal/platform/mapper"
+	helm "helm.sh/helm/v3/pkg/chart"
 )
 
-//ComposeService takes maps and configs and builds out the helm chart
-type ComposeService struct {
-	DagConfigService dagconfigservice.DagConfigService
-	BuildMapService  buildmapservice.BuildMapService
+//Composer takes maps and configs and builds out the helm chart
+type Composer struct {
+	Constellation constellation.Config
+	Mapper        mapper.Config
 }
 
-//Compose takes the loaded DAG and maps and builds the Helm values and requirements documents
-func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) {
-	if m.DagConfigService.Name == "" || m.BuildMapService.Name == "" {
+//Build takes the loaded DAG and maps and builds the Helm values and requirements documents
+func (m *Composer) Build(name string, dir string) (*helm.Chart, error) {
+	if m.Constellation.Name == "" || m.Mapper.Name == "" {
 		return nil, errors.New("Please initialise with LoadFromFile or LoadFromString")
 	}
 
-	newChart, err := chartservice.CreateChart(name, dir)
+	newChart, err := chart.Create(name, dir)
 
 	if err != nil {
 		return nil, err
@@ -31,12 +29,12 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 
 	serviceMap := make(map[string]int)
 	aliasMap := make(map[string]string)
-	deps := make([]*chart.Dependency, 0)
+	deps := make([]*helm.Dependency, 0)
 
 	values := newChart.Values
 
-	for _, n := range m.DagConfigService.Services {
-		service := m.BuildMapService.FindByType(n.Type)
+	for _, n := range m.Constellation.Services {
+		service := m.Mapper.FindByType(n.Type)
 		if service == nil {
 			return nil, fmt.Errorf("Could not find service %v", service)
 		}
@@ -49,7 +47,7 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 
 		serviceMap[service.Type]++
 
-		dep := &chart.Dependency{
+		dep := &helm.Dependency{
 			Name: service.ChartName, Version: service.Version, Repository: service.Location,
 		}
 
@@ -69,15 +67,15 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 
 		relationships := make(map[string][]interface{})
 		valMap["relationships"] = &relationships
-		toRels := m.DagConfigService.FindRelationshipByToName(n.ID)
-		fromRels := m.DagConfigService.FindRelationshipByFromName(n.ID)
+		toRels := m.Constellation.FindRelationshipByToName(n.ID)
+		fromRels := m.Constellation.FindRelationshipByFromName(n.ID)
 
 		for _, i := range toRels {
 			toRelations := make(map[string]string)
 			relationships["input"] = append(relationships["input"], &toRelations)
 
 			//find the target service
-			foundService := m.DagConfigService.FindService(i.From)
+			foundService := m.Constellation.FindService(i.From)
 
 			if foundService == nil {
 				return nil, fmt.Errorf("Service '%v' referenced in relationship '%v' not found", i.From, i.ID)
@@ -99,7 +97,7 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 			relationships["output"] = append(relationships["output"], &fromRelations)
 
 			//find the target service
-			foundService := m.DagConfigService.FindService(i.To)
+			foundService := m.Constellation.FindService(i.To)
 
 			if foundService == nil {
 				return nil, fmt.Errorf("Service '%v' referenced in relationship '%v' not found", i.To, i.ID)
@@ -121,36 +119,22 @@ func (m *ComposeService) Compose(name string, dir string) (*chart.Chart, error) 
 	newChart.Metadata.Dependencies = deps
 
 	return newChart, nil
-
 }
 
-//LoadFromFile takes a string dag and map and loads them
-func (m *ComposeService) LoadFromFile(dagFile string, mapFile string) (err error) {
-	err = m.DagConfigService.LoadDagConfigFromFile(dagFile)
+//LoadFile takes a string dag and map and loads them
+func (m *Composer) LoadFile(dagFile string, mapFile string) (err error) {
+	err = m.Constellation.LoadFile(dagFile)
 	if err != nil {
 		return err
 	}
-	err = m.BuildMapService.LoadMapFromFile(mapFile)
-	return
+	return m.Mapper.LoadFile(mapFile)
 }
 
-//LoadFromString takes a string dag and map and loads them
-func (m *ComposeService) LoadFromString(dagString string, mapString string) (err error) {
-	err = m.DagConfigService.LoadDagConfigFromString(dagString)
-
+//LoadString takes a string dag and map and loads them
+func (m *Composer) LoadString(dagString string, mapString string) (err error) {
+	err = m.Constellation.LoadString(dagString)
 	if err != nil {
 		return
 	}
-
-	err = m.BuildMapService.LoadMapFromString(mapString)
-
-	return
-}
-
-//NewComposeService constructs a new compose service
-func NewComposeService() ComposeService {
-	s := ComposeService{}
-	s.DagConfigService = dagconfigservice.NewDagConfigService()
-	s.BuildMapService = buildmapservice.NewBuildMapService()
-	return s
+	return m.Mapper.LoadString(mapString)
 }

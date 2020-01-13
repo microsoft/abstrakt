@@ -1,9 +1,10 @@
 package cmd
 
 import (
+	"github.com/microsoft/abstrakt/internal/tools/helpers"
 	"github.com/sirupsen/logrus/hooks/test"
 	"os"
-	"testing" // based on standard golang testing library https://golang.org/pkg/testing/
+	"testing"
 )
 
 // TestMain does setup or teardown (tests run when m.Run() is called)
@@ -25,11 +26,11 @@ func TestVersionCmd(t *testing.T) {
 	expected := "0.0.1"
 
 	hook := test.NewGlobal()
-	_, err := executeCommand(newVersionCmd().cmd)
+	_, err := helpers.ExecuteCommand(newVersionCmd().cmd)
 
 	if err != nil {
 		t.Error(err)
 	} else {
-		checkStringContains(t, hook.LastEntry().Message, expected)
+		helpers.CheckStringContains(t, hook.LastEntry().Message, expected)
 	}
 }

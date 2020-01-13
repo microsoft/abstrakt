@@ -10,9 +10,7 @@ package guid
 //
 ////////////////////////////////////////////////////////////
 
-import (
-	"strings"
-)
+import "strings"
 
 // If true, tolerate Find requests where the case is incorrect.
 // e.g. if asked for Name="abc", then okay to return the object
@@ -30,20 +28,20 @@ const TolerateMiscasedKey = true
 // GUID -- an alias for an ID
 type GUID string
 
-// EmptyGUID -- equivalent to an uninitialized GUID.
-const EmptyGUID = GUID("")
+// Empty -- equivalent to an uninitialized GUID.
+const Empty = GUID("")
 
 // IsEmpty - true if GUID represents empty value.
 func (LHS GUID) IsEmpty() bool {
-	return EmptyGUID.Equals(LHS)
+	return Empty.Equals(LHS)
 }
 
 // Equals -- true if two GUIDs compare equal.  Case differences are tolerated.
 func (LHS GUID) Equals(RHS GUID) bool {
-	if LHS == EmptyGUID && RHS == EmptyGUID {
+	if LHS == Empty && RHS == Empty {
 		return true
 	}
-	if LHS == EmptyGUID || RHS == EmptyGUID {
+	if LHS == Empty || RHS == Empty {
 		return false
 	}
 

@@ -1,4 +1,4 @@
-package chartservice
+package chart
 
 import (
 	"bytes"
@@ -17,8 +17,8 @@ description: A Helm chart for Kubernetes
 version: 4.3.2
 home: ""`
 
-//CreateChart makes a new chart at the specified location
-func CreateChart(name string, dir string) (chartReturn *chart.Chart, err error) {
+//Create makes a new chart at the specified location
+func Create(name string, dir string) (chartReturn *chart.Chart, err error) {
 	tdir, err := ioutil.TempDir("./", "output-")
 
 	if err != nil {
@@ -77,8 +77,8 @@ func CreateChart(name string, dir string) (chartReturn *chart.Chart, err error) 
 	return
 }
 
-// LoadChartFromDir loads a Helm chart from the specified director
-func LoadChartFromDir(dir string) (*chart.Chart, error) {
+// LoadFromDir loads a Helm chart from the specified director
+func LoadFromDir(dir string) (*chart.Chart, error) {
 	h, err := loader.LoadDir(dir)
 
 	if err != nil {
@@ -88,18 +88,18 @@ func LoadChartFromDir(dir string) (*chart.Chart, error) {
 	return h, nil
 }
 
-// SaveChartToDir takes the chart object and saves it as a set of files in the specified director
-func SaveChartToDir(chart *chart.Chart, dir string) error {
+// SaveToDir takes the chart object and saves it as a set of files in the specified director
+func SaveToDir(chart *chart.Chart, dir string) error {
 	return chartutil.SaveDir(chart, dir)
 }
 
-// ZipChartToDir compresses the chart and saves it in compiled format
-func ZipChartToDir(chart *chart.Chart, dir string) (string, error) {
+// ZipToDir compresses the chart and saves it in compiled format
+func ZipToDir(chart *chart.Chart, dir string) (string, error) {
 	return chartutil.Save(chart, dir)
 }
 
-// BuildChart download charts
-func BuildChart(dir string) (out *bytes.Buffer, err error) {
+// Build download charts
+func Build(dir string) (out *bytes.Buffer, err error) {
 
 	out = &bytes.Buffer{}
 

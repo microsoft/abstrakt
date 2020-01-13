@@ -3,12 +3,12 @@ package cmd
 import (
 	"fmt"
 	set "github.com/deckarep/golang-set"
-	"github.com/microsoft/abstrakt/internal/dagconfigservice"
+	"github.com/microsoft/abstrakt/internal/platform/constellation"
+	"github.com/microsoft/abstrakt/internal/tools/helpers"
 	"github.com/sirupsen/logrus/hooks/test"
 	"io/ioutil"
 	"os"
 	"path"
-	"strings"
 	"testing"
 )
 
@@ -18,7 +18,7 @@ func TestDiffCmdWithAllRequirementsNoError(t *testing.T) {
 	constellationPathOrg, constellationPathNew, _, _ := localPrepareRealFilesForTest(t)
 
 	hook := test.NewGlobal()
-	_, err := executeCommand(newDiffCmd().cmd, "-o", constellationPathOrg, "-n", constellationPathNew)
+	_, err := helpers.ExecuteCommand(newDiffCmd().cmd, "-o", constellationPathOrg, "-n", constellationPathNew)
 
 	// fmt.Println(hook.LastEntry().Message)
 	// fmt.Println(testDiffComparisonOutputString)
@@ -26,7 +26,7 @@ func TestDiffCmdWithAllRequirementsNoError(t *testing.T) {
 	if err != nil {
 		t.Error("Did not receive output")
 	} else {
-		if !compareGraphOutputAsSets(testDiffComparisonOutputString, hook.LastEntry().Message) {
+		if !helpers.CompareGraphOutputAsSets(testDiffComparisonOutputString, hook.LastEntry().Message) {
 			t.Errorf("Expcted output and produced output do not match : expected %s produced %s", testDiffComparisonOutputString, hook.LastEntry().Message)
 		}
 		// Did use this initially but wont work with the strongs output from the graphviz library as the sequence of entries in the output can change
@@ -63,50 +63,25 @@ func localPrepareRealFilesForTest(t *testing.T) (string, string, string, string)
 	return constellationPathOrg, constellationPathNew, mapsPath, tdir
 }
 
-// compareGraphOutputAsSets - the graphviz library does not always output the result string with nodes and edges
-// in the same order (it can vary between calls). This does not impact using the result but makes testing the result a
-// headache as the assumption is that the expected string and the produced string would match exactly. When the sequence
-// changes they dont match. This function converts the strings into sets of lines and compares if the lines in the two outputs
-// are the same
-func compareGraphOutputAsSets(expected, produced string) bool {
-
-	lstExpected := strings.Split(expected, "\n")
-	lstProduced := strings.Split(produced, "\n")
-
-	setExpected := set.NewSet()
-	setProduced := set.NewSet()
-
-	for l := range lstExpected {
-		setExpected.Add(l)
-	}
-
-	for l := range lstProduced {
-		setProduced.Add(l)
-	}
-
-	return setProduced.Equal(setExpected)
-
-}
-
 // TestDffCmdFailYaml - test diff command parameters
 // Test both required command line parameters (-o, -n) failing each in turn
 func TestDffCmdFailYaml(t *testing.T) {
 	expected := "Could not open original YAML input file for reading constellationPathOrg"
 
-	output, err := executeCommand(newDiffCmd().cmd, "-o", "constellationPathOrg", "-n", "constellationPathNew")
+	output, err := helpers.ExecuteCommand(newDiffCmd().cmd, "-o", "constellationPathOrg", "-n", "constellationPathNew")
 
 	if err != nil {
-		checkStringContains(t, err.Error(), expected)
+		helpers.CheckStringContains(t, err.Error(), expected)
 	} else {
 		t.Errorf("Did not fail and it should have. Expected: %v \nGot: %v", expected, output)
 	}
 
 	expected = "Could not open new YAML input file for reading constellationPathNew"
 
-	output, err = executeCommand(newDiffCmd().cmd, "-o", "../sample/constellation/sample_constellation.yaml", "-n", "constellationPathNew")
+	output, err = helpers.ExecuteCommand(newDiffCmd().cmd, "-o", "../sample/constellation/sample_constellation.yaml", "-n", "constellationPathNew")
 
 	if err != nil {
-		checkStringContains(t, err.Error(), expected)
+		helpers.CheckStringContains(t, err.Error(), expected)
 	} else {
 		t.Errorf("Did not fail and it should have. Expected: %v \nGot: %v", expected, output)
 	}
@@ -118,18 +93,18 @@ func TestDffCmdFailYaml(t *testing.T) {
 func TestDiffCmdFailNotYaml(t *testing.T) {
 	expected := "dagConfigService failed to load file"
 
-	output, err := executeCommand(newDiffCmd().cmd, "-o", "diff.go", "-n", "diff.go")
+	output, err := helpers.ExecuteCommand(newDiffCmd().cmd, "-o", "diff.go", "-n", "diff.go")
 
 	if err != nil {
-		checkStringContains(t, err.Error(), expected)
+		helpers.CheckStringContains(t, err.Error(), expected)
 	} else {
 		t.Errorf("Did not fail. Expected: %v \nGot: %v", expected, output)
 	}
 
-	output, err = executeCommand(newDiffCmd().cmd, "-o", "../sample/constellation/sample_constellation.yaml", "-n", "diff.go")
+	output, err = helpers.ExecuteCommand(newDiffCmd().cmd, "-o", "../sample/constellation/sample_constellation.yaml", "-n", "diff.go")
 
 	if err != nil {
-		checkStringContains(t, err.Error(), expected)
+		helpers.CheckStringContains(t, err.Error(), expected)
 	} else {
 		t.Errorf("Did not fail. Expected: %v \nGot: %v", expected, output)
 	}
@@ -139,14 +114,14 @@ func TestDiffCmdFailNotYaml(t *testing.T) {
 // and compare to manually created sets with a known or expected outcome
 func TestGetComparisonSets(t *testing.T) {
 
-	dsGraphOrg := dagconfigservice.NewDagConfigService()
-	err := dsGraphOrg.LoadDagConfigFromString(testOrgDagStr)
+	dsGraphOrg := new(constellation.Config)
+	err := dsGraphOrg.LoadString(testOrgDagStr)
 	if err != nil {
 		t.Errorf("dagConfigService failed to load dag from test string %s", err)
 	}
 
-	dsGraphNew := dagconfigservice.NewDagConfigService()
-	err = dsGraphNew.LoadDagConfigFromString(testNewDagStr)
+	dsGraphNew := new(constellation.Config)
+	err = dsGraphNew.LoadString(testNewDagStr)
 	if err != nil {
 		t.Errorf("dagConfigService failed to load file %s", err)
 	}
@@ -190,14 +165,14 @@ func TestGetComparisonSets(t *testing.T) {
 // testGraphWithChanges - test diff comparison function
 func TestGraphWithChanges(t *testing.T) {
 
-	dsGraphOrg := dagconfigservice.NewDagConfigService()
-	err := dsGraphOrg.LoadDagConfigFromString(testOrgDagStr)
+	dsGraphOrg := new(constellation.Config)
+	err := dsGraphOrg.LoadString(testOrgDagStr)
 	if err != nil {
 		t.Errorf("dagConfigService failed to load dag from test string %s", err)
 	}
 
-	dsGraphNew := dagconfigservice.NewDagConfigService()
-	err = dsGraphNew.LoadDagConfigFromString(testNewDagStr)
+	dsGraphNew := new(constellation.Config)
+	err = dsGraphNew.LoadString(testNewDagStr)
 	if err != nil {
 		t.Errorf("dagConfigService failed to load file %s", err)
 	}
@@ -210,7 +185,7 @@ func TestGraphWithChanges(t *testing.T) {
 
 	resString := createGraphWithChanges(dsGraphNew, loadedSets)
 
-	if !compareGraphOutputAsSets(testDiffComparisonOutputString, resString) {
+	if !helpers.CompareGraphOutputAsSets(testDiffComparisonOutputString, resString) {
 		t.Errorf("Resulting output does not match the reference comparison input \n RESULT \n%s EXPECTED \n%s", resString, testDiffComparisonOutputString)
 	}
 }

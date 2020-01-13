@@ -1,10 +1,10 @@
-package buildmapservice
+package mapper_test
 
 import (
+	"github.com/microsoft/abstrakt/internal/platform/mapper"
+	"github.com/microsoft/abstrakt/internal/tools/guid"
 	"reflect"
 	"testing"
-
-	"github.com/microsoft/abstrakt/internal/tools/guid"
 )
 
 func TestMapFromString(t *testing.T) {
@@ -14,7 +14,7 @@ func TestMapFromString(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		wantRet *BuildMapService
+		wantRet *mapper.Config
 		wantErr bool
 	}{
 		{
@@ -26,8 +26,8 @@ func TestMapFromString(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mapper := &BuildMapService{}
-			err := mapper.LoadMapFromString(tt.args.yamlString)
+			mapper := &mapper.Config{}
+			err := mapper.LoadString(tt.args.yamlString)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadMapFromString() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -57,10 +57,10 @@ Maps:
   Version: "1.0.0"
 `
 
-var buildMap01 = BuildMapService{
+var buildMap01 = mapper.Config{
 	Name: "Basic Azure Event Hubs maps",
 	ID:   guid.GUID("a5a7c413-a020-44a2-bd23-1941adb7ad58"),
-	Maps: []BuildMapInfo{
+	Maps: []mapper.Info{
 		{
 			ChartName: "event_hub_sample_event_generator",
 			Type:      "EventGenerator",
