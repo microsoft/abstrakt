@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/microsoft/abstrakt/internal/tools/helpers"
 	"github.com/sirupsen/logrus/hooks/test"
+	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
 )
@@ -16,10 +17,7 @@ func TestMain(m *testing.M) {
 func TestVersion(t *testing.T) {
 	expected := "0.0.1"
 	version := Version()
-
-	if version != expected {
-		t.Errorf("Did not find correct abstrakt version. Expected %v, got %v", expected, version)
-	}
+	assert.Equal(t, expected, version)
 }
 
 func TestVersionCmd(t *testing.T) {

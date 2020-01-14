@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/microsoft/abstrakt/internal/tools/helpers"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -14,9 +15,7 @@ func TestValidateCommand(t *testing.T) {
 
 	output, err := helpers.ExecuteCommand(newValidateCmd().cmd, "-f", constellationPath)
 
-	if err != nil {
-		t.Errorf("Did not received expected error. \nGot:\n %v", output)
-	}
+	assert.NoErrorf(t, err, "Did not received expected error. \nGot:\n %v", output)
 
 	_, err = helpers.ExecuteCommand(newValidateCmd().cmd, "-f", "does-not-exist")
 

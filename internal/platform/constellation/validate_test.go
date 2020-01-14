@@ -2,6 +2,7 @@ package constellation_test
 
 import (
 	"github.com/microsoft/abstrakt/internal/platform/constellation"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -11,9 +12,7 @@ func TestForDuplicatIDsInServices(t *testing.T) {
 
 	duplicates := testData.CheckDuplicates()
 
-	if duplicates != nil {
-		t.Error("No duplicates should be found.")
-	}
+	assert.Nil(t, duplicates, "No duplicates should be found.")
 }
 
 func TestServicesExists(t *testing.T) {
@@ -22,9 +21,7 @@ func TestServicesExists(t *testing.T) {
 
 	missing := testData.CheckServiceExists()
 
-	if len(missing) != 0 {
-		t.Error("No missing services should be found.")
-	}
+	assert.Empty(t, missing, "No missing services should be found.")
 }
 
 func TestSchemaChecks(t *testing.T) {
@@ -33,9 +30,7 @@ func TestSchemaChecks(t *testing.T) {
 
 	err := testData.ValidateModel()
 
-	if err != nil {
-		t.Errorf("Model validation should not return errors: %v", err.Error())
-	}
+	assert.NoError(t, err, "Model validation should not return errors")
 }
 
 func TestForDuplicatIDsInServicesFail(t *testing.T) {
@@ -44,9 +39,8 @@ func TestForDuplicatIDsInServicesFail(t *testing.T) {
 
 	duplicates := testData.CheckDuplicates()
 
-	if duplicates == nil {
-		t.Errorf("There should be %v duplicate IDs found", len(testData.Services))
-	}
+	assert.NotNilf(t, duplicates, "There should be %v duplicate IDs found", 2)
+	assert.Equal(t, 2, len(duplicates))
 }
 
 func TestForDuplicatIDsInRelationshipsFail(t *testing.T) {
@@ -55,9 +49,8 @@ func TestForDuplicatIDsInRelationshipsFail(t *testing.T) {
 
 	duplicates := testData.CheckDuplicates()
 
-	if duplicates == nil {
-		t.Errorf("There should be %v duplicate IDs found", len(testData.Relationships))
-	}
+	assert.NotNilf(t, duplicates, "There should be %v duplicate IDs found", 1)
+	assert.Equal(t, 1, len(duplicates))
 }
 
 func TestForDuplicatIDsFail(t *testing.T) {
@@ -66,9 +59,8 @@ func TestForDuplicatIDsFail(t *testing.T) {
 
 	duplicates := testData.CheckDuplicates()
 
-	if duplicates == nil {
-		t.Error("There should be 2 duplicate IDs found")
-	}
+	assert.NotNilf(t, duplicates, "There should be %v duplicate IDs found", 1)
+	assert.Equal(t, 1, len(duplicates))
 }
 
 func TestServicesExistsFail(t *testing.T) {
@@ -80,11 +72,8 @@ func TestServicesExistsFail(t *testing.T) {
 
 	foundID := missing["Event Hubs to Event Logger Link"][0]
 
-	if len(missing) != 1 {
-		t.Error("There should be only 1 missing services found")
-	} else if foundID != expected {
-		t.Errorf("Incorrect reference found. Expected: %v \nGot: %v", expected, foundID)
-	}
+	assert.Equal(t, 1, len(missing), "There should be only 1 missing services found")
+	assert.Equalf(t, expected, foundID, "Incorrect reference found\nExpected: %v \nGot: %v", expected, foundID)
 }
 
 func TestSchemaMissingDagName(t *testing.T) {
@@ -93,9 +82,7 @@ func TestSchemaMissingDagName(t *testing.T) {
 
 	err := testData.ValidateModel()
 
-	if err == nil {
-		t.Error("Model validation should be invalid")
-	}
+	assert.Error(t, err, "Model validation should be invalid")
 }
 
 func TestSchemaMissingDagID(t *testing.T) {
@@ -104,9 +91,7 @@ func TestSchemaMissingDagID(t *testing.T) {
 
 	err := testData.ValidateModel()
 
-	if err == nil {
-		t.Error("Model validation should be invalid")
-	}
+	assert.Error(t, err, "Model validation should be invalid")
 }
 
 func TestSchemaMissingService(t *testing.T) {
@@ -115,9 +100,7 @@ func TestSchemaMissingService(t *testing.T) {
 
 	err := testData.ValidateModel()
 
-	if err == nil {
-		t.Error("Model validation should be invalid")
-	}
+	assert.Error(t, err, "Model validation should be invalid")
 }
 
 func TestSchemaMissingServiceID(t *testing.T) {
@@ -126,9 +109,7 @@ func TestSchemaMissingServiceID(t *testing.T) {
 
 	err := testData.ValidateModel()
 
-	if err == nil {
-		t.Error("Model validation should be invalid")
-	}
+	assert.Error(t, err, "Model validation should be invalid")
 }
 
 func TestSchemaMissingRelationshipID(t *testing.T) {
@@ -137,7 +118,5 @@ func TestSchemaMissingRelationshipID(t *testing.T) {
 
 	err := testData.ValidateModel()
 
-	if err == nil {
-		t.Error("Model validation should be invalid")
-	}
+	assert.Error(t, err, "Model validation should be invalid")
 }

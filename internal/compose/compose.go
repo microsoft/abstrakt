@@ -3,7 +3,7 @@ package compose
 import (
 	"errors"
 	"fmt"
-	"github.com/microsoft/abstrakt/internal/chart"
+	"github.com/microsoft/abstrakt/internal/platform/chart"
 	"github.com/microsoft/abstrakt/internal/platform/constellation"
 	"github.com/microsoft/abstrakt/internal/platform/mapper"
 	helm "helm.sh/helm/v3/pkg/chart"

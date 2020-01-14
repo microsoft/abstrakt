@@ -3,6 +3,7 @@ package constellation_test
 import (
 	"github.com/microsoft/abstrakt/internal/platform/constellation"
 	"github.com/microsoft/abstrakt/internal/tools/guid"
+	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"reflect"
 	"testing"
@@ -37,9 +38,7 @@ func TestNewDagConfigFromString(t *testing.T) {
 				t.Errorf("LoadDagConfigFromString() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(dag, tt.wantRet) {
-				t.Errorf("LoadDagConfigFromString() =\n%#v,\nWant:\n%#v\n", dag, tt.wantRet)
-			}
+			assert.Truef(t, reflect.DeepEqual(dag, tt.wantRet), "LoadDagConfigFromString() =\n%#v,\nWant:\n%#v\n", dag, tt.wantRet)
 		})
 	}
 }

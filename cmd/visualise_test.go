@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/microsoft/abstrakt/internal/platform/constellation"
 	"github.com/microsoft/abstrakt/internal/tools/helpers"
 	"github.com/sirupsen/logrus/hooks/test"
+	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -22,9 +22,7 @@ func TestVisualiseCmdWithAllRequirementsNoError(t *testing.T) {
 	if err != nil {
 		t.Error("Did not receive output")
 	} else {
-		if !helpers.CompareGraphOutputAsSets(validGraphString, hook.LastEntry().Message) {
-			t.Errorf("Expcted output and produced output do not match : expected %s produced %s", validGraphString, hook.LastEntry().Message)
-		}
+		assert.Truef(t, helpers.CompareGraphOutputAsSets(validGraphString, hook.LastEntry().Message), "Expcted output and produced output do not match : expected %s produced %s", validGraphString, hook.LastEntry().Message)
 	}
 }
 
@@ -65,22 +63,15 @@ func TestFileExists(t *testing.T) {
 
 	//Create a file to test against
 	err := ioutil.WriteFile(testValidFilename, testData, 0644)
-	if err != nil {
-		fmt.Println("Could not create output testing file, cannot proceed")
-		t.Error(err)
-	}
+	assert.NoError(t, err, "Could not create output testing file, cannot proceed")
 
 	//Test that a valid file (created above) can be seen
 	var result bool = helpers.FileExists(testValidFilename) //Expecting true - file does exists
-	if result == false {
-		t.Errorf("Test file does exist but testFile returns that it does not")
-	}
+	assert.True(t, result, "Test file does exist but testFile returns that it does not")
 
 	//Test that an invalid file (does not exist) is not seen
 	result = helpers.FileExists(testInvalidFilename) //Expecting false - file does not exist
-	if result != false {
-		t.Errorf("Test file does not exist but testFile says it does")
-	}
+	assert.False(t, result, "Test file does not exist but testFile says it does")
 
 	err = os.Remove(testValidFilename)
 	if err != nil {
@@ -88,10 +79,7 @@ func TestFileExists(t *testing.T) {
 	}
 
 	result = helpers.FileExists(testValidFilename) //Expecting false - file has been removed
-	if result == true {
-		t.Errorf("Test file has been removed but fileExists is finding it")
-	}
-
+	assert.False(t, result, "Test file has been removed but fileExists is finding it")
 }
 
 func TestParseYaml(t *testing.T) {
@@ -108,7 +96,6 @@ func TestParseYaml(t *testing.T) {
 		len(retConfig.Relationships) != 1 {
 		t.Errorf("YAML did not parse correctly and it should have")
 	}
-
 }
 
 // Sample DAG file data

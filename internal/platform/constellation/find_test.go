@@ -2,6 +2,7 @@ package constellation_test
 
 import (
 	"github.com/microsoft/abstrakt/internal/platform/constellation"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -11,9 +12,7 @@ func TestRelationshipFinding(t *testing.T) {
 	rel1 := dag.FindRelationshipByFromName("Event Generator")
 	rel2 := dag.FindRelationshipByToName("Azure Event Hub")
 
-	if rel1[0].From != rel2[0].From || rel1[0].To != rel2[0].To {
-		t.Error("Relationships were not correctly resolved")
-	}
+	assert.Condition(t, func() bool { return !(rel1[0].From != rel2[0].From || rel1[0].To != rel2[0].To) }, "Relationships were not correctly resolved")
 }
 
 func TestMultipleInstanceInRelationships(t *testing.T) {
@@ -32,11 +31,6 @@ func TestMultipleInstanceInRelationships(t *testing.T) {
 	from := dag.FindRelationshipByFromName("Event Generator")
 	to := dag.FindRelationshipByToName("Event Logger")
 
-	if len(from) != 2 {
-		t.Error("Event Generator did not have the correct number of `From` relationships")
-	}
-
-	if len(to) != 2 {
-		t.Error("Event Logger did not have the correct number of `To` relationships")
-	}
+	assert.EqualValues(t, 2, len(from), "Event Generator did not have the correct number of `From` relationships")
+	assert.EqualValues(t, 2, len(to), "Event Logger did not have the correct number of `To` relationships")
 }

@@ -3,6 +3,7 @@ package compose_test
 import (
 	"fmt"
 	"github.com/microsoft/abstrakt/internal/compose"
+	"github.com/stretchr/testify/assert"
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/chartutil"
@@ -28,17 +29,13 @@ func TestComposeService(t *testing.T) {
 	comp := new(compose.Composer)
 	_, err = comp.Build("test", tdir)
 
-	if err == nil {
-		t.Errorf("Compose should fail if not yet loaded")
-	}
+	assert.NoError(t, err, "Compose should fail if not yet loaded")
 
 	_ = comp.LoadString(test01DagStr, configMapTest01String)
 
 	h, err := comp.Build("test", tdir)
 
-	if err != nil {
-		t.Errorf("Compose should have loaded")
-	}
+	assert.NoError(t, err, "Compose should have loaded")
 
 	_ = chartutil.SaveDir(h, tdir)
 	h, _ = loader.LoadDir(tdir)
@@ -74,9 +71,7 @@ func TestHelmLibCompose(t *testing.T) {
 		t.Fatalf("Failed to load newly created chart %q: %s", c, err)
 	}
 
-	if mychart.Name() != "foo" {
-		t.Errorf("Expected name to be 'foo', got %q", mychart.Name())
-	}
+	assert.Equalf(t, "foo", mychart.Name(), "Expected name to be 'foo', got %q", mychart.Name())
 
 	for _, f := range []string{
 		chartutil.ChartfileName,
@@ -113,21 +108,15 @@ func TestHelmLibCompose(t *testing.T) {
 
 func TestLoadFromString(t *testing.T) {
 	comp := new(compose.Composer)
-	err := comp.LoadString(test01DagStr, configMapTest01String)
 
-	if err != nil {
-		t.Errorf("Error: %v", err)
-	}
+	err := comp.LoadString(test01DagStr, configMapTest01String)
+	assert.NoErrorf(t, err, "Error: %v", err)
 
 	err = comp.LoadString("sfdsd", configMapTest01String)
-	if err == nil {
-		t.Errorf("Didn't get error when should")
-	}
+	assert.Error(t, err, "Didn't get error when should")
 
 	err = comp.LoadString(test01DagStr, "sdfsdf")
-	if err == nil {
-		t.Errorf("Didn't get error when should")
-	}
+	assert.Error(t, err, "Didn't get error when should")
 }
 
 const test01DagStr = `Name: "Azure Event Hubs Sample"

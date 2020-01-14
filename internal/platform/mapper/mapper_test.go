@@ -3,6 +3,7 @@ package mapper_test
 import (
 	"github.com/microsoft/abstrakt/internal/platform/mapper"
 	"github.com/microsoft/abstrakt/internal/tools/guid"
+	"github.com/stretchr/testify/assert"
 	"reflect"
 	"testing"
 )
@@ -32,9 +33,7 @@ func TestMapFromString(t *testing.T) {
 				t.Errorf("LoadMapFromString() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(mapper, tt.wantRet) {
-				t.Errorf("LoadMapFromString() = %v, want %v", mapper, tt.wantRet)
-			}
+			assert.Truef(t, reflect.DeepEqual(mapper, tt.wantRet), "LoadMapFromString() = %v, want %v", mapper, tt.wantRet)
 		})
 	}
 }

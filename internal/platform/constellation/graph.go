@@ -3,8 +3,8 @@ package constellation
 import (
 	"fmt"
 	"github.com/awalterschulze/gographviz"
-	"strings"
 	"io"
+	"strings"
 )
 
 // GenerateGraph - function to take a dagconfigService structure and create a graph object that contains the

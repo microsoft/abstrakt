@@ -1,11 +1,11 @@
 package cmd
 
 import (
-	"fmt"
 	set "github.com/deckarep/golang-set"
 	"github.com/microsoft/abstrakt/internal/platform/constellation"
 	"github.com/microsoft/abstrakt/internal/tools/helpers"
 	"github.com/sirupsen/logrus/hooks/test"
+	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"os"
 	"path"
@@ -20,15 +20,10 @@ func TestDiffCmdWithAllRequirementsNoError(t *testing.T) {
 	hook := test.NewGlobal()
 	_, err := helpers.ExecuteCommand(newDiffCmd().cmd, "-o", constellationPathOrg, "-n", constellationPathNew)
 
-	// fmt.Println(hook.LastEntry().Message)
-	// fmt.Println(testDiffComparisonOutputString)
-
 	if err != nil {
 		t.Error("Did not receive output")
 	} else {
-		if !helpers.CompareGraphOutputAsSets(testDiffComparisonOutputString, hook.LastEntry().Message) {
-			t.Errorf("Expcted output and produced output do not match : expected %s produced %s", testDiffComparisonOutputString, hook.LastEntry().Message)
-		}
+		assert.Truef(t, helpers.CompareGraphOutputAsSets(testDiffComparisonOutputString, hook.LastEntry().Message), "Expcted output and produced output do not match : expected %s produced %s", testDiffComparisonOutputString, hook.LastEntry().Message)
 		// Did use this initially but wont work with the strongs output from the graphviz library as the sequence of entries in the output can change
 		// while the sequence may change the result is still valid and the same so am usinga  local comparison function to get around this problem
 		// checkStringContains(t, hook.LastEntry().Message, testDiffComparisonOutputString)
@@ -53,8 +48,6 @@ func localPrepareRealFilesForTest(t *testing.T) (string, string, string, string)
 	if err2 != nil {
 		t.Fatal(err2)
 	}
-
-	fmt.Print(cwd)
 
 	constellationPathOrg := path.Join(cwd, "../sample/constellation/sample_constellation.yaml")
 	constellationPathNew := path.Join(cwd, "../sample/constellation/sample_constellation_changed.yaml")
@@ -116,15 +109,11 @@ func TestGetComparisonSets(t *testing.T) {
 
 	dsGraphOrg := new(constellation.Config)
 	err := dsGraphOrg.LoadString(testOrgDagStr)
-	if err != nil {
-		t.Errorf("dagConfigService failed to load dag from test string %s", err)
-	}
+	assert.NoErrorf(t, err, "dagConfigService failed to load dag from test string %s", err)
 
 	dsGraphNew := new(constellation.Config)
 	err = dsGraphNew.LoadString(testNewDagStr)
-	if err != nil {
-		t.Errorf("dagConfigService failed to load file %s", err)
-	}
+	assert.NoErrorf(t, err, "dagConfigService failed to load file %s", err)
 
 	//construct sets struct for loaded constellation
 	loadedSets := &setsForComparison{}
@@ -136,30 +125,12 @@ func TestGetComparisonSets(t *testing.T) {
 	// function being tested
 	fillComparisonSets(dsGraphOrg, dsGraphNew, loadedSets)
 
-	if !knownSets.setCommonSvcs.Equal(loadedSets.setCommonSvcs) {
-		t.Errorf("Common services - did not match between expected result and input yaml")
-	}
-
-	if !knownSets.setCommonRels.Equal(loadedSets.setCommonRels) {
-		t.Errorf("Common relationships - did not match between expected result and input yaml")
-	}
-
-	if !knownSets.setAddedSvcs.Equal(loadedSets.setAddedSvcs) {
-		t.Errorf("Added services - did not match between expected result and input yaml")
-	}
-
-	if !knownSets.setAddedRels.Equal(loadedSets.setAddedRels) {
-		t.Errorf("Added relationships - did not match between expected result and input yaml")
-	}
-
-	if !knownSets.setDelSvcs.Equal(loadedSets.setDelSvcs) {
-		t.Errorf("Deleted services - did not match between expected result and input yaml")
-	}
-
-	if !knownSets.setDelRels.Equal(loadedSets.setDelRels) {
-		t.Errorf("Deleted relationships - did not match between expected result and input yaml")
-	}
-
+	assert.True(t, knownSets.setCommonSvcs.Equal(loadedSets.setCommonSvcs), "Common services - did not match between expected result and input yaml")
+	assert.True(t, knownSets.setCommonRels.Equal(loadedSets.setCommonRels), "Common relationships - did not match between expected result and input yaml")
+	assert.True(t, knownSets.setAddedSvcs.Equal(loadedSets.setAddedSvcs), "Added services - did not match between expected result and input yaml")
+	assert.True(t, knownSets.setAddedRels.Equal(loadedSets.setAddedRels), "Added relationships - did not match between expected result and input yaml")
+	assert.True(t, knownSets.setDelSvcs.Equal(loadedSets.setDelSvcs), "Deleted services - did not match between expected result and input yaml")
+	assert.True(t, knownSets.setDelRels.Equal(loadedSets.setDelRels), "Deleted relationships - did not match between expected result and input yaml")
 }
 
 // testGraphWithChanges - test diff comparison function
@@ -173,9 +144,7 @@ func TestGraphWithChanges(t *testing.T) {
 
 	dsGraphNew := new(constellation.Config)
 	err = dsGraphNew.LoadString(testNewDagStr)
-	if err != nil {
-		t.Errorf("dagConfigService failed to load file %s", err)
-	}
+	assert.NoErrorf(t, err, "dagConfigService failed to load file %s", err)
 
 	//construct sets struct for loaded constellation
 	loadedSets := &setsForComparison{}
@@ -185,9 +154,7 @@ func TestGraphWithChanges(t *testing.T) {
 
 	resString := createGraphWithChanges(dsGraphNew, loadedSets)
 
-	if !helpers.CompareGraphOutputAsSets(testDiffComparisonOutputString, resString) {
-		t.Errorf("Resulting output does not match the reference comparison input \n RESULT \n%s EXPECTED \n%s", resString, testDiffComparisonOutputString)
-	}
+	assert.Truef(t, helpers.CompareGraphOutputAsSets(testDiffComparisonOutputString, resString), "Resulting output does not match the reference comparison input \n RESULT \n%s EXPECTED \n%s", resString, testDiffComparisonOutputString)
 }
 
 // Utility to populate comparison sets with expected/known result
@@ -215,7 +182,6 @@ func populateComparisonSets(target *setsForComparison) {
 	target.setDelRels = set.NewSet()
 	target.setDelRels.Add("9e1bcb3d-ff58-41d4-8779-f71e7b8800f8" + "|" + "3aa1e546-1ed5-4d67-a59c-be0d5905b490")
 	target.setDelRels.Add("3aa1e546-1ed5-4d67-a59c-be0d5905b490" + "|" + "a268fae5-2a82-4a3e-ada7-a52eeb7019ac")
-
 }
 
 // Sample DAG file data - original file

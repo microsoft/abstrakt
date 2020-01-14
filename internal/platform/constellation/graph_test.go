@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"github.com/microsoft/abstrakt/internal/platform/constellation"
 	"github.com/microsoft/abstrakt/internal/tools/helpers"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -11,6 +12,9 @@ func TestGenerateGraph(t *testing.T) {
 
 	retConfig := new(constellation.Config)
 	err := retConfig.LoadFile("testdata/valid.yaml")
+
+	assert.NoError(t, err)
+
 	if err != nil {
 		panic(err)
 	}
@@ -20,14 +24,8 @@ func TestGenerateGraph(t *testing.T) {
 	cmpString := test02ConstGraphString
 	retString, err := retConfig.GenerateGraph(out)
 
-	if err != nil {
-		t.Errorf("Should not recieve error: %v", err)
-	}
-
-	if !helpers.CompareGraphOutputAsSets(cmpString, retString) {
-		t.Errorf("Input graph did not generate expected output graphviz representation")
-		t.Errorf("Expected:\n%v \nGot:\n%v", cmpString, retString)
-	}
+	assert.NoErrorf(t, err, "Should not recieve error: %v", err)
+	assert.True(t, helpers.CompareGraphOutputAsSets(cmpString, retString), "Input graph did not generate expected output graphviz representation\nExpected:\n%v \nGot:\n%v", cmpString, retString)
 }
 
 const test02ConstGraphString = `digraph Azure_Event_Hubs_Sample {
