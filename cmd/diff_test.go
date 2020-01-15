@@ -1,21 +1,16 @@
 package cmd
 
 import (
-	set "github.com/deckarep/golang-set"
-	"github.com/microsoft/abstrakt/internal/platform/constellation"
 	"github.com/microsoft/abstrakt/internal/tools/helpers"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
-	"io/ioutil"
-	"os"
-	"path"
 	"testing"
 )
 
 // TestDiffCmdWithAllRequirementsNoError - test diff command parameters
 // use valid arguments so expect no failures
 func TestDiffCmdWithAllRequirementsNoError(t *testing.T) {
-	constellationPathOrg, constellationPathNew, _, _ := localPrepareRealFilesForTest(t)
+	constellationPathOrg, constellationPathNew, _, _ := helpers.PrepareTwoRealConstellationFilesForTest(t)
 
 	hook := test.NewGlobal()
 	_, err := helpers.ExecuteCommand(newDiffCmd().cmd, "-o", constellationPathOrg, "-n", constellationPathNew)
@@ -28,32 +23,6 @@ func TestDiffCmdWithAllRequirementsNoError(t *testing.T) {
 		// while the sequence may change the result is still valid and the same so am usinga  local comparison function to get around this problem
 		// checkStringContains(t, hook.LastEntry().Message, testDiffComparisonOutputString)
 	}
-}
-
-// localPrepareRealFilesForTest - global function assumes only a single input file, this use the two required for the diff command
-func localPrepareRealFilesForTest(t *testing.T) (string, string, string, string) {
-	tdir, err := ioutil.TempDir("./", "output-")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() {
-		err = os.RemoveAll(tdir)
-		if err != nil {
-			t.Fatal(err)
-		}
-	}()
-
-	cwd, err2 := os.Getwd()
-	if err2 != nil {
-		t.Fatal(err2)
-	}
-
-	constellationPathOrg := path.Join(cwd, "../sample/constellation/sample_constellation.yaml")
-	constellationPathNew := path.Join(cwd, "../sample/constellation/sample_constellation_changed.yaml")
-	mapsPath := path.Join(cwd, "../sample/constellation/sample_constellation_maps.yaml")
-
-	return constellationPathOrg, constellationPathNew, mapsPath, tdir
 }
 
 // TestDffCmdFailYaml - test diff command parameters
@@ -102,180 +71,6 @@ func TestDiffCmdFailNotYaml(t *testing.T) {
 		t.Errorf("Did not fail. Expected: %v \nGot: %v", expected, output)
 	}
 }
-
-// TestGetComparisonSets - generate sets of common, added and removed services and relationships from  input YAML
-// and compare to manually created sets with a known or expected outcome
-func TestGetComparisonSets(t *testing.T) {
-
-	dsGraphOrg := new(constellation.Config)
-	err := dsGraphOrg.LoadString(testOrgDagStr)
-	assert.NoErrorf(t, err, "dagConfigService failed to load dag from test string %s", err)
-
-	dsGraphNew := new(constellation.Config)
-	err = dsGraphNew.LoadString(testNewDagStr)
-	assert.NoErrorf(t, err, "dagConfigService failed to load file %s", err)
-
-	//construct sets struct for loaded constellation
-	loadedSets := &setsForComparison{}
-	// will populate with expected/known outcomes
-	knownSets := &setsForComparison{}
-
-	populateComparisonSets(knownSets)
-
-	// function being tested
-	fillComparisonSets(dsGraphOrg, dsGraphNew, loadedSets)
-
-	assert.True(t, knownSets.setCommonSvcs.Equal(loadedSets.setCommonSvcs), "Common services - did not match between expected result and input yaml")
-	assert.True(t, knownSets.setCommonRels.Equal(loadedSets.setCommonRels), "Common relationships - did not match between expected result and input yaml")
-	assert.True(t, knownSets.setAddedSvcs.Equal(loadedSets.setAddedSvcs), "Added services - did not match between expected result and input yaml")
-	assert.True(t, knownSets.setAddedRels.Equal(loadedSets.setAddedRels), "Added relationships - did not match between expected result and input yaml")
-	assert.True(t, knownSets.setDelSvcs.Equal(loadedSets.setDelSvcs), "Deleted services - did not match between expected result and input yaml")
-	assert.True(t, knownSets.setDelRels.Equal(loadedSets.setDelRels), "Deleted relationships - did not match between expected result and input yaml")
-}
-
-// testGraphWithChanges - test diff comparison function
-func TestGraphWithChanges(t *testing.T) {
-
-	dsGraphOrg := new(constellation.Config)
-	err := dsGraphOrg.LoadString(testOrgDagStr)
-	if err != nil {
-		t.Errorf("dagConfigService failed to load dag from test string %s", err)
-	}
-
-	dsGraphNew := new(constellation.Config)
-	err = dsGraphNew.LoadString(testNewDagStr)
-	assert.NoErrorf(t, err, "dagConfigService failed to load file %s", err)
-
-	//construct sets struct for loaded constellation
-	loadedSets := &setsForComparison{}
-
-	// function being tested
-	fillComparisonSets(dsGraphOrg, dsGraphNew, loadedSets)
-
-	resString := createGraphWithChanges(dsGraphNew, loadedSets)
-
-	assert.Truef(t, helpers.CompareGraphOutputAsSets(testDiffComparisonOutputString, resString), "Resulting output does not match the reference comparison input \n RESULT \n%s EXPECTED \n%s", resString, testDiffComparisonOutputString)
-}
-
-// Utility to populate comparison sets with expected/known result
-func populateComparisonSets(target *setsForComparison) {
-	target.setCommonSvcs = set.NewSet()
-	target.setCommonSvcs.Add("3aa1e546-1ed5-4d67-a59c-be0d5905b490")
-	target.setCommonSvcs.Add("1d0255d4-5b8c-4a52-b0bb-ac024cda37e5")
-	target.setCommonSvcs.Add("a268fae5-2a82-4a3e-ada7-a52eeb7019ac")
-
-	target.setCommonRels = set.NewSet()
-	target.setCommonRels.Add("3aa1e546-1ed5-4d67-a59c-be0d5905b490" + "|" + "1d0255d4-5b8c-4a52-b0bb-ac024cda37e5")
-
-	target.setAddedSvcs = set.NewSet()
-	target.setAddedSvcs.Add("9f1bcb3d-ff58-41d4-8779-f71e7b8800f8")
-	target.setAddedSvcs.Add("b268fae5-2a82-4a3e-ada7-a52eeb7019ac")
-
-	target.setAddedRels = set.NewSet()
-	target.setAddedRels.Add("9f1bcb3d-ff58-41d4-8779-f71e7b8800f8" + "|" + "3aa1e546-1ed5-4d67-a59c-be0d5905b490")
-	target.setAddedRels.Add("1d0255d4-5b8c-4a52-b0bb-ac024cda37e5" + "|" + "a268fae5-2a82-4a3e-ada7-a52eeb7019ac")
-	target.setAddedRels.Add("a268fae5-2a82-4a3e-ada7-a52eeb7019ac" + "|" + "b268fae5-2a82-4a3e-ada7-a52eeb7019ac")
-
-	target.setDelSvcs = set.NewSet()
-	target.setDelSvcs.Add("9e1bcb3d-ff58-41d4-8779-f71e7b8800f8")
-
-	target.setDelRels = set.NewSet()
-	target.setDelRels.Add("9e1bcb3d-ff58-41d4-8779-f71e7b8800f8" + "|" + "3aa1e546-1ed5-4d67-a59c-be0d5905b490")
-	target.setDelRels.Add("3aa1e546-1ed5-4d67-a59c-be0d5905b490" + "|" + "a268fae5-2a82-4a3e-ada7-a52eeb7019ac")
-}
-
-// Sample DAG file data - original file
-const testOrgDagStr = `
-Name: "Azure Event Hubs Sample"
-Id: "d6e4a5e9-696a-4626-ba7a-534d6ff450a5"
-Services:
-- Name: "Event Generator"
-  Id: "9e1bcb3d-ff58-41d4-8779-f71e7b8800f8"
-  Type: "EventGenerator"
-  Properties: {}
-- Name: "Azure Event Hub"
-  Id: "3aa1e546-1ed5-4d67-a59c-be0d5905b490"
-  Type: "EventHub"
-  Properties: {}
-- Name: "Event Logger"
-  Id: "a268fae5-2a82-4a3e-ada7-a52eeb7019ac"
-  Type: "EventLogger"
-  Properties: {}
-- Name: "Event Logger"
-  Id: "1d0255d4-5b8c-4a52-b0bb-ac024cda37e5"
-  Type: "EventLogger"
-  Properties: {}
-Relationships:
-- Name: "Generator to Event Hubs Link"
-  Id: "211a55bd-5d92-446c-8be8-190f8f0e623e"
-  Description: "Event Generator to Event Hub connection"
-  From: "9e1bcb3d-ff58-41d4-8779-f71e7b8800f8"
-  To: "3aa1e546-1ed5-4d67-a59c-be0d5905b490"
-  Properties: {}
-- Name: "Event Hubs to Event Logger Link"
-  Id: "08ccbd67-456f-4349-854a-4e6959e5017b"
-  Description: "Event Hubs to Event Logger connection"
-  From: "3aa1e546-1ed5-4d67-a59c-be0d5905b490"
-  To: "1d0255d4-5b8c-4a52-b0bb-ac024cda37e5"
-  Properties: {}
-- Name: "Event Hubs to Event Logger Link Repeat"
-  Id: "c8a719e0-164d-408f-9ed1-06e08dc5abbe"
-  Description: "Event Hubs to Event Logger connection"
-  From: "3aa1e546-1ed5-4d67-a59c-be0d5905b490"
-  To: "a268fae5-2a82-4a3e-ada7-a52eeb7019ac"
-  Properties: {}`
-
-// An updated (new) constellation dag with known differences
-const testNewDagStr = `
-Name: "Azure Event Hubs Sample Changed"
-Id: "d6e4a5e9-696a-4626-ba7a-534d6ff450a5"
-Services:
-- Name: "Event Generator"
-  Id: "9f1bcb3d-ff58-41d4-8779-f71e7b8800f8"
-  Type: "EventGenerator"
-  Properties: {}
-- Name: "Azure Event Hub"
-  Id: "3aa1e546-1ed5-4d67-a59c-be0d5905b490"
-  Type: "EventHub"
-  Properties: {}
-- Name: "Event Logger"
-  Id: "a268fae5-2a82-4a3e-ada7-a52eeb7019ac"
-  Type: "EventLogger"
-  Properties: {}
-- Name: "Event Logger Added"
-  Id: "b268fae5-2a82-4a3e-ada7-a52eeb7019ac"
-  Type: "EventLogger"
-  Properties: {}
-- Name: "Event Logger"
-  Id: "1d0255d4-5b8c-4a52-b0bb-ac024cda37e5"
-  Type: "EventLogger"
-  Properties: {}
-Relationships:
-- Name: "Generator to Event Hubs Link"
-  Id: "211a55bd-5d92-446c-8be8-190f8f0e623e"
-  Description: "Event Generator to Event Hub connection"
-  From: "9f1bcb3d-ff58-41d4-8779-f71e7b8800f8"
-  To: "3aa1e546-1ed5-4d67-a59c-be0d5905b490"
-  Properties: {}
-- Name: "Event Hubs to Event Logger Link"
-  Id: "08ccbd67-456f-4349-854a-4e6959e5017b"
-  Description: "Event Hubs to Event Logger connection"
-  From: "3aa1e546-1ed5-4d67-a59c-be0d5905b490"
-  To: "1d0255d4-5b8c-4a52-b0bb-ac024cda37e5"
-  Properties: {}
-- Name: "Event Hubs to Event Logger Link Repeat"
-  Id: "c8a719e0-164d-408f-9ed1-06e08dc5abbe"
-  Description: "Event Hubs to Event Logger connection"
-  From: "1d0255d4-5b8c-4a52-b0bb-ac024cda37e5"
-  To: "a268fae5-2a82-4a3e-ada7-a52eeb7019ac"
-  Properties: {}
-- Name: "Event Hubs to Event Logger Link Added to the end Repeat"
-  Id: "d8a719e0-164d-408f-9ed1-06e08dc5abbe"
-  Description: "Event Hubs to Event Logger connection"
-  From: "a268fae5-2a82-4a3e-ada7-a52eeb7019ac"
-  To: "b268fae5-2a82-4a3e-ada7-a52eeb7019ac"
-  Properties: {}
-  `
 
 const testDiffComparisonOutputString = `digraph Azure_Event_Hubs_Sample_Changed_diff {
 	rankdir=LR;

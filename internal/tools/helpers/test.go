@@ -50,6 +50,32 @@ func PrepareRealFilesForTest(t *testing.T) (string, string, string) {
 	return constellationPath, mapsPath, tdir
 }
 
+// PrepareTwoRealConstellationFilesForTest - this use the two required for the diff command
+func PrepareTwoRealConstellationFilesForTest(t *testing.T) (string, string, string, string) {
+	tdir, err := ioutil.TempDir("./", "output-")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer func() {
+		err = os.RemoveAll(tdir)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}()
+
+	cwd, err2 := os.Getwd()
+	if err2 != nil {
+		t.Fatal(err2)
+	}
+
+	constellationPathOrg := path.Join(cwd, "../sample/constellation/sample_constellation.yaml")
+	constellationPathNew := path.Join(cwd, "../sample/constellation/sample_constellation_changed.yaml")
+	mapsPath := path.Join(cwd, "../sample/constellation/sample_constellation_maps.yaml")
+
+	return constellationPathOrg, constellationPathNew, mapsPath, tdir
+}
+
 func CleanTempTestFiles(t *testing.T, temp string) {
 	err := os.RemoveAll(temp)
 	if err != nil {
