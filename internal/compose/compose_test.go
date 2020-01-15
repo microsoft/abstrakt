@@ -29,7 +29,7 @@ func TestComposeService(t *testing.T) {
 	comp := new(compose.Composer)
 	_, err = comp.Build("test", tdir)
 
-	assert.NoError(t, err, "Compose should fail if not yet loaded")
+	assert.Error(t, err, "Compose should fail if not yet loaded")
 
 	_ = comp.LoadString(test01DagStr, configMapTest01String)
 
