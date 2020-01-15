@@ -29,7 +29,7 @@ vet:
 	go vet ./...
 
 ##################
-# Testing		 #
+#    Testing     #
 ##################
 
 test-prepare: 
@@ -90,7 +90,7 @@ else
 endif
 
 ##################
-#  Run Examples    		  #
+#  Run Examples  #
 ##################
 
 fmt:
