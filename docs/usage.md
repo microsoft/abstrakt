@@ -54,12 +54,12 @@ Can compose a Helm chart directory (default) or a __.tgz__ of the produced helm 
 Create a Helm chart named `http-demo` to be generated under ./output.
 
 ```bash
-./abstrakt compose http-demo -f ./sample/constellation/http_constellation.yaml -m ./sample/constellation/http_constellation_maps.yaml -o ./output/http-demo 
+./abstrakt compose http-demo -f ./examples/constellation/http_constellation.yaml -m ./examples/constellation/http_constellation_maps.yaml -o ./output/http-demo 
 ```
 
 With __.tgz__
 ```bash
-./abstrakt compose http-demo -f ./sample/constellation/http_constellation.yaml -m ./sample/constellation/http_constellation_maps.yaml -o ./output/http-demo -z
+./abstrakt compose http-demo -f ./examples/constellation/http_constellation.yaml -m ./examples/constellation/http_constellation_maps.yaml -o ./output/http-demo -z
 ```
 
 ### abstrakt `validate`
@@ -143,4 +143,4 @@ Run visualise on a file
 	
 Pipe visualise output to Graphviz producing a file called result.png (assumes Graphviz is installed and can be called from the location abstrakt is being run)
 
-	abstrakt visualise -f ./sample/constellation/sample_consteallation.yaml | dot -Tpng > result.png
+	abstrakt visualise -f ./examples/constellation/sample_consteallation.yaml | dot -Tpng > result.png

@@ -40,7 +40,7 @@ func TestDffCmdFailYaml(t *testing.T) {
 
 	expected = "Could not open new YAML input file for reading constellationPathNew"
 
-	output, err = helpers.ExecuteCommand(newDiffCmd().cmd, "-o", "../sample/constellation/sample_constellation.yaml", "-n", "constellationPathNew")
+	output, err = helpers.ExecuteCommand(newDiffCmd().cmd, "-o", "../examples/constellation/sample_constellation.yaml", "-n", "constellationPathNew")
 
 	if err != nil {
 		helpers.CheckStringContains(t, err.Error(), expected)
@@ -63,7 +63,7 @@ func TestDiffCmdFailNotYaml(t *testing.T) {
 		t.Errorf("Did not fail. Expected: %v \nGot: %v", expected, output)
 	}
 
-	output, err = helpers.ExecuteCommand(newDiffCmd().cmd, "-o", "../sample/constellation/sample_constellation.yaml", "-n", "diff.go")
+	output, err = helpers.ExecuteCommand(newDiffCmd().cmd, "-o", "../examples/constellation/sample_constellation.yaml", "-n", "diff.go")
 
 	if err != nil {
 		helpers.CheckStringContains(t, err.Error(), expected)

@@ -8,7 +8,7 @@
 
 test-watcher:
 	@echo "Running test watcher"
-	bash ./.scripts/test_watcher.sh
+	bash ./scripts/test_watcher.sh
 
 lint-all: lint-prepare lint vet
 
@@ -79,7 +79,7 @@ else
 	@exit 111
 endif
 	make create-kindcluster
-	kubectl apply -f /workspace/.scripts/rbac.yaml
+	kubectl apply -f /workspace/scripts/rbac.yaml
 
 install-kind:
 ifeq (,$(shell which kind))
@@ -100,15 +100,15 @@ build:
 	go build -o abstrakt main.go
 
 visualise: build	
-	./abstrakt visualise -f ./sample/constellation/http_constellation.yaml | dot -Tpng > result.png
+	./abstrakt visualise -f ./examples/constellation/http_constellation.yaml | dot -Tpng > result.png
 
 diff: build
-	./abstrakt diff -o ./sample/constellation/sample_constellation.yaml -n ./sample/constellation/sample_constellation_changed.yaml | dot -Tpng > result.png
+	./abstrakt diff -o ./examples/constellation/sample_constellation.yaml -n ./examples/constellation/sample_constellation_changed.yaml | dot -Tpng > result.png
 
 run-http-demo: http-demo http-demo-deploy
 
 http-demo: build	
-	./abstrakt compose http-demo -f ./sample/constellation/http_constellation.yaml -m ./sample/constellation/http_constellation_maps.yaml -o ./output/http_sample
+	./abstrakt compose http-demo -f ./examples/constellation/http_constellation.yaml -m ./examples/constellation/http_constellation_maps.yaml -o ./output/http_sample
 
 http-demo-deploy:
 	helm install wormhole-http-demo ./output/http_sample/http-demo

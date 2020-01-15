@@ -44,8 +44,8 @@ func PrepareRealFilesForTest(t *testing.T) (string, string, string) {
 
 	fmt.Print(cwd)
 
-	constellationPath := path.Join(cwd, "../sample/constellation/sample_constellation.yaml")
-	mapsPath := path.Join(cwd, "../sample/constellation/sample_constellation_maps.yaml")
+	constellationPath := path.Join(cwd, "../examples/constellation/sample_constellation.yaml")
+	mapsPath := path.Join(cwd, "../examples/constellation/sample_constellation_maps.yaml")
 
 	return constellationPath, mapsPath, tdir
 }
@@ -69,9 +69,9 @@ func PrepareTwoRealConstellationFilesForTest(t *testing.T) (string, string, stri
 		t.Fatal(err2)
 	}
 
-	constellationPathOrg := path.Join(cwd, "../sample/constellation/sample_constellation.yaml")
-	constellationPathNew := path.Join(cwd, "../sample/constellation/sample_constellation_changed.yaml")
-	mapsPath := path.Join(cwd, "../sample/constellation/sample_constellation_maps.yaml")
+	constellationPathOrg := path.Join(cwd, "../examples/constellation/sample_constellation.yaml")
+	constellationPathNew := path.Join(cwd, "../examples/constellation/sample_constellation_changed.yaml")
+	mapsPath := path.Join(cwd, "../examples/constellation/sample_constellation_maps.yaml")
 
 	return constellationPathOrg, constellationPathNew, mapsPath, tdir
 }

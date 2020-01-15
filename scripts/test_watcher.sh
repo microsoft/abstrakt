@@ -3,11 +3,9 @@
 dogo() {
        #wire ./internal/serviceLocator
        go fmt
-       go generate       
+       go generate
        gotest -v ./...
 }
-
-
 
 dogo
 
