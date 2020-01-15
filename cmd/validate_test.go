@@ -20,7 +20,7 @@ func TestValidateCommand(t *testing.T) {
 	_, err = helpers.ExecuteCommand(newValidateCmd().cmd, "-f", "does-not-exist")
 
 	if err != nil {
-		helpers.CheckStringContains(t, err.Error(), expected)
+		assert.Contains(t, err.Error(), expected)
 	} else {
 		t.Errorf("Did not received expected error. \nExpected: %v\nGot:\n %v", expected, err.Error())
 	}

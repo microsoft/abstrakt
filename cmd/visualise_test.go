@@ -32,7 +32,7 @@ func TestVisualiseCmdFailYaml(t *testing.T) {
 	output, err := helpers.ExecuteCommand(newVisualiseCmd().cmd, "-f", "constellationPath")
 
 	if err != nil {
-		helpers.CheckStringContains(t, err.Error(), expected)
+		assert.Contains(t, err.Error(), expected)
 	} else {
 		t.Errorf("Did not fail. Expected: %v \nGot: %v", expected, output)
 	}
@@ -44,7 +44,7 @@ func TestVisualiseCmdFailNotYaml(t *testing.T) {
 	output, err := helpers.ExecuteCommand(newVisualiseCmd().cmd, "-f", "visualise.go")
 
 	if err != nil {
-		helpers.CheckStringContains(t, err.Error(), expected)
+		assert.Contains(t, err.Error(), expected)
 	} else {
 		t.Errorf("Did not fail. Expected: %v \nGot: %v", expected, output)
 	}
@@ -98,50 +98,6 @@ func TestParseYaml(t *testing.T) {
 	}
 }
 
-// Sample DAG file data
-const test01DagStr = `Name: "Azure Event Hubs Sample"
-Id: "d6e4a5e9-696a-4626-ba7a-534d6ff450a5"
-Services:
-- Id: "Event Generator"
-  Type: "EventGenerator"
-  Properties: {}
-- Id: "Azure Event Hub"
-  Type: "EventHub"
-  Properties: {}
-- Id: "Event Logger"
-  Type: "EventLogger"
-  Properties: {}
-- Id: "Event Logger"
-  Type: "EventLogger"
-  Properties: {}
-Relationships:
-- Id: "Generator to Event Hubs Link"
-  Description: "Event Generator to Event Hub connection"
-  From: "Event Generator"
-  To: "Azure Event Hub"
-  Properties: {}
-- Id: "Event Hubs to Event Logger Link"
-  Description: "Event Hubs to Event Logger connection"
-  From: "Azure Event Hub"
-  To: "Event Logger"
-  Properties: {}
-- Id: "Event Hubs to Event Logger Link Repeat"
-  Description: "Event Hubs to Event Logger connection"
-  From: "Azure Event Hub"
-  To: "Event Logger"
-  Properties: {}`
-
-const test02ConstGraphString = `digraph Azure_Event_Hubs_Sample {
-	rankdir=LR;
-	"Event_Generator"->"Azure_Event_Hub";
-	"Azure_Event_Hub"->"Event_Logger";
-	"Azure_Event_Hub"->"Event_Logger";
-	"Azure_Event_Hub";
-	"Event_Generator";
-	"Event_Logger";
-
-}
-`
 const testValidYAMLString = `
 Description: "Event Generator to Event Hub connection"
 From: 9e1bcb3d-ff58-41d4-8779-f71e7b8800f8

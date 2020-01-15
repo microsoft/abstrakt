@@ -24,7 +24,7 @@ func TestGenerateGraph(t *testing.T) {
 	cmpString := test02ConstGraphString
 	retString, err := retConfig.GenerateGraph(out)
 
-	assert.NoErrorf(t, err, "Should not recieve error: %v", err)
+	assert.NoErrorf(t, err, "Should not receive error: %v", err)
 	assert.True(t, helpers.CompareGraphOutputAsSets(cmpString, retString), "Input graph did not generate expected output graphviz representation\nExpected:\n%v \nGot:\n%v", cmpString, retString)
 }
 

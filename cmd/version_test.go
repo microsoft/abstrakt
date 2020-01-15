@@ -29,6 +29,6 @@ func TestVersionCmd(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	} else {
-		helpers.CheckStringContains(t, hook.LastEntry().Message, expected)
+		assert.Contains(t, hook.LastEntry().Message, expected)
 	}
 }

@@ -2,7 +2,6 @@ package helpers
 
 import (
 	"bytes"
-	"fmt"
 	set "github.com/deckarep/golang-set"
 	"github.com/spf13/cobra"
 	"io/ioutil"
@@ -12,6 +11,7 @@ import (
 	"testing"
 )
 
+// ExecuteCommand is used to run a cobra command with arguments and return its value and error
 func ExecuteCommand(root *cobra.Command, args ...string) (output string, err error) {
 	_, output, err = executeCommandC(root, args...)
 	return output, err
@@ -25,12 +25,8 @@ func executeCommandC(root *cobra.Command, args ...string) (c *cobra.Command, out
 	return
 }
 
-func CheckStringContains(t *testing.T, got, expected string) {
-	if !strings.Contains(got, expected) {
-		t.Errorf("Expected to contain: \n %v\nGot:\n %v\n", expected, got)
-	}
-}
-
+// PrepareRealFilesForTest creates a new temporary folder with new map and constellation files.
+// Returns path to new temp folder
 func PrepareRealFilesForTest(t *testing.T) (string, string, string) {
 	tdir, err := ioutil.TempDir("./", "output-")
 	if err != nil {
@@ -41,8 +37,6 @@ func PrepareRealFilesForTest(t *testing.T) (string, string, string) {
 	if err2 != nil {
 		t.Fatal(err2)
 	}
-
-	fmt.Print(cwd)
 
 	constellationPath := path.Join(cwd, "../examples/constellation/sample_constellation.yaml")
 	mapsPath := path.Join(cwd, "../examples/constellation/sample_constellation_maps.yaml")
@@ -76,6 +70,7 @@ func PrepareTwoRealConstellationFilesForTest(t *testing.T) (string, string, stri
 	return constellationPathOrg, constellationPathNew, mapsPath, tdir
 }
 
+// CleanTempTestFiles removes a specific folder and all its contents from disk
 func CleanTempTestFiles(t *testing.T, temp string) {
 	err := os.RemoveAll(temp)
 	if err != nil {

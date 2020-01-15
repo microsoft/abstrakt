@@ -42,7 +42,7 @@ func TestComposeCmdVerifyRequiredFlags(t *testing.T) {
 	output, err := helpers.ExecuteCommand(newComposeCmd().cmd, "")
 
 	if err != nil {
-		helpers.CheckStringContains(t, err.Error(), expected)
+		assert.Contains(t, err.Error(), expected)
 	} else {
 		t.Errorf("Expecting error: \n %v\nGot:\n %v\n", expected, output)
 	}

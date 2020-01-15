@@ -21,7 +21,7 @@ func TestDiffCmdWithAllRequirementsNoError(t *testing.T) {
 		assert.Truef(t, helpers.CompareGraphOutputAsSets(testDiffComparisonOutputString, hook.LastEntry().Message), "Expcted output and produced output do not match : expected %s produced %s", testDiffComparisonOutputString, hook.LastEntry().Message)
 		// Did use this initially but wont work with the strongs output from the graphviz library as the sequence of entries in the output can change
 		// while the sequence may change the result is still valid and the same so am usinga  local comparison function to get around this problem
-		// checkStringContains(t, hook.LastEntry().Message, testDiffComparisonOutputString)
+		// assert.Contains(t, hook.LastEntry().Message, testDiffComparisonOutputString)
 	}
 }
 
@@ -33,7 +33,7 @@ func TestDffCmdFailYaml(t *testing.T) {
 	output, err := helpers.ExecuteCommand(newDiffCmd().cmd, "-o", "constellationPathOrg", "-n", "constellationPathNew")
 
 	if err != nil {
-		helpers.CheckStringContains(t, err.Error(), expected)
+		assert.Contains(t, err.Error(), expected)
 	} else {
 		t.Errorf("Did not fail and it should have. Expected: %v \nGot: %v", expected, output)
 	}
@@ -43,7 +43,7 @@ func TestDffCmdFailYaml(t *testing.T) {
 	output, err = helpers.ExecuteCommand(newDiffCmd().cmd, "-o", "../examples/constellation/sample_constellation.yaml", "-n", "constellationPathNew")
 
 	if err != nil {
-		helpers.CheckStringContains(t, err.Error(), expected)
+		assert.Contains(t, err.Error(), expected)
 	} else {
 		t.Errorf("Did not fail and it should have. Expected: %v \nGot: %v", expected, output)
 	}
@@ -58,7 +58,7 @@ func TestDiffCmdFailNotYaml(t *testing.T) {
 	output, err := helpers.ExecuteCommand(newDiffCmd().cmd, "-o", "diff.go", "-n", "diff.go")
 
 	if err != nil {
-		helpers.CheckStringContains(t, err.Error(), expected)
+		assert.Contains(t, err.Error(), expected)
 	} else {
 		t.Errorf("Did not fail. Expected: %v \nGot: %v", expected, output)
 	}
@@ -66,7 +66,7 @@ func TestDiffCmdFailNotYaml(t *testing.T) {
 	output, err = helpers.ExecuteCommand(newDiffCmd().cmd, "-o", "../examples/constellation/sample_constellation.yaml", "-n", "diff.go")
 
 	if err != nil {
-		helpers.CheckStringContains(t, err.Error(), expected)
+		assert.Contains(t, err.Error(), expected)
 	} else {
 		t.Errorf("Did not fail. Expected: %v \nGot: %v", expected, output)
 	}
