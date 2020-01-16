@@ -19,17 +19,17 @@ import (
 
 // Info -- info about an individual component
 type Info struct {
-	ChartName string `yaml:"ChartName" validate:"empty=false & format=string"`
-	Type      string `yaml:"Type" validate:"empty=false & format=string"`
-	Location  string `yaml:"Location" validate:"empty=false & format=string"`
-	Version   string `yaml:"Version" validate:"empty=false & format=string"`
+	ChartName string `yaml:"ChartName" validate:"empty=false"`
+	Type      string `yaml:"Type" validate:"empty=false"`
+	Location  string `yaml:"Location" validate:"empty=false"`
+	Version   string `yaml:"Version" validate:"empty=false"`
 }
 
 // Config -- data from the entire build map.
 type Config struct {
 	Name string    `yaml:"Name"`
 	ID   guid.GUID `yaml:"Id"`
-	Maps []Info    `yaml:"Maps"`
+	Maps []Info    `yaml:"Maps" validate:"empty=false"`
 }
 
 // LoadFile -- New Map info instance from the named file.
