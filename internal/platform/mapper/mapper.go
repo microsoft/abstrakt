@@ -19,10 +19,10 @@ import (
 
 // Info -- info about an individual component
 type Info struct {
-	ChartName string `yaml:"ChartName"`
-	Type      string `yaml:"Type"`
-	Location  string `yaml:"Location"`
-	Version   string `yaml:"Version"`
+	ChartName string `yaml:"ChartName" validate:"empty=false"`
+	Type      string `yaml:"Type" validate:"empty=false"`
+	Location  string `yaml:"Location" validate:"empty=false"`
+	Version   string `yaml:"Version" validate:"empty=false"`
 }
 
 // Config -- data from the entire build map.
