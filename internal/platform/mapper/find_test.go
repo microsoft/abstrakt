@@ -7,7 +7,7 @@ import (
 )
 
 func TestFindByName(t *testing.T) {
-	mapper := &mapper.Config{}
+	mapper := new(mapper.Config)
 
 	err := mapper.LoadFile("testdata/mapper.yaml")
 	assert.NoError(t, err)
@@ -38,7 +38,7 @@ func TestFindByName(t *testing.T) {
 }
 
 func TestFindByType(t *testing.T) {
-	mapper := &mapper.Config{}
+	mapper := new(mapper.Config)
 
 	err := mapper.LoadFile("testdata/mapper.yaml")
 	assert.NoError(t, err)
