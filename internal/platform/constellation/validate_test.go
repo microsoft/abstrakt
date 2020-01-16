@@ -8,34 +8,39 @@ import (
 
 func TestForDuplicatIDsInServices(t *testing.T) {
 	testData := new(constellation.Config)
-	_ = testData.LoadFile("testdata/valid.yaml")
+
+	err := testData.LoadFile("testdata/valid.yaml")
+	assert.NoError(t, err)
 
 	duplicates := testData.CheckDuplicates()
-
 	assert.Nil(t, duplicates, "No duplicates should be found.")
 }
 
 func TestServicesExists(t *testing.T) {
 	testData := new(constellation.Config)
-	_ = testData.LoadFile("testdata/valid.yaml")
+
+	err := testData.LoadFile("testdata/valid.yaml")
+	assert.NoError(t, err)
 
 	missing := testData.CheckServiceExists()
-
 	assert.Empty(t, missing, "No missing services should be found.")
 }
 
 func TestSchemaChecks(t *testing.T) {
 	testData := new(constellation.Config)
-	_ = testData.LoadFile("testdata/valid.yaml")
 
-	err := testData.ValidateModel()
+	err := testData.LoadFile("testdata/valid.yaml")
+	assert.NoError(t, err)
 
+	err = testData.ValidateModel()
 	assert.NoError(t, err, "Model validation should not return errors")
 }
 
 func TestForDuplicatIDsInServicesFail(t *testing.T) {
 	testData := new(constellation.Config)
-	_ = testData.LoadFile("testdata/duplicate/servIds.yaml")
+
+	err := testData.LoadFile("testdata/duplicate/servIds.yaml")
+	assert.NoError(t, err)
 
 	duplicates := testData.CheckDuplicates()
 
@@ -45,7 +50,9 @@ func TestForDuplicatIDsInServicesFail(t *testing.T) {
 
 func TestForDuplicatIDsInRelationshipsFail(t *testing.T) {
 	testData := new(constellation.Config)
-	_ = testData.LoadFile("testdata/duplicate/relIds.yaml")
+
+	err := testData.LoadFile("testdata/duplicate/relIds.yaml")
+	assert.NoError(t, err)
 
 	duplicates := testData.CheckDuplicates()
 
@@ -55,7 +62,9 @@ func TestForDuplicatIDsInRelationshipsFail(t *testing.T) {
 
 func TestForDuplicatIDsFail(t *testing.T) {
 	testData := new(constellation.Config)
-	_ = testData.LoadFile("testdata/duplicate/servRelIds.yaml")
+
+	err := testData.LoadFile("testdata/duplicate/servRelIds.yaml")
+	assert.NoError(t, err)
 
 	duplicates := testData.CheckDuplicates()
 
@@ -66,10 +75,11 @@ func TestForDuplicatIDsFail(t *testing.T) {
 func TestServicesExistsFail(t *testing.T) {
 	expected := "Azure Event Hub"
 	testData := new(constellation.Config)
-	_ = testData.LoadFile("testdata/missing/relServRefId.yaml")
+
+	err := testData.LoadFile("testdata/missing/relServRefId.yaml")
+	assert.NoError(t, err)
 
 	missing := testData.CheckServiceExists()
-
 	foundID := missing["Event Hubs to Event Logger Link"][0]
 
 	assert.Equal(t, 1, len(missing), "There should be only 1 missing services found")
@@ -78,45 +88,49 @@ func TestServicesExistsFail(t *testing.T) {
 
 func TestSchemaMissingDagName(t *testing.T) {
 	testData := new(constellation.Config)
-	_ = testData.LoadFile("testdata/missingName.yaml")
+	err := testData.LoadFile("testdata/missingName.yaml")
+	assert.NoError(t, err)
 
-	err := testData.ValidateModel()
-
+	err = testData.ValidateModel()
 	assert.Error(t, err, "Model validation should be invalid")
 }
 
 func TestSchemaMissingDagID(t *testing.T) {
 	testData := new(constellation.Config)
-	_ = testData.LoadFile("testdata/missing/id.yaml")
 
-	err := testData.ValidateModel()
+	err := testData.LoadFile("testdata/missing/id.yaml")
+	assert.NoError(t, err)
 
+	err = testData.ValidateModel()
 	assert.Error(t, err, "Model validation should be invalid")
 }
 
 func TestSchemaMissingService(t *testing.T) {
 	testData := new(constellation.Config)
-	_ = testData.LoadFile("testdata/missing/serv.yaml")
 
-	err := testData.ValidateModel()
+	err := testData.LoadFile("testdata/missing/serv.yaml")
+	assert.NoError(t, err)
 
+	err = testData.ValidateModel()
 	assert.Error(t, err, "Model validation should be invalid")
 }
 
 func TestSchemaMissingServiceID(t *testing.T) {
 	testData := new(constellation.Config)
-	_ = testData.LoadFile("testdata/missing/servId.yaml")
 
-	err := testData.ValidateModel()
+	err := testData.LoadFile("testdata/missing/servId.yaml")
+	assert.NoError(t, err)
 
+	err = testData.ValidateModel()
 	assert.Error(t, err, "Model validation should be invalid")
 }
 
 func TestSchemaMissingRelationshipID(t *testing.T) {
 	testData := new(constellation.Config)
-	_ = testData.LoadFile("testdata/missing/relId.yaml")
 
-	err := testData.ValidateModel()
+	err := testData.LoadFile("testdata/missing/relId.yaml")
+	assert.NoError(t, err)
 
+	err = testData.ValidateModel()
 	assert.Error(t, err, "Model validation should be invalid")
 }
