@@ -38,6 +38,15 @@ func TestMapFromString(t *testing.T) {
 	}
 }
 
+func TestMapLoadFile(t *testing.T) {
+	mapper := &mapper.Config{}
+
+	err := mapper.LoadFile("testdata/mapper.yaml")
+	assert.NoError(t, err)
+
+	assert.Truef(t, reflect.DeepEqual(&buildMap01, mapper), "Expected: %v\nGot: %v", &buildMap01, mapper)
+}
+
 const configMapTest01String = `
 Name: "Basic Azure Event Hubs maps"
 Id: "a5a7c413-a020-44a2-bd23-1941adb7ad58"
