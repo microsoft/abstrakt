@@ -88,7 +88,7 @@ func TestServicesExistsFail(t *testing.T) {
 
 func TestSchemaMissingDagName(t *testing.T) {
 	testData := new(constellation.Config)
-	err := testData.LoadFile("testdata/missingName.yaml")
+	err := testData.LoadFile("testdata/missing/name.yaml")
 	assert.NoError(t, err)
 
 	err = testData.ValidateModel()
