@@ -12,9 +12,7 @@ import (
 )
 
 func TestVisualiseCmdWithAllRequirementsNoError(t *testing.T) {
-	constellationPath, _, tdir := helpers.PrepareRealFilesForTest(t)
-
-	defer helpers.CleanTempTestFiles(t, tdir)
+	constellationPath := "testdata/constellation/valid.yaml"
 
 	hook := test.NewGlobal()
 	_, err := helpers.ExecuteCommand(newVisualiseCmd().cmd, "-f", constellationPath)
@@ -116,13 +114,11 @@ Type: EventGenerator
 
 const validGraphString = `digraph Azure_Event_Hubs_Sample {
 	rankdir=LR;
-	"9e1bcb3d-ff58-41d4-8779-f71e7b8800f8"->"3aa1e546-1ed5-4d67-a59c-be0d5905b490";
-	"3aa1e546-1ed5-4d67-a59c-be0d5905b490"->"1d0255d4-5b8c-4a52-b0bb-ac024cda37e5";
-	"3aa1e546-1ed5-4d67-a59c-be0d5905b490"->"a268fae5-2a82-4a3e-ada7-a52eeb7019ac";
-	"1d0255d4-5b8c-4a52-b0bb-ac024cda37e5";
-	"3aa1e546-1ed5-4d67-a59c-be0d5905b490";
-	"9e1bcb3d-ff58-41d4-8779-f71e7b8800f8";
-	"a268fae5-2a82-4a3e-ada7-a52eeb7019ac";
+	"Event_Generator"->"Azure_Event_Hub";
+	"Azure_Event_Hub"->"Event_Logger";
+	"Azure_Event_Hub";
+	"Event_Generator";
+	"Event_Logger";
 
 }
 `
