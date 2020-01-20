@@ -4,11 +4,17 @@ import (
 	"github.com/microsoft/abstrakt/internal/platform/mapper"
 	"github.com/microsoft/abstrakt/internal/tools/guid"
 	"github.com/stretchr/testify/assert"
+	"io/ioutil"
 	"reflect"
 	"testing"
 )
 
 func TestMapFromString(t *testing.T) {
+	contentBytes, err := ioutil.ReadFile("testdata/mapper.yaml")
+	if nil != err {
+		t.Fatal(err)
+	}
+
 	type args struct {
 		yamlString string
 	}
@@ -20,7 +26,7 @@ func TestMapFromString(t *testing.T) {
 	}{
 		{
 			name:    "Test.01",
-			args:    args{yamlString: configMapTest01String},
+			args:    args{yamlString: string(contentBytes)},
 			wantRet: &buildMap01,
 			wantErr: false,
 		},
@@ -47,23 +53,15 @@ func TestMapLoadFile(t *testing.T) {
 	assert.Truef(t, reflect.DeepEqual(&buildMap01, mapper), "Expected: %v\nGot: %v", &buildMap01, mapper)
 }
 
-const configMapTest01String = `
-Name: "Basic Azure Event Hubs maps"
-Id: "a5a7c413-a020-44a2-bd23-1941adb7ad58"
-Maps:
-- ChartName: "event_hub_sample_event_generator"
-  Type: "EventGenerator"
-  Location: "../../helm/basictest"
-  Version: "1.0.0"
-- ChartName: "event_hub_sample_event_logger"
-  Type: "EventLogger"
-  Location: "../../helm/basictest"
-  Version: "1.0.0"
-- ChartName: "event_hub_sample_event_hub"
-  Type: "EventHub"
-  Location: "../../helm/basictest"
-  Version: "1.0.0"
-`
+func TestIsEmptyTrue(t *testing.T) {
+	dag := &mapper.Config{}
+	assert.True(t, dag.IsEmpty())
+}
+
+func TestIsEmptyFalse(t *testing.T) {
+	dag := buildMap01
+	assert.False(t, dag.IsEmpty())
+}
 
 var buildMap01 = mapper.Config{
 	Name: "Basic Azure Event Hubs maps",
@@ -78,13 +76,13 @@ var buildMap01 = mapper.Config{
 		{
 			ChartName: "event_hub_sample_event_logger",
 			Type:      "EventLogger",
-			Location:  "../../helm/basictest",
+			Location:  "../../helm/basictest2",
 			Version:   "1.0.0",
 		},
 		{
 			ChartName: "event_hub_sample_event_hub",
 			Type:      "EventHub",
-			Location:  "../../helm/basictest",
+			Location:  "../../helm/basictest3",
 			Version:   "1.0.0",
 		},
 	},

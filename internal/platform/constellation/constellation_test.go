@@ -43,6 +43,25 @@ func TestNewDagConfigFromString(t *testing.T) {
 	}
 }
 
+func TestMapLoadFile(t *testing.T) {
+	dag := &constellation.Config{}
+
+	err := dag.LoadFile("testdata/valid.yaml")
+	assert.NoError(t, err)
+
+	assert.Truef(t, reflect.DeepEqual(&test01WantDag, dag), "Expected: %v\nGot: %v", &test01WantDag, dag)
+}
+
+func TestIsEmptyTrue(t *testing.T) {
+	dag := &constellation.Config{}
+	assert.True(t, dag.IsEmpty())
+}
+
+func TestIsEmptyFalse(t *testing.T) {
+	dag := test01WantDag
+	assert.False(t, dag.IsEmpty())
+}
+
 var test01WantDag constellation.Config = constellation.Config{
 	Name: "Azure Event Hubs Sample",
 	ID:   guid.GUID("d6e4a5e9-696a-4626-ba7a-534d6ff450a5"),
