@@ -5,8 +5,8 @@ import (
 	"gopkg.in/dealancer/validate.v2"
 )
 
-// CheckDuplicates checks for duplicate Relationship and Service IDs in a constellation file.
-func (m *Config) CheckDuplicates() (duplicates []string) {
+// DuplicateIDs checks for duplicate Relationship and Service IDs in a constellation file.
+func (m *Config) DuplicateIDs() (duplicates []string) {
 	IDs := []string{string(m.ID)}
 
 	for _, i := range m.Services {
