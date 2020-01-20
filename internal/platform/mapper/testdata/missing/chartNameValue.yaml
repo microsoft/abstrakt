@@ -1,7 +1,7 @@
 Name: "Basic Azure Event Hubs maps"
 Id: "a5a7c413-a020-44a2-bd23-1941adb7ad58"
 Maps:
-- ChartName: "event_hub_sample_event_generator"
+- ChartName: ""
   Type: "EventGenerator"
   Location: "../../helm/basictest"
   Version: "1.0.0"
