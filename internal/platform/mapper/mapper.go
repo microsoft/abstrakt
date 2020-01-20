@@ -10,6 +10,7 @@ import (
 	"github.com/microsoft/abstrakt/internal/tools/guid"
 	yamlParser "gopkg.in/yaml.v2"
 	"io/ioutil"
+	"reflect"
 )
 
 // Note: the yaml mapping attributes are necessary (despite the nearly
@@ -44,4 +45,9 @@ func (m *Config) LoadFile(fileName string) (err error) {
 // LoadString -- New Map info instance from the given yaml string.
 func (m *Config) LoadString(yamlString string) error {
 	return yamlParser.Unmarshal([]byte(yamlString), m)
+}
+
+//IsEmpty checks if config is empty.
+func (m *Config) IsEmpty() bool {
+	return reflect.DeepEqual(Config{}, *m)
 }
