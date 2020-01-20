@@ -3,6 +3,7 @@ package helpers
 import (
 	"bytes"
 	set "github.com/deckarep/golang-set"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"io/ioutil"
 	"os"
@@ -99,4 +100,12 @@ func CompareGraphOutputAsSets(expected, produced string) bool {
 	}
 
 	return setProduced.Equal(setExpected)
+}
+
+// GetAllLogs loops through logrus entries and returns messages as []string
+func GetAllLogs(logs []*logrus.Entry) (entries []string) {
+	for _, i := range logs {
+		entries = append(entries, i.Message)
+	}
+	return
 }
