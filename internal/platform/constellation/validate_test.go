@@ -12,7 +12,7 @@ func TestForDuplicatIDsInServices(t *testing.T) {
 	err := testData.LoadFile("testdata/valid.yaml")
 	assert.NoError(t, err)
 
-	duplicates := testData.CheckDuplicates()
+	duplicates := testData.DuplicateIDs()
 	assert.Nil(t, duplicates, "No duplicates should be found.")
 }
 
@@ -42,7 +42,7 @@ func TestForDuplicatIDsInServicesFail(t *testing.T) {
 	err := testData.LoadFile("testdata/duplicate/servIds.yaml")
 	assert.NoError(t, err)
 
-	duplicates := testData.CheckDuplicates()
+	duplicates := testData.DuplicateIDs()
 
 	assert.NotNilf(t, duplicates, "There should be %v duplicate IDs found", 2)
 	assert.Equal(t, 2, len(duplicates))
@@ -54,7 +54,7 @@ func TestForDuplicatIDsInRelationshipsFail(t *testing.T) {
 	err := testData.LoadFile("testdata/duplicate/relIds.yaml")
 	assert.NoError(t, err)
 
-	duplicates := testData.CheckDuplicates()
+	duplicates := testData.DuplicateIDs()
 
 	assert.NotNilf(t, duplicates, "There should be %v duplicate IDs found", 1)
 	assert.Equal(t, 1, len(duplicates))
@@ -66,7 +66,7 @@ func TestForDuplicatIDsFail(t *testing.T) {
 	err := testData.LoadFile("testdata/duplicate/servRelIds.yaml")
 	assert.NoError(t, err)
 
-	duplicates := testData.CheckDuplicates()
+	duplicates := testData.DuplicateIDs()
 
 	assert.NotNilf(t, duplicates, "There should be %v duplicate IDs found", 1)
 	assert.Equal(t, 1, len(duplicates))

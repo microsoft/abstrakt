@@ -25,7 +25,7 @@ func TestFindByName(t *testing.T) {
 	assert.NotNil(t, info)
 	assert.Equal(t, "event_hub_sample_event_logger", info.ChartName)
 	assert.Equal(t, "EventLogger", info.Type)
-	assert.Equal(t, "../../helm/basictest", info.Location)
+	assert.Equal(t, "../../helm/basictest2", info.Location)
 	assert.Equal(t, "1.0.0", info.Version)
 
 	info = mapper.FindByName("event_hub_sample_event_hub")
@@ -33,7 +33,7 @@ func TestFindByName(t *testing.T) {
 	assert.NotNil(t, info)
 	assert.Equal(t, "event_hub_sample_event_hub", info.ChartName)
 	assert.Equal(t, "EventHub", info.Type)
-	assert.Equal(t, "../../helm/basictest", info.Location)
+	assert.Equal(t, "../../helm/basictest3", info.Location)
 	assert.Equal(t, "1.0.0", info.Version)
 }
 
@@ -56,7 +56,7 @@ func TestFindByType(t *testing.T) {
 	assert.NotNil(t, info)
 	assert.Equal(t, "event_hub_sample_event_logger", info.ChartName)
 	assert.Equal(t, "EventLogger", info.Type)
-	assert.Equal(t, "../../helm/basictest", info.Location)
+	assert.Equal(t, "../../helm/basictest2", info.Location)
 	assert.Equal(t, "1.0.0", info.Version)
 
 	info = mapper.FindByType("EventHub")
@@ -64,6 +64,6 @@ func TestFindByType(t *testing.T) {
 	assert.NotNil(t, info)
 	assert.Equal(t, "event_hub_sample_event_hub", info.ChartName)
 	assert.Equal(t, "EventHub", info.Type)
-	assert.Equal(t, "../../helm/basictest", info.Location)
+	assert.Equal(t, "../../helm/basictest3", info.Location)
 	assert.Equal(t, "1.0.0", info.Version)
 }
