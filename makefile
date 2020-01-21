@@ -99,8 +99,8 @@ fmt:
 build:	
 	go build -o abstrakt main.go
 
-visualise: build	
-	./abstrakt visualise -f ./examples/constellation/http_constellation.yaml | dot -Tpng > result.png
+visualize: build	
+	./abstrakt visualize -f ./examples/constellation/http_constellation.yaml | dot -Tpng > result.png
 
 diff: build
 	./abstrakt diff -o ./examples/constellation/sample_constellation.yaml -n ./examples/constellation/sample_constellation_changed.yaml | dot -Tpng > result.png

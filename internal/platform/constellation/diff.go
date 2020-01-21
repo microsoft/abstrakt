@@ -67,10 +67,10 @@ func createSet(dsGraph *Config) (set.Set, set.Set) {
 }
 
 // CreateGraphWithChanges - use both input constellations (new and original) as well as the comparison sets to create
-// a dag that can be visualised. It uses the comparison sets to identify additions, deletions and changes between the original
+// a dag that can be visualized. It uses the comparison sets to identify additions, deletions and changes between the original
 // and new constellations.
 func CreateGraphWithChanges(newGraph *Config, sets *ComparisonSet) (string, error) {
-	// Lookup is used to map IDs to names. Names are easier to visualise but IDs are more important to ensure the
+	// Lookup is used to map IDs to names. Names are easier to visualize but IDs are more important to ensure the
 	// presented constellation is correct and IDs are used to link nodes together
 	lookup := make(map[string]string)
 	g := gographviz.NewGraph()
@@ -90,7 +90,7 @@ func CreateGraphWithChanges(newGraph *Config, sets *ComparisonSet) (string, erro
 	}
 
 	// Add all services from the new constellation
-	// - New services - highlight with colour (i.e in setAddedSvcs)
+	// - New services - highlight with color (i.e in setAddedSvcs)
 	// - Deleted services (i.e. in setDelSvcs) - include and format appropriately
 	for _, v := range newGraph.Services {
 		newName := strings.Replace(v.ID, " ", "_", -1) // Replace spaces in names with underscores, names with spaces can break graphviz engines)
@@ -128,7 +128,7 @@ func CreateGraphWithChanges(newGraph *Config, sets *ComparisonSet) (string, erro
 
 	//======================================== process  relationships ==========================================
 	// Add Relationships from the new constellation
-	//  - New relationships - highlight with colour (i.e. in setAddedSvcs)
+	//  - New relationships - highlight with color (i.e. in setAddedSvcs)
 	// - Deleted relationships (i.e. in setDelRels) - include and format appropriately
 	for _, v := range newGraph.Relationships {
 		//Surround names/labels with quotes, stops graphviz seeing special characters and breaking

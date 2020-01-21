@@ -31,7 +31,7 @@ Example: abstrakt validate -f [constellationFilePath] -m [mapperFilePath]
 
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			if len(cc.constellationFilePath) == 0 && len(cc.mapperFilePath) == 0 {
-				cc.baseCmd.cmd.Usage()
+				_ = cc.baseCmd.cmd.Usage()
 				return fmt.Errorf("no flags were set")
 			}
 

@@ -1,9 +1,9 @@
 package cmd
 
-// visualise is a subcommand that constructs a graph representation of the yaml
+// visualize is a subcommand that constructs a graph representation of the yaml
 // input file and renders this into GraphViz 'dot' notation.
 // Initial version renders to dot syntax only, to graphically depict this the output
-// has to be run through a graphviz visualisation tool/utiliyy
+// has to be run through a graphviz visualization tool/utiliyy
 
 import (
 	"bytes"
@@ -57,7 +57,8 @@ Example: abstrakt diff -o [constellationFilePathOriginal] -n [constellationFileP
 
 			if *cc.showOriginal {
 				out := &bytes.Buffer{}
-				resStringOrg, err := dsGraphOrg.GenerateGraph(out)
+				var resStringOrg string
+				resStringOrg, err = dsGraphOrg.GenerateGraph(out)
 				if err != nil {
 					return err
 				}
@@ -72,7 +73,8 @@ Example: abstrakt diff -o [constellationFilePathOriginal] -n [constellationFileP
 
 			if *cc.showNew {
 				out := &bytes.Buffer{}
-				resStringNew, err := dsGraphNew.GenerateGraph(out)
+				var resStringNew string
+				resStringNew, err = dsGraphNew.GenerateGraph(out)
 				if err != nil {
 					return err
 				}

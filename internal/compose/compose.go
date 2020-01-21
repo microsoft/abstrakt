@@ -17,7 +17,7 @@ type Composer struct {
 //Build takes the loaded DAG and maps and builds the Helm values and requirements documents
 func (m *Composer) Build(name string, dir string) (*helm.Chart, error) {
 	if m.Constellation.Name == "" || m.Mapper.Name == "" {
-		return nil, fmt.Errorf("Please initialise with LoadFromFile or LoadFromString")
+		return nil, fmt.Errorf("Please initialize with LoadFromFile or LoadFromString")
 	}
 
 	newChart, err := chart.Create(name, dir)

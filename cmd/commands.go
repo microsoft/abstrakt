@@ -52,7 +52,7 @@ func DefaultRootCommand() *cobra.Command {
 		return nil
 	}
 
-	addCommands(c, newComposeCmd(), newVersionCmd(), newVisualiseCmd(), newValidateCmd(), newDiffCmd())
+	addCommands(c, newComposeCmd(), newVersionCmd(), newVisualizeCmd(), newValidateCmd(), newDiffCmd())
 
 	return c
 }

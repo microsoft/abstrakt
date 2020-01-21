@@ -1,9 +1,9 @@
 package cmd
 
-// visualise is a subcommand that constructs a graph representation of the yaml
+// visualize is a subcommand that constructs a graph representation of the yaml
 // input file and renders this into GraphViz 'dot' notation.
 // Initial version renders to dot syntax only, to graphically depict this the output
-// has to be run through a graphviz visualisation tool/utiliyy
+// has to be run through a graphviz visualization tool/utiliyy
 
 import (
 	"bytes"
@@ -15,20 +15,20 @@ import (
 	"strings"
 )
 
-type visualiseCmd struct {
+type visualizeCmd struct {
 	constellationFilePath string
 	*baseCmd
 }
 
-func newVisualiseCmd() *visualiseCmd {
-	cc := &visualiseCmd{}
+func newVisualizeCmd() *visualizeCmd {
+	cc := &visualizeCmd{}
 
 	cc.baseCmd = newBaseCmd(&cobra.Command{
-		Use:   "visualise",
+		Use:   "visualize",
 		Short: "Format a constellation configuration as Graphviz dot notation",
-		Long: `Visualise is for producing Graphviz dot notation code of a constellation configuration
+		Long: `Visualize is for producing Graphviz dot notation code of a constellation configuration
 	
-Example: abstrakt visualise -f [constellationFilePath]`,
+Example: abstrakt visualize -f [constellationFilePath]`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			logger.Debug("args: " + strings.Join(args, " "))
