@@ -43,35 +43,35 @@ Example: abstrakt validate -f [constellationFilePath] -m [mapperFilePath]
 			if len(cc.mapperFilePath) > 0 {
 				m, err = loadAndValidateMapper(cc.mapperFilePath)
 				if err != nil {
-					logger.Errorf("mapper: %v", err)
+					logger.Errorf("Mapper: %v", err)
 					fail = true
 				} else {
-					logger.Info("mapper: valid")
+					logger.Info("Mapper: valid")
 				}
 			}
 
 			if len(cc.constellationFilePath) > 0 {
 				d, err = loadAndValidateDag(cc.constellationFilePath)
 				if err != nil {
-					logger.Errorf("constellation: %v", err)
+					logger.Errorf("Constellation: %v", err)
 					fail = true
 				} else {
-					logger.Info("constellation: valid")
+					logger.Info("Constellation: valid")
 				}
 			}
 
 			if !d.IsEmpty() && !m.IsEmpty() {
 				err = validateDagAndMapper(&d, &m)
 				if err != nil {
-					logger.Errorf("deployment: %v", err)
+					logger.Errorf("Deployment: %v", err)
 					fail = true
 				} else {
-					logger.Info("deployment: valid")
+					logger.Info("Deployment: valid")
 				}
 			}
 
 			if fail {
-				err = fmt.Errorf("invalid configuration(s)")
+				err = fmt.Errorf("Invalid configuration(s)")
 			}
 
 			return
@@ -103,8 +103,8 @@ func validateDagAndMapper(d *constellation.Config, m *mapper.Config) (err error)
 	for _, i := range types {
 		_, exists := helpers.Find(mapTypes, i)
 		if !exists {
-			logger.Error("missing map configuration(s)")
-			logger.Errorf("service `%v` does not exist in map", i)
+			logger.Error("Missing map configuration(s)")
+			logger.Errorf("Service `%v` does not exist in map", i)
 			err = fmt.Errorf("invalid")
 		}
 	}
@@ -124,7 +124,7 @@ func loadAndValidateDag(path string) (config constellation.Config, err error) {
 
 // validateDag takes a constellation dag and returns any errors.
 func validateDag(d *constellation.Config) (err error) {
-	logger.Debug("constellation: validating schema")
+	logger.Debug("Constellation: validating schema")
 	err = d.ValidateModel()
 
 	if err != nil {
@@ -136,20 +136,20 @@ func validateDag(d *constellation.Config) (err error) {
 	duplicates := d.DuplicateIDs()
 
 	if duplicates != nil {
-		logger.Error("duplicate `ID` present in config")
+		logger.Error("Duplicate `ID` present in config")
 		for _, i := range duplicates {
 			logger.Errorf("'%v'", i)
 		}
 		err = fmt.Errorf("invalid")
 	}
 
-	logger.Debug("constellation: checking if `Service` exists")
+	logger.Debug("Constellation: checking if `Service` exists")
 	connections := d.CheckServiceExists()
 
 	if len(connections) > 0 {
-		logger.Error("missing relationship(s)")
+		logger.Error("Missing relationship(s)")
 		for key, i := range connections {
-			logger.Errorf("relationship '%v' has missing `Services`:", key)
+			logger.Errorf("Relationship '%v' has missing `Services`:", key)
 			for _, j := range i {
 				logger.Errorf("'%v'", j)
 			}
@@ -172,7 +172,7 @@ func loadAndValidateMapper(path string) (config mapper.Config, err error) {
 
 // validateMapper takes a constellation mapper and returns any errors.
 func validateMapper(m *mapper.Config) (err error) {
-	logger.Debug("mapper: validating schema")
+	logger.Debug("Mapper: validating schema")
 	err = m.ValidateModel()
 
 	if err != nil {
@@ -180,33 +180,33 @@ func validateMapper(m *mapper.Config) (err error) {
 		return fmt.Errorf("invalid schema")
 	}
 
-	logger.Debug("mapper: checking for duplicate `ChartName`")
+	logger.Debug("Mapper: checking for duplicate `ChartName`")
 	duplicates := m.DuplicateChartName()
 
 	if duplicates != nil {
-		logger.Error("duplicate `ChartName` present in config")
+		logger.Error("Duplicate `ChartName` present in config")
 		for _, i := range duplicates {
 			logger.Errorf("'%v'", i)
 		}
 		err = fmt.Errorf("invalid")
 	}
 
-	logger.Debug("mapper: checking for duplicate `Type`")
+	logger.Debug("Mapper: checking for duplicate `Type`")
 	duplicates = m.DuplicateType()
 
 	if duplicates != nil {
-		logger.Error("duplicate `Type` present in config")
+		logger.Error("Duplicate `Type` present in config")
 		for _, i := range duplicates {
 			logger.Errorf("'%v'", i)
 		}
 		err = fmt.Errorf("invalid")
 	}
 
-	logger.Debug("mapper: checking for duplicate `Location`")
+	logger.Debug("Mapper: checking for duplicate `Location`")
 	duplicates = m.DuplicateLocation()
 
 	if duplicates != nil {
-		logger.Error("duplicate `Location` present in config")
+		logger.Error("Duplicate `Location` present in config")
 		for _, i := range duplicates {
 			logger.Errorf("'%v'", i)
 		}
