@@ -1,9 +1,10 @@
-package constellation
+package diff
 
 import (
 	"fmt"
 	"github.com/awalterschulze/gographviz"
 	set "github.com/deckarep/golang-set"
+	"github.com/microsoft/abstrakt/internal/platform/constellation"
 	"strings"
 )
 
@@ -17,20 +18,26 @@ type ComparisonSet struct {
 	SetDelRels    set.Set
 }
 
+// Set contains two constellation configurations to compare against one another.
+type Set struct {
+	Original *constellation.Config
+	New      *constellation.Config
+}
+
 //CompareConstellations takes two constellation configurations, compares and returns the differences.
-func CompareConstellations(dsOrg *Config, dsNew *Config) (string, error) {
+func (d *Set) CompareConstellations() (string, error) {
 	// populate comparison sets with changes between original and new graph
-	sets := FillComparisonSets(dsOrg, dsNew)
+	sets := d.FillComparisonSets()
 
 	// build the graphviz output from new graph and comparison sets
-	return CreateGraphWithChanges(dsNew, &sets)
+	return CreateGraphWithChanges(d.New, &sets)
 }
 
 // FillComparisonSets - loads provided set struct with data from the constellations and then determines the various differences between the
 // sets (original constellation and new) to help detemine what has been added, removed or changed.
-func FillComparisonSets(dsOrg *Config, dsNew *Config) (sets ComparisonSet) {
-	setOrgSvcs, setOrgRel := createSet(dsOrg)
-	setNewSvcs, setNewRel := createSet(dsNew)
+func (d *Set) FillComparisonSets() (sets ComparisonSet) {
+	setOrgSvcs, setOrgRel := createSet(d.Original)
+	setNewSvcs, setNewRel := createSet(d.New)
 
 	// "Added" means in the new constellation but not the original one
 	// "Deleted" means something is present in the original constellation but not in the new constellation
@@ -47,7 +54,7 @@ func FillComparisonSets(dsOrg *Config, dsNew *Config) (sets ComparisonSet) {
 }
 
 // createSet - utility function used to create a pair of result sets (services + relationships) based on an input constellation DAG
-func createSet(dsGraph *Config) (set.Set, set.Set) {
+func createSet(dsGraph *constellation.Config) (set.Set, set.Set) {
 
 	// Create sets to hold services and relationships - used to find differences between old and new using intersection and difference operations
 	retSetServices := set.NewSet()
@@ -69,7 +76,7 @@ func createSet(dsGraph *Config) (set.Set, set.Set) {
 // CreateGraphWithChanges - use both input constellations (new and original) as well as the comparison sets to create
 // a dag that can be visualized. It uses the comparison sets to identify additions, deletions and changes between the original
 // and new constellations.
-func CreateGraphWithChanges(newGraph *Config, sets *ComparisonSet) (string, error) {
+func CreateGraphWithChanges(newGraph *constellation.Config, sets *ComparisonSet) (string, error) {
 	// Lookup is used to map IDs to names. Names are easier to visualize but IDs are more important to ensure the
 	// presented constellation is correct and IDs are used to link nodes together
 	lookup := make(map[string]string)

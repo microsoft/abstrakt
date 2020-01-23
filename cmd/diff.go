@@ -8,6 +8,7 @@ package cmd
 import (
 	"bytes"
 	"fmt"
+	"github.com/microsoft/abstrakt/internal/diff"
 	"github.com/microsoft/abstrakt/internal/platform/constellation"
 	"github.com/microsoft/abstrakt/internal/tools/file"
 	"github.com/microsoft/abstrakt/internal/tools/logger"
@@ -81,7 +82,8 @@ Example: abstrakt diff -o [constellationFilePathOriginal] -n [constellationFileP
 				logger.Output(resStringNew)
 			}
 
-			resStringDiff, err := constellation.CompareConstellations(dsGraphOrg, dsGraphNew)
+			constellationSets := diff.Set{Original: dsGraphOrg, New: dsGraphNew}
+			resStringDiff, err := constellationSets.CompareConstellations()
 
 			if err != nil {
 				return err

@@ -1,7 +1,8 @@
-package constellation_test
+package diff_test
 
 import (
 	set "github.com/deckarep/golang-set"
+	"github.com/microsoft/abstrakt/internal/diff"
 	"github.com/microsoft/abstrakt/internal/platform/constellation"
 	"github.com/microsoft/abstrakt/internal/tools/test"
 	"github.com/stretchr/testify/assert"
@@ -13,20 +14,21 @@ import (
 func TestGetComparisonSets(t *testing.T) {
 
 	dsGraphOrg := new(constellation.Config)
-	err := dsGraphOrg.LoadFile("testdata/diff/original.yaml")
+	err := dsGraphOrg.LoadFile("testdata/original.yaml")
 	assert.NoErrorf(t, err, "dagConfigService failed to load dag from test string %s", err)
 
 	dsGraphNew := new(constellation.Config)
-	err = dsGraphNew.LoadFile("testdata/diff/modified.yaml")
+	err = dsGraphNew.LoadFile("testdata/modified.yaml")
 	assert.NoErrorf(t, err, "dagConfigService failed to load file %s", err)
 
 	// will populate with expected/known outcomes
-	knownSets := &constellation.ComparisonSet{}
+	knownSets := &diff.ComparisonSet{}
 
 	populateComparisonSets(knownSets)
 
 	// function being tested
-	loadedSets := constellation.FillComparisonSets(dsGraphOrg, dsGraphNew)
+	diffSet := diff.Set{Original: dsGraphOrg, New: dsGraphNew}
+	loadedSets := diffSet.FillComparisonSets()
 
 	assert.True(t, knownSets.SetCommonSvcs.Equal(loadedSets.SetCommonSvcs), "Common services - did not match between expected result and input yaml")
 	assert.True(t, knownSets.SetCommonRels.Equal(loadedSets.SetCommonRels), "Common relationships - did not match between expected result and input yaml")
@@ -40,26 +42,27 @@ func TestGetComparisonSets(t *testing.T) {
 func TestGraphWithChanges(t *testing.T) {
 
 	dsGraphOrg := new(constellation.Config)
-	err := dsGraphOrg.LoadFile("testdata/diff/original.yaml")
+	err := dsGraphOrg.LoadFile("testdata/original.yaml")
 	if err != nil {
 		t.Errorf("dagConfigService failed to load dag from test string %s", err)
 	}
 
 	dsGraphNew := new(constellation.Config)
-	err = dsGraphNew.LoadFile("testdata/diff/modified.yaml")
+	err = dsGraphNew.LoadFile("testdata/modified.yaml")
 	assert.NoErrorf(t, err, "dagConfigService failed to load file %s", err)
 
 	// function being tested
-	loadedSets := constellation.FillComparisonSets(dsGraphOrg, dsGraphNew)
+	diffSet := diff.Set{Original: dsGraphOrg, New: dsGraphNew}
+	loadedSets := diffSet.FillComparisonSets()
 
-	resString, err := constellation.CreateGraphWithChanges(dsGraphNew, &loadedSets)
+	resString, err := diff.CreateGraphWithChanges(dsGraphNew, &loadedSets)
 
 	assert.NoError(t, err)
 	assert.Truef(t, test.CompareGraphOutputAsSets(testDiffComparisonOutputString, resString), "Resulting output does not match the reference comparison input \n RESULT \n%s EXPECTED \n%s", resString, testDiffComparisonOutputString)
 }
 
 // Utility to populate comparison sets with expected/known result
-func populateComparisonSets(target *constellation.ComparisonSet) {
+func populateComparisonSets(target *diff.ComparisonSet) {
 	target.SetCommonSvcs = set.NewSet()
 	target.SetCommonSvcs.Add("3aa1e546-1ed5-4d67-a59c-be0d5905b490")
 	target.SetCommonSvcs.Add("1d0255d4-5b8c-4a52-b0bb-ac024cda37e5")
