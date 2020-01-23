@@ -1,7 +1,7 @@
 package mapper
 
 import (
-	"github.com/microsoft/abstrakt/internal/tools/find"
+	"github.com/microsoft/abstrakt/tools/find"
 	"gopkg.in/dealancer/validate.v2"
 )
 

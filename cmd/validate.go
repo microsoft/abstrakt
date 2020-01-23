@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/microsoft/abstrakt/internal/platform/constellation"
 	"github.com/microsoft/abstrakt/internal/platform/mapper"
-	"github.com/microsoft/abstrakt/internal/tools/find"
-	"github.com/microsoft/abstrakt/internal/tools/logger"
+	"github.com/microsoft/abstrakt/tools/find"
+	"github.com/microsoft/abstrakt/tools/logger"
 	"github.com/spf13/cobra"
 )
 

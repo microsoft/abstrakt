@@ -4,7 +4,7 @@ import (
 	set "github.com/deckarep/golang-set"
 	"github.com/microsoft/abstrakt/internal/diff"
 	"github.com/microsoft/abstrakt/internal/platform/constellation"
-	"github.com/microsoft/abstrakt/internal/tools/test"
+	"github.com/microsoft/abstrakt/tools/test"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

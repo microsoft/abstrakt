@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	helper "github.com/microsoft/abstrakt/internal/tools/test"
+	helper "github.com/microsoft/abstrakt/tools/test"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
 	"os"

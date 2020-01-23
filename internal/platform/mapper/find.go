@@ -1,7 +1,7 @@
 package mapper
 
 import (
-	"github.com/microsoft/abstrakt/internal/tools/guid"
+	"github.com/microsoft/abstrakt/tools/guid"
 	"strings"
 )
 

@@ -1,7 +1,7 @@
 package find_test
 
 import (
-	"github.com/microsoft/abstrakt/internal/tools/find"
+	"github.com/microsoft/abstrakt/tools/find"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

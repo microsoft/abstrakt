@@ -14,7 +14,7 @@ package constellation
 ////////////////////////////////////////////////////////////
 
 import (
-	"github.com/microsoft/abstrakt/internal/tools/guid"
+	"github.com/microsoft/abstrakt/tools/guid"
 	yamlParser "gopkg.in/yaml.v2"
 	"io/ioutil"
 	"reflect"

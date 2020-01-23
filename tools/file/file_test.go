@@ -1,7 +1,7 @@
 package file_test
 
 import (
-	"github.com/microsoft/abstrakt/internal/tools/file"
+	"github.com/microsoft/abstrakt/tools/file"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -11,7 +11,7 @@ func TestFileExistsNoFile(t *testing.T) {
 }
 
 func TestFileExists(t *testing.T) {
-	assert.True(t, file.Exists("../../../README.md"))
+	assert.True(t, file.Exists("../../README.md"))
 }
 
 func TestFileExistsIsFolder(t *testing.T) {
