@@ -1,7 +1,7 @@
 package constellation
 
 import (
-	"github.com/microsoft/abstrakt/internal/tools/helpers"
+	"github.com/microsoft/abstrakt/internal/tools/find"
 	"gopkg.in/dealancer/validate.v2"
 )
 
@@ -10,7 +10,7 @@ func (m *Config) DuplicateIDs() (duplicates []string) {
 	IDs := []string{string(m.ID)}
 
 	for _, i := range m.Services {
-		_, exists := helpers.Find(IDs, i.ID)
+		_, exists := find.Slice(IDs, i.ID)
 		if exists {
 			duplicates = append(duplicates, i.ID)
 		} else {
@@ -19,7 +19,7 @@ func (m *Config) DuplicateIDs() (duplicates []string) {
 	}
 
 	for _, i := range m.Relationships {
-		_, exists := helpers.Find(IDs, i.ID)
+		_, exists := find.Slice(IDs, i.ID)
 		if exists {
 			duplicates = append(duplicates, i.ID)
 		} else {
@@ -40,12 +40,12 @@ func (m *Config) CheckServiceExists() (missing map[string][]string) {
 	}
 
 	for _, i := range m.Relationships {
-		_, exists := helpers.Find(IDs, i.To)
+		_, exists := find.Slice(IDs, i.To)
 		if !exists {
 			missing[i.ID] = append(missing[i.ID], i.To)
 		}
 
-		_, exists = helpers.Find(IDs, i.From)
+		_, exists = find.Slice(IDs, i.From)
 		if !exists {
 			missing[i.ID] = append(missing[i.ID], i.From)
 		}

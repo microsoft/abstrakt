@@ -1,7 +1,7 @@
 package mapper
 
 import (
-	"github.com/microsoft/abstrakt/internal/tools/helpers"
+	"github.com/microsoft/abstrakt/internal/tools/find"
 	"gopkg.in/dealancer/validate.v2"
 )
 
@@ -10,7 +10,7 @@ func (m *Config) DuplicateChartName() (duplicates []string) {
 	chartNames := []string{}
 
 	for _, i := range m.Maps {
-		_, exists := helpers.Find(chartNames, i.ChartName)
+		_, exists := find.Slice(chartNames, i.ChartName)
 		if exists {
 			duplicates = append(duplicates, i.ChartName)
 		} else {
@@ -26,7 +26,7 @@ func (m *Config) DuplicateType() (duplicates []string) {
 	types := []string{}
 
 	for _, i := range m.Maps {
-		_, exists := helpers.Find(types, i.Type)
+		_, exists := find.Slice(types, i.Type)
 		if exists {
 			duplicates = append(duplicates, i.Type)
 		} else {
@@ -42,7 +42,7 @@ func (m *Config) DuplicateLocation() (duplicates []string) {
 	location := []string{}
 
 	for _, i := range m.Maps {
-		_, exists := helpers.Find(location, i.Location)
+		_, exists := find.Slice(location, i.Location)
 		if exists {
 			duplicates = append(duplicates, i.Location)
 		} else {

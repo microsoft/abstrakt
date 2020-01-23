@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/microsoft/abstrakt/internal/platform/constellation"
 	"github.com/microsoft/abstrakt/internal/platform/mapper"
-	"github.com/microsoft/abstrakt/internal/tools/helpers"
+	"github.com/microsoft/abstrakt/internal/tools/find"
 	"github.com/microsoft/abstrakt/internal/tools/logger"
 	"github.com/spf13/cobra"
 )
@@ -89,7 +89,7 @@ func validateDagAndMapper(d *constellation.Config, m *mapper.Config) (err error)
 	mapTypes := []string{}
 
 	for _, i := range d.Services {
-		_, exists := helpers.Find(types, i.Type)
+		_, exists := find.Slice(types, i.Type)
 		if !exists {
 			types = append(types, i.Type)
 		}
@@ -101,7 +101,7 @@ func validateDagAndMapper(d *constellation.Config, m *mapper.Config) (err error)
 
 	logger.Debug("deployment: checking if `Service` exists in map")
 	for _, i := range types {
-		_, exists := helpers.Find(mapTypes, i)
+		_, exists := find.Slice(mapTypes, i)
 		if !exists {
 			logger.Error("Missing map configuration(s)")
 			logger.Errorf("Service `%v` does not exist in map", i)

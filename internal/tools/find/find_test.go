@@ -1,7 +1,7 @@
-package helpers_test
+package find_test
 
 import (
-	"github.com/microsoft/abstrakt/internal/tools/helpers"
+	"github.com/microsoft/abstrakt/internal/tools/find"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -9,7 +9,7 @@ import (
 func TestFindElementInSlice(t *testing.T) {
 	slice := []string{"a", "b", "c", "d", "e", "f"}
 
-	index, found := helpers.Find(slice, "d")
+	index, found := find.Slice(slice, "d")
 
 	assert.True(t, found)
 	assert.NotEqual(t, -1, index)
@@ -19,7 +19,7 @@ func TestFindElementInSlice(t *testing.T) {
 func TestFindElementNotInSlice(t *testing.T) {
 	slice := []string{"a", "b", "c", "d", "e", "f"}
 
-	index, found := helpers.Find(slice, "g")
+	index, found := find.Slice(slice, "g")
 
 	assert.False(t, found)
 	assert.Equal(t, -1, index)
