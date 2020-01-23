@@ -27,7 +27,8 @@ steps:
   inputs:
     command: 'get'
     arguments: '-u all'
-    
+    workingDirectory: '$(System.DefaultWorkingDirectory)'
+
 - task: Go@0
   displayName: 'Resolving Dependencies'
   inputs:
