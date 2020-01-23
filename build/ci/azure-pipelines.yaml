@@ -23,10 +23,10 @@ steps:
     GOBIN: '$(GOBIN)'
 
 - task: Go@0
-  displayName: 'Update Go Packages'
+  displayName: 'Update kubectl Package'
   inputs:
     command: 'get'
-    arguments: '-u all'
+    arguments: '-u k8s.io/kubectl'
     workingDirectory: '$(System.DefaultWorkingDirectory)'
 
 - task: Go@0
