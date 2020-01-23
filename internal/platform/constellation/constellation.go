@@ -67,7 +67,7 @@ func (m *Config) LoadFile(fileName string) (err error) {
 }
 
 // LoadString -- New DAG info instance from the given yaml string.
-func (m *Config) LoadString(yamlString string) (err error) {
+func (m *Config) LoadString(yamlString string) error {
 	return yamlParser.Unmarshal([]byte(yamlString), m)
 }
 
