@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/microsoft/abstrakt/internal/platform/constellation"
+	"github.com/microsoft/abstrakt/internal/tools/file"
 	"github.com/microsoft/abstrakt/internal/tools/helpers"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
@@ -63,11 +64,11 @@ func TestFileExists(t *testing.T) {
 	assert.NoError(t, err, "Could not create output testing file, cannot proceed")
 
 	//Test that a valid file (created above) can be seen
-	var result bool = helpers.FileExists(testValidFilename) //Expecting true - file does exists
+	var result bool = file.Exists(testValidFilename) //Expecting true - file does exists
 	assert.True(t, result, "Test file does exist but testFile returns that it does not")
 
 	//Test that an invalid file (does not exist) is not seen
-	result = helpers.FileExists(testInvalidFilename) //Expecting false - file does not exist
+	result = file.Exists(testInvalidFilename) //Expecting false - file does not exist
 	assert.False(t, result, "Test file does not exist but testFile says it does")
 
 	err = os.Remove(testValidFilename)
@@ -75,7 +76,7 @@ func TestFileExists(t *testing.T) {
 		panic(err)
 	}
 
-	result = helpers.FileExists(testValidFilename) //Expecting false - file has been removed
+	result = file.Exists(testValidFilename) //Expecting false - file has been removed
 	assert.False(t, result, "Test file has been removed but fileExists is finding it")
 }
 

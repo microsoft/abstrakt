@@ -9,7 +9,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/microsoft/abstrakt/internal/platform/constellation"
-	"github.com/microsoft/abstrakt/internal/tools/helpers"
+	"github.com/microsoft/abstrakt/internal/tools/file"
 	"github.com/microsoft/abstrakt/internal/tools/logger"
 	"github.com/spf13/cobra"
 	"strings"
@@ -34,7 +34,7 @@ Example: abstrakt visualize -f [constellationFilePath]`,
 			logger.Debug("args: " + strings.Join(args, " "))
 			logger.Debug("constellationFilePath: " + cc.constellationFilePath)
 
-			if !helpers.FileExists(cc.constellationFilePath) {
+			if !file.Exists(cc.constellationFilePath) {
 				return fmt.Errorf("Could not open YAML input file for reading %v", cc.constellationFilePath)
 			}
 

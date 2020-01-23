@@ -9,7 +9,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/microsoft/abstrakt/internal/platform/constellation"
-	"github.com/microsoft/abstrakt/internal/tools/helpers"
+	"github.com/microsoft/abstrakt/internal/tools/file"
 	"github.com/microsoft/abstrakt/internal/tools/logger"
 	"github.com/spf13/cobra"
 	"strings"
@@ -41,11 +41,11 @@ Example: abstrakt diff -o [constellationFilePathOriginal] -n [constellationFileP
 			logger.Debugf("showOriginalOutput: %t", *cc.showOriginal)
 			logger.Debugf("showNewOutput: %t", *cc.showNew)
 
-			if !helpers.FileExists(cc.constellationFilePathOrg) {
+			if !file.Exists(cc.constellationFilePathOrg) {
 				return fmt.Errorf("Could not open original YAML input file for reading %v", cc.constellationFilePathOrg)
 			}
 
-			if !helpers.FileExists(cc.constellationFilePathNew) {
+			if !file.Exists(cc.constellationFilePathNew) {
 				return fmt.Errorf("Could not open new YAML input file for reading %v", cc.constellationFilePathNew)
 			}
 
