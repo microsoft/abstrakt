@@ -20,15 +20,15 @@ func (readGraph *Config) GenerateGraph(out io.Writer) (string, error) {
 
 	// Replace spaces with underscores, names with spaces can break graphviz engines
 	if err := g.SetName(strings.Replace(readGraph.Name, " ", "_", -1)); err != nil {
-		return "", fmt.Errorf("error: %v", err)
+		return "", err
 	}
 	if err := g.AddAttr(g.Name, "rankdir", "LR"); err != nil {
-		return "", fmt.Errorf("error adding attribute: %v", err)
+		return "", err
 	}
 
 	// Make the graph directed (a constellation is  DAG)
 	if err := g.SetDir(true); err != nil {
-		return "", fmt.Errorf("error: %v", err)
+		return "", err
 	}
 
 	// Add all nodes to the graph storing the lookup from ID to name (for later adding relationships)
@@ -40,10 +40,11 @@ func (readGraph *Config) GenerateGraph(out io.Writer) (string, error) {
 		if strings.Compare(newName, v.ID) != 0 {
 			fmt.Fprintf(out, "Changing %s to %s\n", v.ID, newName)
 		}
+
 		lookup[v.ID] = newName
 		err := g.AddNode(readGraph.Name, "\""+newName+"\"", nil)
 		if err != nil {
-			return "", fmt.Errorf("error: %v", err)
+			return "", err
 		}
 	}
 
@@ -55,7 +56,7 @@ func (readGraph *Config) GenerateGraph(out io.Writer) (string, error) {
 		localTo := "\"" + lookup[v.To] + "\""
 		err := g.AddEdge(localFrom, localTo, true, nil)
 		if err != nil {
-			return "", fmt.Errorf("error: %v", err)
+			return "", err
 		}
 	}
 
