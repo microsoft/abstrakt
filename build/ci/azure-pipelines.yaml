@@ -1,4 +1,5 @@
 trigger:
+
   branches:
     include:
     - master
@@ -20,6 +21,12 @@ steps:
     version: '1.13'
     GOPATH: '$(GOPATH)'
     GOBIN: '$(GOBIN)'
+
+- task: Go@0
+  displayName: 'Update Go Packages'
+  inputs:
+    command: 'get'
+    arguments: '-u all'
     
 - task: Go@0
   displayName: 'Resolving Dependencies'
