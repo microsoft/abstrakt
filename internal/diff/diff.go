@@ -18,14 +18,14 @@ type ComparisonSet struct {
 	SetDelRels    set.Set
 }
 
-// Set contains two constellation configurations to compare against one another.
-type Set struct {
+// Compare contains two constellation configurations to compare against one another.
+type Compare struct {
 	Original *constellation.Config
 	New      *constellation.Config
 }
 
 //CompareConstellations takes two constellation configurations, compares and returns the differences.
-func (d *Set) CompareConstellations() (string, error) {
+func (d *Compare) CompareConstellations() (string, error) {
 	// populate comparison sets with changes between original and new graph
 	sets := d.FillComparisonSets()
 
@@ -35,7 +35,7 @@ func (d *Set) CompareConstellations() (string, error) {
 
 // FillComparisonSets - loads provided set struct with data from the constellations and then determines the various differences between the
 // sets (original constellation and new) to help detemine what has been added, removed or changed.
-func (d *Set) FillComparisonSets() (sets ComparisonSet) {
+func (d *Compare) FillComparisonSets() (sets ComparisonSet) {
 	setOrgSvcs, setOrgRel := createSet(d.Original)
 	setNewSvcs, setNewRel := createSet(d.New)
 

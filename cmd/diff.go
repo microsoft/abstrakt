@@ -82,7 +82,7 @@ Example: abstrakt diff -o [constellationFilePathOriginal] -n [constellationFileP
 				logger.Output(resStringNew)
 			}
 
-			constellationSets := diff.Set{Original: dsGraphOrg, New: dsGraphNew}
+			constellationSets := diff.Compare{Original: dsGraphOrg, New: dsGraphNew}
 			resStringDiff, err := constellationSets.CompareConstellations()
 
 			if err != nil {

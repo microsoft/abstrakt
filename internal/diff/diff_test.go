@@ -27,7 +27,7 @@ func TestGetComparisonSets(t *testing.T) {
 	populateComparisonSets(knownSets)
 
 	// function being tested
-	diffSet := diff.Set{Original: dsGraphOrg, New: dsGraphNew}
+	diffSet := diff.Compare{Original: dsGraphOrg, New: dsGraphNew}
 	loadedSets := diffSet.FillComparisonSets()
 
 	assert.True(t, knownSets.SetCommonSvcs.Equal(loadedSets.SetCommonSvcs), "Common services - did not match between expected result and input yaml")
@@ -52,7 +52,7 @@ func TestGraphWithChanges(t *testing.T) {
 	assert.NoErrorf(t, err, "dagConfigService failed to load file %s", err)
 
 	// function being tested
-	diffSet := diff.Set{Original: dsGraphOrg, New: dsGraphNew}
+	diffSet := diff.Compare{Original: dsGraphOrg, New: dsGraphNew}
 	loadedSets := diffSet.FillComparisonSets()
 
 	resString, err := diff.CreateGraphWithChanges(dsGraphNew, &loadedSets)
