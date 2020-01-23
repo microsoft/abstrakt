@@ -3,7 +3,7 @@ package constellation_test
 import (
 	"bytes"
 	"github.com/microsoft/abstrakt/internal/platform/constellation"
-	"github.com/microsoft/abstrakt/internal/tools/helpers"
+	"github.com/microsoft/abstrakt/internal/tools/test"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -25,7 +25,7 @@ func TestGenerateGraph(t *testing.T) {
 	retString, err := retConfig.GenerateGraph(out)
 
 	assert.NoErrorf(t, err, "Should not receive error: %v", err)
-	assert.True(t, helpers.CompareGraphOutputAsSets(cmpString, retString), "Input graph did not generate expected output graphviz representation\nExpected:\n%v \nGot:\n%v", cmpString, retString)
+	assert.True(t, test.CompareGraphOutputAsSets(cmpString, retString), "Input graph did not generate expected output graphviz representation\nExpected:\n%v \nGot:\n%v", cmpString, retString)
 }
 
 const test02ConstGraphString = `digraph Azure_Event_Hubs_Sample {

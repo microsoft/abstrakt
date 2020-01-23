@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/microsoft/abstrakt/internal/platform/constellation"
 	"github.com/microsoft/abstrakt/internal/tools/file"
-	"github.com/microsoft/abstrakt/internal/tools/helpers"
+	helper "github.com/microsoft/abstrakt/internal/tools/test"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
@@ -16,19 +16,19 @@ func TestVisualizeCmdWithAllRequirementsNoError(t *testing.T) {
 	constellationPath := "testdata/constellation/valid.yaml"
 
 	hook := test.NewGlobal()
-	_, err := helpers.ExecuteCommand(newVisualizeCmd().cmd, "-f", constellationPath)
+	_, err := helper.ExecuteCommand(newVisualizeCmd().cmd, "-f", constellationPath)
 
 	if err != nil {
 		t.Error("Did not receive output")
 	} else {
-		assert.Truef(t, helpers.CompareGraphOutputAsSets(validGraphString, hook.LastEntry().Message), "Expcted output and produced output do not match : expected %s produced %s", validGraphString, hook.LastEntry().Message)
+		assert.Truef(t, helper.CompareGraphOutputAsSets(validGraphString, hook.LastEntry().Message), "Expcted output and produced output do not match : expected %s produced %s", validGraphString, hook.LastEntry().Message)
 	}
 }
 
 func TestVisualizeCmdFailYaml(t *testing.T) {
 	expected := "Could not open YAML input file for reading"
 
-	output, err := helpers.ExecuteCommand(newVisualizeCmd().cmd, "-f", "constellationPath")
+	output, err := helper.ExecuteCommand(newVisualizeCmd().cmd, "-f", "constellationPath")
 
 	if err != nil {
 		assert.Contains(t, err.Error(), expected)
@@ -40,7 +40,7 @@ func TestVisualizeCmdFailYaml(t *testing.T) {
 func TestVisualizeCmdFailNotYaml(t *testing.T) {
 	expected := "dagConfigService failed to load file"
 
-	output, err := helpers.ExecuteCommand(newVisualizeCmd().cmd, "-f", "visualize.go")
+	output, err := helper.ExecuteCommand(newVisualizeCmd().cmd, "-f", "visualize.go")
 
 	if err != nil {
 		assert.Contains(t, err.Error(), expected)
@@ -50,9 +50,9 @@ func TestVisualizeCmdFailNotYaml(t *testing.T) {
 }
 
 func TestFileExists(t *testing.T) {
-	_, _, tdir := helpers.PrepareRealFilesForTest(t)
+	_, _, tdir := helper.PrepareRealFilesForTest(t)
 
-	defer helpers.CleanTempTestFiles(t, tdir)
+	defer helper.CleanTempTestFiles(t, tdir)
 
 	//Setup variables and content for test
 	testValidFilename := filepath.Join(tdir, "testVisualize.out")

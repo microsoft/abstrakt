@@ -1,14 +1,14 @@
 package cmd
 
 import (
-	"github.com/microsoft/abstrakt/internal/tools/helpers"
+	helper "github.com/microsoft/abstrakt/internal/tools/test"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestValidateCommandNoArgs(t *testing.T) {
-	_, err := helpers.ExecuteCommand(newValidateCmd().cmd)
+	_, err := helper.ExecuteCommand(newValidateCmd().cmd)
 	assert.Error(t, err)
 	assert.EqualError(t, err, "no flags were set")
 }
@@ -17,21 +17,21 @@ func TestValidateCommandConstellationAndMapper(t *testing.T) {
 	constellationPath := "testdata/constellation/valid.yaml"
 	mapPath := "testdata/mapper/valid.yaml"
 
-	output, err := helpers.ExecuteCommand(newValidateCmd().cmd, "-f", constellationPath, "-m", mapPath)
+	output, err := helper.ExecuteCommand(newValidateCmd().cmd, "-f", constellationPath, "-m", mapPath)
 	assert.NoErrorf(t, err, "Did not received expected error. \nGot:\n %v", output)
 }
 
 func TestValidateCommandConstellationExist(t *testing.T) {
 	constellationPath := "testdata/constellation/valid.yaml"
 
-	output, err := helpers.ExecuteCommand(newValidateCmd().cmd, "-f", constellationPath)
+	output, err := helper.ExecuteCommand(newValidateCmd().cmd, "-f", constellationPath)
 	assert.NoErrorf(t, err, "Did not received expected error. \nGot:\n %v", output)
 }
 
 func TestValidateCommandMapExist(t *testing.T) {
 	mapPath := "testdata/mapper/valid.yaml"
 
-	output, err := helpers.ExecuteCommand(newValidateCmd().cmd, "-m", mapPath)
+	output, err := helper.ExecuteCommand(newValidateCmd().cmd, "-m", mapPath)
 	assert.NoErrorf(t, err, "Did not received expected error. \nGot:\n %v", output)
 }
 
@@ -39,7 +39,7 @@ func TestValidateCommandConstellationFail(t *testing.T) {
 	expected := "Constellation: open does-not-exist: no such file or directory"
 
 	hook := test.NewGlobal()
-	_, err := helpers.ExecuteCommand(newValidateCmd().cmd, "-f", "does-not-exist")
+	_, err := helper.ExecuteCommand(newValidateCmd().cmd, "-f", "does-not-exist")
 
 	entries := []string{}
 
@@ -58,9 +58,9 @@ func TestValidateCommandMapFail(t *testing.T) {
 	expected := "Mapper: open does-not-exist: no such file or directory"
 
 	hook := test.NewGlobal()
-	_, err := helpers.ExecuteCommand(newValidateCmd().cmd, "-m", "does-not-exist")
+	_, err := helper.ExecuteCommand(newValidateCmd().cmd, "-m", "does-not-exist")
 
-	entries := helpers.GetAllLogs(hook.AllEntries())
+	entries := helper.GetAllLogs(hook.AllEntries())
 
 	if err != nil {
 		assert.Contains(t, entries, expected)
@@ -73,9 +73,9 @@ func TestValidateCommandConstellationInvalidSchema(t *testing.T) {
 	mapPath := "testdata/mapper/valid.yaml"
 
 	hook := test.NewGlobal()
-	_, err := helpers.ExecuteCommand(newValidateCmd().cmd, "-f", mapPath)
+	_, err := helper.ExecuteCommand(newValidateCmd().cmd, "-f", mapPath)
 
-	entries := helpers.GetAllLogs(hook.AllEntries())
+	entries := helper.GetAllLogs(hook.AllEntries())
 
 	assert.Error(t, err)
 	assert.Contains(t, entries, "Constellation: invalid schema")
@@ -86,9 +86,9 @@ func TestValidateCommandNapperInvalidSchema(t *testing.T) {
 	constellationPath := "testdata/constellation/valid.yaml"
 
 	hook := test.NewGlobal()
-	_, err := helpers.ExecuteCommand(newValidateCmd().cmd, "-m", constellationPath)
+	_, err := helper.ExecuteCommand(newValidateCmd().cmd, "-m", constellationPath)
 
-	entries := helpers.GetAllLogs(hook.AllEntries())
+	entries := helper.GetAllLogs(hook.AllEntries())
 
 	assert.Error(t, err)
 	assert.Contains(t, entries, "Mapper: invalid schema")
@@ -100,9 +100,9 @@ func TestValidateDeploymentFail(t *testing.T) {
 	mapPath := "testdata/mapper/invalid.yaml"
 
 	hook := test.NewGlobal()
-	_, err := helpers.ExecuteCommand(newValidateCmd().cmd, "-f", constellationPath, "-m", mapPath)
+	_, err := helper.ExecuteCommand(newValidateCmd().cmd, "-f", constellationPath, "-m", mapPath)
 
-	entries := helpers.GetAllLogs(hook.AllEntries())
+	entries := helper.GetAllLogs(hook.AllEntries())
 
 	assert.Error(t, err)
 	assert.Contains(t, entries, "Service `EventLogger` does not exist in map")
@@ -113,9 +113,9 @@ func TestValidateMapperDuplicates(t *testing.T) {
 	mapPath := "testdata/mapper/invalid.yaml"
 
 	hook := test.NewGlobal()
-	_, err := helpers.ExecuteCommand(newValidateCmd().cmd, "-m", mapPath)
+	_, err := helper.ExecuteCommand(newValidateCmd().cmd, "-m", mapPath)
 
-	entries := helpers.GetAllLogs(hook.AllEntries())
+	entries := helper.GetAllLogs(hook.AllEntries())
 
 	assert.Error(t, err)
 	assert.Contains(t, entries, "Duplicate `ChartName` present in config")
@@ -129,9 +129,9 @@ func TestValidateConstellationDuplicateIDs(t *testing.T) {
 	constellationPath := "testdata/constellation/invalid.yaml"
 
 	hook := test.NewGlobal()
-	_, err := helpers.ExecuteCommand(newValidateCmd().cmd, "-f", constellationPath)
+	_, err := helper.ExecuteCommand(newValidateCmd().cmd, "-f", constellationPath)
 
-	entries := helpers.GetAllLogs(hook.AllEntries())
+	entries := helper.GetAllLogs(hook.AllEntries())
 
 	assert.Error(t, err)
 	assert.Contains(t, entries, "Duplicate `ID` present in config")
@@ -143,9 +143,9 @@ func TestValidateConstellationMissingServices(t *testing.T) {
 	constellationPath := "testdata/constellation/invalid.yaml"
 
 	hook := test.NewGlobal()
-	_, err := helpers.ExecuteCommand(newValidateCmd().cmd, "-f", constellationPath)
+	_, err := helper.ExecuteCommand(newValidateCmd().cmd, "-f", constellationPath)
 
-	entries := helpers.GetAllLogs(hook.AllEntries())
+	entries := helper.GetAllLogs(hook.AllEntries())
 
 	assert.Error(t, err)
 	assert.Contains(t, entries, "Relationship 'Event Hubs to Event Logger Link' has missing `Services`:")

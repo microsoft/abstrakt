@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/microsoft/abstrakt/internal/tools/helpers"
+	helper "github.com/microsoft/abstrakt/internal/tools/test"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -10,15 +10,15 @@ import (
 // TestDiffCmdWithAllRequirementsNoError - test diff command parameters
 // use valid arguments so expect no failures
 func TestDiffCmdWithAllRequirementsNoError(t *testing.T) {
-	constellationPathOrg, constellationPathNew, _, _ := helpers.PrepareTwoRealConstellationFilesForTest(t)
+	constellationPathOrg, constellationPathNew, _, _ := helper.PrepareTwoRealConstellationFilesForTest(t)
 
 	hook := test.NewGlobal()
-	_, err := helpers.ExecuteCommand(newDiffCmd().cmd, "-o", constellationPathOrg, "-n", constellationPathNew)
+	_, err := helper.ExecuteCommand(newDiffCmd().cmd, "-o", constellationPathOrg, "-n", constellationPathNew)
 
 	if err != nil {
 		t.Error("Did not receive output")
 	} else {
-		assert.Truef(t, helpers.CompareGraphOutputAsSets(testDiffComparisonOutputString, hook.LastEntry().Message), "Expcted output and produced output do not match : expected %s produced %s", testDiffComparisonOutputString, hook.LastEntry().Message)
+		assert.Truef(t, helper.CompareGraphOutputAsSets(testDiffComparisonOutputString, hook.LastEntry().Message), "Expcted output and produced output do not match : expected %s produced %s", testDiffComparisonOutputString, hook.LastEntry().Message)
 		// Did use this initially but wont work with the strongs output from the graphviz library as the sequence of entries in the output can change
 		// while the sequence may change the result is still valid and the same so am usinga  local comparison function to get around this problem
 		// assert.Contains(t, hook.LastEntry().Message, testDiffComparisonOutputString)
@@ -30,7 +30,7 @@ func TestDiffCmdWithAllRequirementsNoError(t *testing.T) {
 func TestDffCmdFailYaml(t *testing.T) {
 	expected := "Could not open original YAML input file for reading constellationPathOrg"
 
-	output, err := helpers.ExecuteCommand(newDiffCmd().cmd, "-o", "constellationPathOrg", "-n", "constellationPathNew")
+	output, err := helper.ExecuteCommand(newDiffCmd().cmd, "-o", "constellationPathOrg", "-n", "constellationPathNew")
 
 	if err != nil {
 		assert.Contains(t, err.Error(), expected)
@@ -40,7 +40,7 @@ func TestDffCmdFailYaml(t *testing.T) {
 
 	expected = "Could not open new YAML input file for reading constellationPathNew"
 
-	output, err = helpers.ExecuteCommand(newDiffCmd().cmd, "-o", "../examples/constellation/sample_constellation.yaml", "-n", "constellationPathNew")
+	output, err = helper.ExecuteCommand(newDiffCmd().cmd, "-o", "../examples/constellation/sample_constellation.yaml", "-n", "constellationPathNew")
 
 	if err != nil {
 		assert.Contains(t, err.Error(), expected)
@@ -55,7 +55,7 @@ func TestDffCmdFailYaml(t *testing.T) {
 func TestDiffCmdFailNotYaml(t *testing.T) {
 	expected := "dagConfigService failed to load file"
 
-	output, err := helpers.ExecuteCommand(newDiffCmd().cmd, "-o", "diff.go", "-n", "diff.go")
+	output, err := helper.ExecuteCommand(newDiffCmd().cmd, "-o", "diff.go", "-n", "diff.go")
 
 	if err != nil {
 		assert.Contains(t, err.Error(), expected)
@@ -63,7 +63,7 @@ func TestDiffCmdFailNotYaml(t *testing.T) {
 		t.Errorf("Did not fail. Expected: %v \nGot: %v", expected, output)
 	}
 
-	output, err = helpers.ExecuteCommand(newDiffCmd().cmd, "-o", "../examples/constellation/sample_constellation.yaml", "-n", "diff.go")
+	output, err = helper.ExecuteCommand(newDiffCmd().cmd, "-o", "../examples/constellation/sample_constellation.yaml", "-n", "diff.go")
 
 	if err != nil {
 		assert.Contains(t, err.Error(), expected)

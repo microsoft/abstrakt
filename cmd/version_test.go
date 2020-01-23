@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/microsoft/abstrakt/internal/tools/helpers"
+	helper "github.com/microsoft/abstrakt/internal/tools/test"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
 	"os"
@@ -24,7 +24,7 @@ func TestVersionCmd(t *testing.T) {
 	expected := "0.0.1"
 
 	hook := test.NewGlobal()
-	_, err := helpers.ExecuteCommand(newVersionCmd().cmd)
+	_, err := helper.ExecuteCommand(newVersionCmd().cmd)
 
 	if err != nil {
 		t.Error(err)
