@@ -1,9 +1,9 @@
 package cmd
 
-// visualize is a subcommand that constructs a graph representation of the yaml
+// visualise is a subcommand that constructs a graph representation of the yaml
 // input file and renders this into GraphViz 'dot' notation.
 // Initial version renders to dot syntax only, to graphically depict this the output
-// has to be run through a graphviz visualization tool/utiliyy
+// has to be run through a graphviz visualisation tool/utiliyy
 
 import (
 	"bytes"

@@ -12,11 +12,13 @@ linters-settings:
     min-len: 3.0
     min-occurrences: 3.0
   misspell:
-    locale: "US"
+    locale: "UK"
     ignore-words:
      - listend
      - analyses
      - cancelling
+     - color
+     - colors
 linters:
   enable:
     - vet

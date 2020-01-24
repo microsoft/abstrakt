@@ -74,10 +74,10 @@ func createSet(dsGraph *constellation.Config) (set.Set, set.Set) {
 }
 
 // CreateGraphWithChanges - use both input constellations (new and original) as well as the comparison sets to create
-// a dag that can be visualized. It uses the comparison sets to identify additions, deletions and changes between the original
+// a dag that can be visualised. It uses the comparison sets to identify additions, deletions and changes between the original
 // and new constellations.
 func CreateGraphWithChanges(newGraph *constellation.Config, sets *ComparisonSet) (string, error) {
-	// Lookup is used to map IDs to names. Names are easier to visualize but IDs are more important to ensure the
+	// Lookup is used to map IDs to names. Names are easier to visualise but IDs are more important to ensure the
 	// presented constellation is correct and IDs are used to link nodes together
 	lookup := make(map[string]string)
 	g := gographviz.NewGraph()

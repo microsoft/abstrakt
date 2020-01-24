@@ -12,11 +12,11 @@ import (
 	"testing"
 )
 
-func TestVisualizeCmdWithAllRequirementsNoError(t *testing.T) {
+func TestVisualiseCmdWithAllRequirementsNoError(t *testing.T) {
 	constellationPath := "testdata/constellation/valid.yaml"
 
 	hook := test.NewGlobal()
-	_, err := helper.ExecuteCommand(newVisualizeCmd().cmd, "-f", constellationPath)
+	_, err := helper.ExecuteCommand(newVisualiseCmd().cmd, "-f", constellationPath)
 
 	if err != nil {
 		t.Error("Did not receive output")
@@ -25,10 +25,10 @@ func TestVisualizeCmdWithAllRequirementsNoError(t *testing.T) {
 	}
 }
 
-func TestVisualizeCmdFailYaml(t *testing.T) {
+func TestVisualiseCmdFailYaml(t *testing.T) {
 	expected := "Could not open YAML input file for reading"
 
-	output, err := helper.ExecuteCommand(newVisualizeCmd().cmd, "-f", "constellationPath")
+	output, err := helper.ExecuteCommand(newVisualiseCmd().cmd, "-f", "constellationPath")
 
 	if err != nil {
 		assert.Contains(t, err.Error(), expected)
@@ -37,10 +37,10 @@ func TestVisualizeCmdFailYaml(t *testing.T) {
 	}
 }
 
-func TestVisualizeCmdFailNotYaml(t *testing.T) {
+func TestVisualiseCmdFailNotYaml(t *testing.T) {
 	expected := "dagConfigService failed to load file"
 
-	output, err := helper.ExecuteCommand(newVisualizeCmd().cmd, "-f", "visualize.go")
+	output, err := helper.ExecuteCommand(newVisualiseCmd().cmd, "-f", "visualise.go")
 
 	if err != nil {
 		assert.Contains(t, err.Error(), expected)
@@ -55,7 +55,7 @@ func TestFileExists(t *testing.T) {
 	defer helper.CleanTempTestFiles(t, tdir)
 
 	//Setup variables and content for test
-	testValidFilename := filepath.Join(tdir, "testVisualize.out")
+	testValidFilename := filepath.Join(tdir, "testVisualise.out")
 	testInvalidFilename := filepath.Join(tdir, "nonexistant.out")
 	testData := []byte("A file to test with")
 

@@ -97,18 +97,18 @@ endif
 fmt:
 	gofmt -s -w ./
 
-build:	
+build:
 	go build -o abstrakt main.go
 
-visualize: build	
-	./abstrakt visualize -f ./examples/constellation/http_constellation.yaml | dot -Tpng > result.png
+visualise: build
+	./abstrakt visualise -f ./examples/constellation/http_constellation.yaml | dot -Tpng > result.png
 
 diff: build
 	./abstrakt diff -o ./examples/constellation/sample_constellation.yaml -n ./examples/constellation/sample_constellation_changed.yaml | dot -Tpng > result.png
 
 run-http-demo: http-demo http-demo-deploy
 
-http-demo: build	
+http-demo: build
 	./abstrakt compose http-demo -f ./examples/constellation/http_constellation.yaml -m ./examples/constellation/http_constellation_maps.yaml -o ./output/http_sample
 
 http-demo-deploy:

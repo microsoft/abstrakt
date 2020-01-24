@@ -15,7 +15,7 @@ Available Commands:
   help        Help about any command
   validate    Validate a constellation file for correct schema and ensure correctness.
   version     The version of Abstrakt being used
-  visualize   Format a constellation configuration as Graphviz dot notation
+  visualise   Format a constellation configuration as Graphviz dot notation
 
 Flags:
   -h, --help      help for abstrakt
@@ -80,27 +80,27 @@ Global Flags:
   -v, --verbose   Use verbose output logs
 ```
 
-### abstrakt `visualize`
+### abstrakt `visualise`
 
 ```bash
-Visualize is for producing Graphviz dot notation code of a constellation configuration
+Visualise is for producing Graphviz dot notation code of a constellation configuration
 
-Example: abstrakt visualize -f [constellationFilePath]
+Example: abstrakt visualise -f [constellationFilePath]
 
 Usage:
-  abstrakt visualize [flags]
+  abstrakt visualise [flags]
 
 Flags:
   -f, --constellationFilePath string   constellation file path
-  -h, --help                           help for visualize
+  -h, --help                           help for visualise
 
 Global Flags:
   -v, --verbose   Use verbose output logs
 ```
 
-The output from the visualize subcommand is [Graphviz dot notation](https://www.graphviz.org/doc/info/lang.html)
+The output from the visualise subcommand is [Graphviz dot notation](https://www.graphviz.org/doc/info/lang.html)
 
-The output from a call to 'abstrakt visualize' can be piped into Graphviz to generate a graphical output. See the example in the Examples section. 
+The output from a call to 'abstrakt visualise' can be piped into Graphviz to generate a graphical output. See the example in the Examples section. 
 
 Alternatively, copy the output and paste into a Graphviz rendering tool to see the graph produced. Some sites listed below (rendering option in the utility to be developed).  
 
@@ -129,9 +129,9 @@ Global Flags:
 
 #### Examples
 
-Run visualize on a file
+Run visualise on a file
 	
-	abstrakt visualize -f basic_azure_event_hubs.yaml
+	abstrakt visualise -f basic_azure_event_hubs.yaml
 	digraph Azure_Event_Hubs_Sample {
 	        Event_Generator->Azure_Event_Hub;
 	        Azure_Event_Hub->Event_Logger;
@@ -141,6 +141,6 @@ Run visualize on a file
 	
 	}
 	
-Pipe visualize output to Graphviz producing a file called result.png (assumes Graphviz is installed and can be called from the location abstrakt is being run)
+Pipe visualise output to Graphviz producing a file called result.png (assumes Graphviz is installed and can be called from the location abstrakt is being run)
 
-	abstrakt visualize -f ./examples/constellation/sample_consteallation.yaml | dot -Tpng > result.png
+	abstrakt visualise -f ./examples/constellation/sample_consteallation.yaml | dot -Tpng > result.png
