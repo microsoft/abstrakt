@@ -1,6 +1,7 @@
 package constellation
 
 import (
+	"github.com/microsoft/abstrakt/tools/find"
 	"github.com/microsoft/abstrakt/tools/guid"
 	"strings"
 )
@@ -53,5 +54,54 @@ func (m *Config) FindRelationshipByFromName(relationshipFromName string) (res []
 			res = append(res, val)
 		}
 	}
+	return
+}
+
+// FindDuplicateIDs checks for duplicate Relationship and Service IDs in a constellation file.
+func (m *Config) FindDuplicateIDs() (duplicates []string) {
+	IDs := []string{string(m.ID)}
+
+	for _, i := range m.Services {
+		_, exists := find.Slice(IDs, i.ID)
+		if exists {
+			duplicates = append(duplicates, i.ID)
+		} else {
+			IDs = append(IDs, i.ID)
+		}
+	}
+
+	for _, i := range m.Relationships {
+		_, exists := find.Slice(IDs, i.ID)
+		if exists {
+			duplicates = append(duplicates, i.ID)
+		} else {
+			IDs = append(IDs, i.ID)
+		}
+	}
+
+	return
+}
+
+// ServiceExists loops through each Relationship and checks if the services are declared.
+func (m *Config) ServiceExists() (missing map[string][]string) {
+	missing = make(map[string][]string)
+	IDs := []string{}
+
+	for _, i := range m.Services {
+		IDs = append(IDs, i.ID)
+	}
+
+	for _, i := range m.Relationships {
+		_, exists := find.Slice(IDs, i.To)
+		if !exists {
+			missing[i.ID] = append(missing[i.ID], i.To)
+		}
+
+		_, exists = find.Slice(IDs, i.From)
+		if !exists {
+			missing[i.ID] = append(missing[i.ID], i.From)
+		}
+	}
+
 	return
 }

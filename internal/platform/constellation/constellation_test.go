@@ -62,6 +62,16 @@ func TestIsEmptyFalse(t *testing.T) {
 	assert.False(t, dag.IsEmpty())
 }
 
+func TestSchemaChecks(t *testing.T) {
+	testData := new(constellation.Config)
+
+	err := testData.LoadFile("testdata/valid.yaml")
+	assert.NoError(t, err)
+
+	err = testData.ValidateModel()
+	assert.NoError(t, err, "Model validation should not return errors")
+}
+
 var test01WantDag constellation.Config = constellation.Config{
 	Name: "Azure Event Hubs Sample",
 	ID:   guid.GUID("d6e4a5e9-696a-4626-ba7a-534d6ff450a5"),

@@ -1,6 +1,7 @@
 package mapper
 
 import (
+	"github.com/microsoft/abstrakt/tools/find"
 	"github.com/microsoft/abstrakt/tools/guid"
 	"strings"
 )
@@ -29,4 +30,52 @@ func (m *Config) FindByType(typeName string) *Info {
 		}
 	}
 	return nil
+}
+
+// FindDuplicateChartName checks for duplicate chart names in a mapper file.
+func (m *Config) FindDuplicateChartName() (duplicates []string) {
+	chartNames := []string{}
+
+	for _, i := range m.Maps {
+		_, exists := find.Slice(chartNames, i.ChartName)
+		if exists {
+			duplicates = append(duplicates, i.ChartName)
+		} else {
+			chartNames = append(chartNames, i.ChartName)
+		}
+	}
+
+	return
+}
+
+// FindDuplicateType checks for duplicate types in a mapper file.
+func (m *Config) FindDuplicateType() (duplicates []string) {
+	types := []string{}
+
+	for _, i := range m.Maps {
+		_, exists := find.Slice(types, i.Type)
+		if exists {
+			duplicates = append(duplicates, i.Type)
+		} else {
+			types = append(types, i.Type)
+		}
+	}
+
+	return
+}
+
+// FindDuplicateLocation checks for duplicate location in a mapper file.
+func (m *Config) FindDuplicateLocation() (duplicates []string) {
+	location := []string{}
+
+	for _, i := range m.Maps {
+		_, exists := find.Slice(location, i.Location)
+		if exists {
+			duplicates = append(duplicates, i.Location)
+		} else {
+			location = append(location, i.Location)
+		}
+	}
+
+	return
 }

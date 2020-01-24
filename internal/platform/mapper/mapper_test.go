@@ -63,6 +63,16 @@ func TestIsEmptyFalse(t *testing.T) {
 	assert.False(t, dag.IsEmpty())
 }
 
+func TestSchemaPass(t *testing.T) {
+	testData := new(mapper.Config)
+
+	err := testData.LoadFile("testdata/mapper.yaml")
+	assert.NoError(t, err)
+
+	err = testData.ValidateModel()
+	assert.NoError(t, err)
+}
+
 var buildMap01 = mapper.Config{
 	Name: "Basic Azure Event Hubs maps",
 	ID:   guid.GUID("a5a7c413-a020-44a2-bd23-1941adb7ad58"),

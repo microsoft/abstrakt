@@ -15,6 +15,7 @@ package constellation
 
 import (
 	"github.com/microsoft/abstrakt/tools/guid"
+	"gopkg.in/dealancer/validate.v2"
 	yamlParser "gopkg.in/yaml.v2"
 	"io/ioutil"
 	"reflect"
@@ -74,4 +75,9 @@ func (m *Config) LoadString(yamlString string) error {
 //IsEmpty checks if config is empty.
 func (m *Config) IsEmpty() bool {
 	return reflect.DeepEqual(Config{}, *m)
+}
+
+// ValidateModel checks if constellation has all required felids
+func (m *Config) ValidateModel() error {
+	return validate.Validate(m)
 }

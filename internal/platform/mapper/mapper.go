@@ -11,6 +11,7 @@ import (
 	yamlParser "gopkg.in/yaml.v2"
 	"io/ioutil"
 	"reflect"
+	"gopkg.in/dealancer/validate.v2"
 )
 
 // Note: the yaml mapping attributes are necessary (despite the nearly
@@ -50,4 +51,9 @@ func (m *Config) LoadString(yamlString string) error {
 //IsEmpty checks if config is empty.
 func (m *Config) IsEmpty() bool {
 	return reflect.DeepEqual(Config{}, *m)
+}
+
+// ValidateModel checks if mapper has all required felids
+func (m *Config) ValidateModel() error {
+	return validate.Validate(m)
 }
