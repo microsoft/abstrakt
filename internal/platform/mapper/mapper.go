@@ -8,10 +8,10 @@ package mapper
 
 import (
 	"github.com/microsoft/abstrakt/tools/guid"
+	"gopkg.in/dealancer/validate.v2"
 	yamlParser "gopkg.in/yaml.v2"
 	"io/ioutil"
 	"reflect"
-	"gopkg.in/dealancer/validate.v2"
 )
 
 // Note: the yaml mapping attributes are necessary (despite the nearly
