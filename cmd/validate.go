@@ -133,7 +133,7 @@ func validateDag(d *constellation.Config) (err error) {
 	}
 
 	logger.Debug("constellation: checking for duplicate `ID`")
-	duplicates := d.DuplicateIDs()
+	duplicates := d.FindDuplicateIDs()
 
 	if duplicates != nil {
 		logger.Error("Duplicate `ID` present in config")
@@ -144,7 +144,7 @@ func validateDag(d *constellation.Config) (err error) {
 	}
 
 	logger.Debug("Constellation: checking if `Service` exists")
-	connections := d.CheckServiceExists()
+	connections := d.ServiceExists()
 
 	if len(connections) > 0 {
 		logger.Error("Missing relationship(s)")
@@ -181,7 +181,7 @@ func validateMapper(m *mapper.Config) (err error) {
 	}
 
 	logger.Debug("Mapper: checking for duplicate `ChartName`")
-	duplicates := m.DuplicateChartName()
+	duplicates := m.FindDuplicateChartName()
 
 	if duplicates != nil {
 		logger.Error("Duplicate `ChartName` present in config")
@@ -192,7 +192,7 @@ func validateMapper(m *mapper.Config) (err error) {
 	}
 
 	logger.Debug("Mapper: checking for duplicate `Type`")
-	duplicates = m.DuplicateType()
+	duplicates = m.FindDuplicateType()
 
 	if duplicates != nil {
 		logger.Error("Duplicate `Type` present in config")
@@ -203,7 +203,7 @@ func validateMapper(m *mapper.Config) (err error) {
 	}
 
 	logger.Debug("Mapper: checking for duplicate `Location`")
-	duplicates = m.DuplicateLocation()
+	duplicates = m.FindDuplicateLocation()
 
 	if duplicates != nil {
 		logger.Error("Duplicate `Location` present in config")
