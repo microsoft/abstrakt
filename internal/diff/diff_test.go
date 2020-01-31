@@ -4,7 +4,7 @@ import (
 	set "github.com/deckarep/golang-set"
 	"github.com/microsoft/abstrakt/internal/diff"
 	"github.com/microsoft/abstrakt/internal/platform/constellation"
-	"github.com/microsoft/abstrakt/tools/test"
+	helper "github.com/microsoft/abstrakt/tools/test"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -58,7 +58,7 @@ func TestGraphWithChanges(t *testing.T) {
 	resString, err := diff.CreateGraphWithChanges(dsGraphNew, &loadedSets)
 
 	assert.NoError(t, err)
-	assert.Truef(t, test.CompareGraphOutputAsSets(testDiffComparisonOutputString, resString), "Resulting output does not match the reference comparison input \n RESULT \n%s EXPECTED \n%s", resString, testDiffComparisonOutputString)
+	assert.Truef(t, helper.CompareGraphOutputAsSets(testDiffComparisonOutputString, resString), "Resulting output does not match the reference comparison input \n RESULT \n%s EXPECTED \n%s", resString, testDiffComparisonOutputString)
 }
 
 // Utility to populate comparison sets with expected/known result
