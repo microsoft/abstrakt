@@ -16,20 +16,15 @@ variables:
 
 steps:
 - task: GoTool@0
-  displayName: 'Using Go v1.13'
+  displayName: 'Using Go v1.13.1'
   inputs:
-    version: '1.13'
+    version: '1.13.1'
     goPath: '$(GOPATH)'
     goBin: '$(GOBIN)'
 
-- task: Go@0
-  inputs:
-    command: 'custom'
-    customCommand: 'env'
-    arguments: 'GOPATH | read ppath && ##vso[task.setvariable variable=gopath]$ppath'
-
 - bash: |
-    echo $GOPATH
+    echo "##vso[task.setvariable variable=PATH]${PATH}:$(go env GOPATH)/bin"
+  displayName: 'Exporting GOPATH to PATH'
 
 - task: Go@0
   displayName: 'Resolving Dependencies'
