@@ -19,8 +19,8 @@ steps:
   displayName: 'Using Go v1.13'
   inputs:
     version: '1.13'
-    GOPATH: '$(GOPATH)'
-    GOBIN: '$(GOBIN)'
+    goPath: '$(GOPATH)'
+    goBin: '$(GOBIN)'
 
 - task: Go@0
   displayName: 'Resolving Dependencies'
