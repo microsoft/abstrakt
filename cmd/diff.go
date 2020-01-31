@@ -28,6 +28,8 @@ func newDiffCmd() *diffCmd {
 		Long: `Diff is for producing a Graphviz dot notation representation of the difference between two constellations (line an old and new version)
 	
 Example: abstrakt diff -o [constellationFilePathOriginal] -n [constellationFilePathNew]`,
+		SilenceUsage:  true,
+		SilenceErrors: true,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			logger.Debug("args: " + strings.Join(args, " "))
