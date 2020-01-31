@@ -39,14 +39,14 @@ steps:
     make lint-all
   displayName: 'Lint Abstrakt'
   workingDirectory: '$(System.DefaultWorkingDirectory)'
-  env: { GOPTH: '$(GOPATH)' }
+  env: { GOPATH: '$(GOPATH)' }
   failOnStderr: true
 
 - script: |
     make test-export-all
   displayName: 'Test Abstrakt'
   workingDirectory: '$(System.DefaultWorkingDirectory)'
-  env: { GOPTH: '$(GOPATH)' }
+  env: { GOPATH: '$(GOPATH)' }
 
 - task: PublishTestResults@2
   inputs:
