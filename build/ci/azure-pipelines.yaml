@@ -23,6 +23,15 @@ steps:
     goBin: '$(GOBIN)'
 
 - task: Go@0
+  inputs:
+    command: 'custom'
+    customCommand: 'env'
+    arguments: 'GOPATH | read ppath && ##vso[task.setvariable variable=gopath]$ppath'
+
+- bash: |
+    echo $GOPATH
+
+- task: Go@0
   displayName: 'Resolving Dependencies'
   inputs:
     arguments: '-d'
