@@ -51,12 +51,16 @@ func TestHelmLibCompose(t *testing.T) {
 	defer helper.CleanTempTestFiles(t, tdir)
 
 	c, err := chartutil.Create("foo", tdir)
-	assert.NoError(t, err)
+	if err != nil {
+		assert.FailNow(t, err.Error())
+	}
 
 	dir := filepath.Join(tdir, "foo")
 
 	mychart, err := loader.LoadDir(c)
-	assert.NoErrorf(t, err, "Failed to load newly created chart %q: %s", c, err)
+	if err != nil {
+		assert.FailNowf(t, "Failed to load newly created chart %q: %s", c, err)
+	}
 
 	assert.Equalf(t, "foo", mychart.Name(), "Expected name to be 'foo', got %q", mychart.Name())
 
