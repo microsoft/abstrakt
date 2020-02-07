@@ -18,35 +18,26 @@ func TestVisualiseCmdWithAllRequirementsNoError(t *testing.T) {
 	hook := test.NewGlobal()
 	_, err := helper.ExecuteCommand(newVisualiseCmd().cmd, "-f", constellationPath)
 
-	if err != nil {
-		t.Error("Did not receive output")
-	} else {
-		assert.Truef(t, helper.CompareGraphOutputAsSets(validGraphString, hook.LastEntry().Message), "Expcted output and produced output do not match : expected %s produced %s", validGraphString, hook.LastEntry().Message)
-	}
+	assert.NoError(t, err)
+	assert.True(t, helper.CompareGraphOutputAsSets(validGraphString, hook.LastEntry().Message))
 }
 
 func TestVisualiseCmdFailYaml(t *testing.T) {
 	expected := "Could not open YAML input file for reading"
 
-	output, err := helper.ExecuteCommand(newVisualiseCmd().cmd, "-f", "constellationPath")
+	_, err := helper.ExecuteCommand(newVisualiseCmd().cmd, "-f", "constellationPath")
 
-	if err != nil {
-		assert.Contains(t, err.Error(), expected)
-	} else {
-		t.Errorf("Did not fail. Expected: %v \nGot: %v", expected, output)
-	}
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), expected)
 }
 
 func TestVisualiseCmdFailNotYaml(t *testing.T) {
 	expected := "dagConfigService failed to load file"
 
-	output, err := helper.ExecuteCommand(newVisualiseCmd().cmd, "-f", "visualise.go")
+	_, err := helper.ExecuteCommand(newVisualiseCmd().cmd, "-f", "visualise.go")
 
-	if err != nil {
-		assert.Contains(t, err.Error(), expected)
-	} else {
-		t.Errorf("Did not fail. Expected: %v \nGot: %v", expected, output)
-	}
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), expected)
 }
 
 func TestFileExists(t *testing.T) {
