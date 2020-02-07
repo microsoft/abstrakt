@@ -72,28 +72,23 @@ func TestFileExists(t *testing.T) {
 	assert.False(t, result, "Test file does not exist but testFile says it does")
 
 	err = os.Remove(testValidFilename)
-	if err != nil {
-		panic(err)
-	}
+	assert.NoError(t, err)
 
 	result = file.Exists(testValidFilename) //Expecting false - file has been removed
 	assert.False(t, result, "Test file has been removed but fileExists is finding it")
 }
 
 func TestParseYaml(t *testing.T) {
-
 	retConfig := new(constellation.Config)
 	err := retConfig.LoadString(testValidYAMLString)
-	if err != nil {
-		panic(err)
-	}
+	assert.NoError(t, err)
 
-	if retConfig.Name != "Azure Event Hubs Sample" &&
-		retConfig.ID != "d6e4a5e9-696a-4626-ba7a-534d6ff450a5" &&
-		len(retConfig.Services) != 1 &&
-		len(retConfig.Relationships) != 1 {
-		t.Errorf("YAML did not parse correctly and it should have")
-	}
+	errMsg := "YAML did not parse correctly and it should have"
+
+	assert.Equalf(t, retConfig.Name, "Azure Event Hubs Sample", errMsg)
+	assert.EqualValuesf(t, retConfig.ID, "211a55bd-5d92-446c-8be8-190f8f0e623e", errMsg)
+	assert.Equalf(t, len(retConfig.Services), 1, errMsg)
+	assert.Equalf(t, len(retConfig.Relationships), 1, errMsg)
 }
 
 const testValidYAMLString = `
