@@ -47,11 +47,8 @@ func TestValidateCommandConstellationFail(t *testing.T) {
 		entries = append(entries, i.Message)
 	}
 
-	if err != nil {
-		assert.Contains(t, entries, expected)
-	} else {
-		t.Errorf("Did not received expected error. \nExpected: %v\nGot:\n %v", expected, err.Error())
-	}
+	assert.Error(t, err)
+	assert.Contains(t, entries, expected)
 }
 
 func TestValidateCommandMapFail(t *testing.T) {
@@ -62,11 +59,8 @@ func TestValidateCommandMapFail(t *testing.T) {
 
 	entries := helper.GetAllLogs(hook.AllEntries())
 
-	if err != nil {
-		assert.Contains(t, entries, expected)
-	} else {
-		t.Errorf("Did not received expected error. \nExpected: %v\nGot:\n %v", expected, err.Error())
-	}
+	assert.Error(t, err)
+	assert.Contains(t, entries, expected)
 }
 
 func TestValidateCommandConstellationInvalidSchema(t *testing.T) {
