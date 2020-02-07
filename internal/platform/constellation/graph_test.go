@@ -16,7 +16,7 @@ func TestGenerateGraph(t *testing.T) {
 	assert.NoError(t, err)
 
 	if err != nil {
-		panic(err)
+		assert.FailNow(t, err.Error())
 	}
 
 	out := &bytes.Buffer{}
