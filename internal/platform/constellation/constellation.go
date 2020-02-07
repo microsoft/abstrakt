@@ -1,14 +1,16 @@
 package constellation
 
 ////////////////////////////////////////////////////////////
-// DagConfig class - information for a deployment regarding
-// the Services and the Relationships between them.
+// Constellation class - information for a deployment
+// regarding the Services and the Relationships between
+// them.
 //
-// Usual starting point would be to construct a DatConfig
-// instance from the corresponding yaml using either:
-//    dcPointer := NewDagConfigFromFile(<filename>)
+// Usual starting point would be to construct a
+// constellation.Config instance from the corresponding
+// yaml using either:
+//    dcPointer := constellation.LoadFile(<filename>)
 // or
-//    dcPointer := NewDagConfigFromString(<yamlTextString>)
+//    dcPointer := constellation.LoadString(<yamlTextString>)
 //
 // Parsing failures are indicated by a nil return.
 ////////////////////////////////////////////////////////////
