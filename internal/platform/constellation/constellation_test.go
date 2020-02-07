@@ -12,7 +12,7 @@ import (
 func TestNewDagConfigFromString(t *testing.T) {
 	contentBytes, err := ioutil.ReadFile("testdata/valid.yaml")
 	if nil != err {
-		t.Fatal(err)
+		assert.FailNow(t, err.Error())
 	}
 
 	type targs struct {
@@ -35,7 +35,7 @@ func TestNewDagConfigFromString(t *testing.T) {
 			dag := &constellation.Config{}
 			err := dag.LoadString(tt.args.yamlString)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("LoadDagConfigFromString() error = %v, wantErr %v", err, tt.wantErr)
+				assert.Fail(t, "LoadDagConfigFromString() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			assert.Truef(t, reflect.DeepEqual(dag, tt.wantRet), "LoadDagConfigFromString() =\n%#v,\nWant:\n%#v\n", dag, tt.wantRet)
