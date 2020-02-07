@@ -1,7 +1,7 @@
 package mapper
 
 //////////////////////////////////////////////////////
-// BuildMapService:  Process map files relating services
+// Mapper:  Process map files relating services
 // to helm chart files.  For example, see accompanying
 // test file.
 //////////////////////////////////////////////////////
