@@ -1,8 +1,8 @@
 package compose_test
 
 import (
-	"fmt"
 	"github.com/microsoft/abstrakt/internal/compose"
+	helper "github.com/microsoft/abstrakt/tools/test"
 	"github.com/stretchr/testify/assert"
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chart/loader"
@@ -14,20 +14,12 @@ import (
 )
 
 func TestComposeService(t *testing.T) {
+	_, _, tdir := helper.PrepareRealFilesForTest(t)
 
-	tdir, err := ioutil.TempDir("", "helm-")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer func() {
-		err = os.RemoveAll(tdir)
-		if err != nil {
-			t.Fatal(err)
-		}
-	}()
+	defer helper.CleanTempTestFiles(t, tdir)
 
 	comp := new(compose.Composer)
-	_, err = comp.Build("test", tdir)
+	_, err := comp.Build("test", tdir)
 
 	assert.Error(t, err, "Compose should fail if not yet loaded")
 
@@ -42,37 +34,29 @@ func TestComposeService(t *testing.T) {
 
 	_ = chartutil.SaveDir(h, tdir)
 	h, _ = loader.LoadDir(tdir)
+
+	contentBytes, err := ioutil.ReadFile("testdata/values.yaml")
+	assert.NoError(t, err)
+
 	for _, raw := range h.Raw {
 		if raw.Name == "test/values.yaml" {
-			fmt.Print(string(raw.Data))
+			assert.Equal(t, string(contentBytes), string(raw.Data))
 		}
 	}
 }
 
 func TestHelmLibCompose(t *testing.T) {
+	_, _, tdir := helper.PrepareRealFilesForTest(t)
 
-	tdir, err := ioutil.TempDir("", "helm-")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer func() {
-		err = os.RemoveAll(tdir)
-		if err != nil {
-			t.Fatal(err)
-		}
-	}()
+	defer helper.CleanTempTestFiles(t, tdir)
 
 	c, err := chartutil.Create("foo", tdir)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
 
 	dir := filepath.Join(tdir, "foo")
 
 	mychart, err := loader.LoadDir(c)
-	if err != nil {
-		t.Fatalf("Failed to load newly created chart %q: %s", c, err)
-	}
+	assert.NoErrorf(t, err, "Failed to load newly created chart %q: %s", c, err)
 
 	assert.Equalf(t, "foo", mychart.Name(), "Expected name to be 'foo', got %q", mychart.Name())
 
@@ -89,9 +73,8 @@ func TestHelmLibCompose(t *testing.T) {
 		chartutil.TestConnectionName,
 		chartutil.ValuesfileName,
 	} {
-		if _, err := os.Stat(filepath.Join(dir, f)); err != nil {
-			t.Errorf("Expected %s file: %s", f, err)
-		}
+		_, err := os.Stat(filepath.Join(dir, f))
+		assert.NoError(t, err)
 	}
 
 	mychart.Values["Jordan"] = "testing123"
