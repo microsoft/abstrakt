@@ -23,7 +23,7 @@ func TestVisualiseCmdWithAllRequirementsNoError(t *testing.T) {
 }
 
 func TestVisualiseCmdFailYaml(t *testing.T) {
-	expected := "Could not open YAML input file for reading"
+	expected := "Constellation config failed to load file"
 
 	_, err := helper.ExecuteCommand(newVisualiseCmd().cmd, "-f", "constellationPath")
 
@@ -32,7 +32,7 @@ func TestVisualiseCmdFailYaml(t *testing.T) {
 }
 
 func TestVisualiseCmdFailNotYaml(t *testing.T) {
-	expected := "dagConfigService failed to load file"
+	expected := "Constellation config failed to load file"
 
 	_, err := helper.ExecuteCommand(newVisualiseCmd().cmd, "-f", "visualise.go")
 

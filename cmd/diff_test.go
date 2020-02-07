@@ -22,14 +22,14 @@ func TestDiffCmdWithAllRequirementsNoError(t *testing.T) {
 // TestDffCmdFailYaml - test diff command parameters
 // Test both required command line parameters (-o, -n) failing each in turn
 func TestDffCmdFailYaml(t *testing.T) {
-	expected := "Could not open original YAML input file for reading constellationPathOrg"
+	expected := "Constellation config failed to load file \"constellationPathOrg\": open constellationPathOrg: no such file or directory"
 
 	_, err := helper.ExecuteCommand(newDiffCmd().cmd, "-o", "constellationPathOrg", "-n", "constellationPathNew")
 
 	assert.Error(t, err)
 	assert.EqualError(t, err, expected)
 
-	expected = "Could not open new YAML input file for reading constellationPathNew"
+	expected = "Constellation config failed to load file \"constellationPathNew\": open constellationPathNew: no such file or directory"
 
 	_, err = helper.ExecuteCommand(newDiffCmd().cmd, "-o", "../examples/constellation/sample_constellation.yaml", "-n", "constellationPathNew")
 
@@ -40,7 +40,7 @@ func TestDffCmdFailYaml(t *testing.T) {
 // TestDiffCmdFailNotYaml - test diff command parameters
 // Test both required command line parameter files fail when provided with invalid input files (-o, -n) failing each in turn
 func TestDiffCmdFailNotYaml(t *testing.T) {
-	expected := "dagConfigService failed to load file \"diff.go\": yaml: line 26: mapping values are not allowed in this context"
+	expected := "Constellation config failed to load file \"diff.go\": yaml: line 25: mapping values are not allowed in this context"
 
 	_, err := helper.ExecuteCommand(newDiffCmd().cmd, "-o", "diff.go", "-n", "diff.go")
 

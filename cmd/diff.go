@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/microsoft/abstrakt/internal/diff"
 	"github.com/microsoft/abstrakt/internal/platform/constellation"
-	"github.com/microsoft/abstrakt/tools/file"
 	"github.com/microsoft/abstrakt/tools/logger"
 	"github.com/spf13/cobra"
 	"strings"
@@ -39,18 +38,10 @@ Example: abstrakt diff -o [constellationFilePathOriginal] -n [constellationFileP
 			logger.Debugf("showOriginalOutput: %t", *cc.showOriginal)
 			logger.Debugf("showNewOutput: %t", *cc.showNew)
 
-			if !file.Exists(cc.constellationFilePathOrg) {
-				return fmt.Errorf("Could not open original YAML input file for reading %v", cc.constellationFilePathOrg)
-			}
-
-			if !file.Exists(cc.constellationFilePathNew) {
-				return fmt.Errorf("Could not open new YAML input file for reading %v", cc.constellationFilePathNew)
-			}
-
 			dsGraphOrg := new(constellation.Config)
 			err := dsGraphOrg.LoadFile(cc.constellationFilePathOrg)
 			if err != nil {
-				return fmt.Errorf("dagConfigService failed to load file %q: %s", cc.constellationFilePathOrg, err)
+				return fmt.Errorf("Constellation config failed to load file %q: %s", cc.constellationFilePathOrg, err)
 			}
 
 			if *cc.showOriginal {
@@ -66,7 +57,7 @@ Example: abstrakt diff -o [constellationFilePathOriginal] -n [constellationFileP
 			dsGraphNew := new(constellation.Config)
 			err = dsGraphNew.LoadFile(cc.constellationFilePathNew)
 			if err != nil {
-				return fmt.Errorf("dagConfigService failed to load file %q: %s", cc.constellationFilePathNew, err)
+				return fmt.Errorf("Constellation config failed to load file %q: %s", cc.constellationFilePathNew, err)
 			}
 
 			if *cc.showNew {

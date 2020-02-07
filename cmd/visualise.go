@@ -9,7 +9,6 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/microsoft/abstrakt/internal/platform/constellation"
-	"github.com/microsoft/abstrakt/tools/file"
 	"github.com/microsoft/abstrakt/tools/logger"
 	"github.com/spf13/cobra"
 	"strings"
@@ -34,14 +33,10 @@ Example: abstrakt visualise -f [constellationFilePath]`,
 			logger.Debug("args: " + strings.Join(args, " "))
 			logger.Debug("constellationFilePath: " + cc.constellationFilePath)
 
-			if !file.Exists(cc.constellationFilePath) {
-				return fmt.Errorf("Could not open YAML input file for reading %v", cc.constellationFilePath)
-			}
-
 			dsGraph := new(constellation.Config)
 			err := dsGraph.LoadFile(cc.constellationFilePath)
 			if err != nil {
-				return fmt.Errorf("dagConfigService failed to load file %q: %s", cc.constellationFilePath, err)
+				return fmt.Errorf("Constellation config failed to load file %q: %s", cc.constellationFilePath, err)
 			}
 
 			out := &bytes.Buffer{}
