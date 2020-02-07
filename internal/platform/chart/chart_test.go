@@ -7,6 +7,7 @@ import (
 	"compress/gzip"
 	"flag"
 	"github.com/microsoft/abstrakt/internal/platform/chart"
+	"github.com/stretchr/testify/assert"
 	"io"
 	"io/ioutil"
 	"os"
@@ -26,38 +27,38 @@ func TestUpdate(t *testing.T) {
 
 	err := os.RemoveAll("testdata/golden")
 	if err != nil {
-		t.Fatal(err)
+		assert.FailNow(t, err.Error())
 	}
 
 	err = os.MkdirAll("testdata/golden/helm/charts", os.ModePerm)
 	if err != nil {
-		t.Fatal(err)
+		assert.FailNow(t, err.Error())
 	}
 
 	err = exec.Command("cp", "-r", "testdata/sample/helm", "testdata/golden/").Run()
 	if err != nil {
-		t.Fatal(err)
+		assert.FailNow(t, err.Error())
 	}
 
 	// Create zipped dependant charts
 	err = exec.Command("tar", "cfz", "testdata/golden/helm/charts/event_hub_sample_event_generator-1.0.0.tgz", "testdata/sample/deps/event_hub_sample_event_generator/").Run()
 	if err != nil {
-		t.Fatal(err)
+		assert.FailNow(t, err.Error())
 	}
 
 	err = exec.Command("tar", "cfz", "testdata/golden/helm/charts/event_hub_sample_event_hub-1.0.0.tgz", "testdata/sample/deps/event_hub_sample_event_hub/").Run()
 	if err != nil {
-		t.Fatal(err)
+		assert.FailNow(t, err.Error())
 	}
 
 	err = exec.Command("tar", "cfz", "testdata/golden/helm/charts/event_hub_sample_event_logger-1.0.0.tgz", "testdata/sample/deps/event_hub_sample_event_logger/").Run()
 	if err != nil {
-		t.Fatal(err)
+		assert.FailNow(t, err.Error())
 	}
 
 	err = exec.Command("tar", "cfz", "testdata/golden/test-0.1.0.tgz", "testdata/sample/helm").Run()
 	if err != nil {
-		t.Fatal(err)
+		assert.FailNow(t, err.Error())
 	}
 }
 
@@ -66,33 +67,30 @@ func TestChartSavesAndLoads(t *testing.T) {
 	tdir2, err2 := ioutil.TempDir("./", "output-")
 
 	if err != nil {
-		t.Fatal(err)
+		assert.FailNow(t, err.Error())
 	}
 
 	if err2 != nil {
-		t.Fatal(err2)
+		assert.FailNow(t, err2.Error())
 	}
+
 	defer func() {
 		err = os.RemoveAll(tdir)
-		if err != nil {
-			t.Error(err)
-		}
-		err = os.RemoveAll(tdir2)
-		if err != nil {
-			t.Error(err)
-		}
+		assert.NoError(t, err)
 
+		err = os.RemoveAll(tdir2)
+		assert.NoError(t, err)
 	}()
 
 	c, err := chart.Create("foo", tdir)
 
 	if err != nil {
-		t.Fatal(err)
+		assert.FailNow(t, err.Error())
 	}
 
 	err = chart.SaveToDir(c, tdir2)
 	if err != nil {
-		t.Fatalf("Failed to save newly created chart %q: %s", tdir2, err)
+		assert.FailNowf(t, "Failed to save newly created chart %q: %s", tdir2, err)
 	}
 
 	newPath := filepath.Join(tdir2, "foo")
@@ -100,36 +98,36 @@ func TestChartSavesAndLoads(t *testing.T) {
 	_, err = chart.LoadFromDir(newPath)
 
 	if err != nil {
-		t.Fatalf("Failed to load newly created chart %q: %s", newPath, err)
+		assert.FailNowf(t, "Failed to load newly created chart %q: %s", newPath, err)
 	}
 }
 
 func TestChartBuildChart(t *testing.T) {
 	tdir, err := ioutil.TempDir("./", "output-")
 	if err != nil {
-		t.Fatal(err)
+		assert.FailNow(t, err.Error())
 	}
 
 	defer func() {
 		err = os.RemoveAll(tdir)
 		if err != nil {
-			t.Fatal(err)
+			assert.FailNow(t, err.Error())
 		}
 	}()
 
 	err = exec.Command("cp", "-r", "testdata/sample/helm", tdir+"/").Run()
 	if err != nil {
-		t.Fatal(err)
+		assert.FailNow(t, err.Error())
 	}
 
 	err = exec.Command("cp", "-r", "testdata/sample/deps", tdir+"/").Run()
 	if err != nil {
-		t.Fatal(err)
+		assert.FailNow(t, err.Error())
 	}
 
 	_, err = chart.Build(tdir + "/helm")
 	if err != nil {
-		t.Fatalf("Failed to BuildChart(): %s", err)
+		assert.FailNowf(t, "Failed to BuildChart(): %s", err.Error())
 	}
 
 	chartsDir := tdir + "/helm/charts/"
@@ -142,23 +140,23 @@ func TestChartBuildChart(t *testing.T) {
 func TestZipChartToDir(t *testing.T) {
 	tdir, err := ioutil.TempDir("./", "output-")
 	if err != nil {
-		t.Fatal(err)
+		assert.FailNow(t, err.Error())
 	}
 	defer func() {
 		err = os.RemoveAll(tdir)
 		if err != nil {
-			t.Fatal(err)
+			assert.FailNow(t, err.Error())
 		}
 	}()
 
 	helm, err := chart.LoadFromDir("testdata/sample/helm")
 	if err != nil {
-		t.Fatalf("Failed on LoadChartFromDir(): %s", err)
+		assert.FailNowf(t, "Failed on LoadChartFromDir(): %s", err.Error())
 	}
 
 	_, err = chart.ZipToDir(helm, tdir)
 	if err != nil {
-		t.Fatalf("Failed on ZipChartToDir(): %s", err)
+		assert.FailNowf(t, "Failed on ZipChartToDir(): %s", err.Error())
 	}
 	compareFiles(t, "testdata/golden/test-0.1.0.tgz", tdir+"/test-0.1.0.tgz")
 }
@@ -181,30 +179,30 @@ func compareFiles(t *testing.T, expected, test string) {
 func readGz(t *testing.T, file string) (out bytes.Buffer) {
 	f, err := os.Open(file)
 	if err != nil {
-		t.Fatal(err)
+		assert.FailNow(t, err.Error())
 	}
 	defer func() {
 		err = f.Close()
 		if err != nil {
-			t.Fatal(err)
+			assert.FailNow(t, err.Error())
 		}
 	}()
 
 	zw, err := gzip.NewReader(f)
 	if err != nil {
-		t.Fatal(err)
+		assert.FailNow(t, err.Error())
 	}
 	defer func() {
 		err = zw.Close()
 		if err != nil {
-			t.Fatal(err)
+			assert.FailNow(t, err.Error())
 		}
 	}()
 
 	writer := bufio.NewWriter(&out)
 	_, err = io.Copy(writer, zw)
 	if err != nil {
-		t.Fatal(err)
+		assert.FailNow(t, err.Error())
 	}
 	return
 }
