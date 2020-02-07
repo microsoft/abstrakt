@@ -38,14 +38,12 @@ func TestGetComparisonSets(t *testing.T) {
 	assert.True(t, knownSets.SetDelRels.Equal(loadedSets.SetDelRels), "Deleted relationships - did not match between expected result and input yaml")
 }
 
-// testGraphWithChanges - test diff comparison function
+// TestGraphWithChanges - test diff comparison function
 func TestGraphWithChanges(t *testing.T) {
 
 	dsGraphOrg := new(constellation.Config)
 	err := dsGraphOrg.LoadFile("testdata/original.yaml")
-	if err != nil {
-		t.Errorf("dagConfigService failed to load dag from test string %s", err)
-	}
+	assert.NoError(t, err)
 
 	dsGraphNew := new(constellation.Config)
 	err = dsGraphNew.LoadFile("testdata/modified.yaml")
