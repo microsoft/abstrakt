@@ -26,9 +26,6 @@ func TestVersionCmd(t *testing.T) {
 	hook := test.NewGlobal()
 	_, err := helper.ExecuteCommand(newVersionCmd().cmd)
 
-	if err != nil {
-		t.Error(err)
-	} else {
-		assert.Contains(t, hook.LastEntry().Message, expected)
-	}
+	assert.NoError(t, err)
+	assert.Contains(t, hook.LastEntry().Message, expected)
 }
