@@ -2,6 +2,7 @@ package guid_test
 
 import (
 	"github.com/microsoft/abstrakt/tools/guid"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -60,9 +61,7 @@ func TestGUID_Equals(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.LHS.Equals(tt.args.RHS); got != tt.want {
-				t.Errorf("GUID.Equals() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, tt.LHS.Equals(tt.args.RHS))
 		})
 	}
 }
