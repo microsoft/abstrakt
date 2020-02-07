@@ -44,7 +44,11 @@ Example: abstrakt compose [chart name] -t [templateType] -f [constellationFilePa
 			}
 
 			service := new(compose.Composer)
-			_ = service.LoadFile(cc.constellationFilePath, cc.mapsFilePath)
+			err = service.LoadFile(cc.constellationFilePath, cc.mapsFilePath)
+
+			if err != nil {
+				return
+			}
 
 			logger.Debugf("noChecks is set to %t", *cc.noChecks)
 
