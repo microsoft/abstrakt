@@ -12,7 +12,7 @@ import (
 func TestMapFromString(t *testing.T) {
 	contentBytes, err := ioutil.ReadFile("testdata/mapper.yaml")
 	if nil != err {
-		t.Fatal(err)
+		assert.FailNow(t, err.Error())
 	}
 
 	type args struct {
@@ -36,7 +36,7 @@ func TestMapFromString(t *testing.T) {
 			mapper := &mapper.Config{}
 			err := mapper.LoadString(tt.args.yamlString)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("LoadMapFromString() error = %v, wantErr %v", err, tt.wantErr)
+				assert.Fail(t, "LoadMapFromString() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			assert.Truef(t, reflect.DeepEqual(mapper, tt.wantRet), "LoadMapFromString() = %v, want %v", mapper, tt.wantRet)
