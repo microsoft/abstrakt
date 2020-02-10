@@ -1,0 +1,39 @@
+event_hub_sample_event_generator:
+  name: event_hub_sample_event_generator
+  relationships:
+    output:
+    - name: event_hub_sample_event_hub
+      service: 211a55bd-5d92-446c-8be8-190f8f0e623e
+      type: EventHub
+  type: EventGenerator
+event_hub_sample_event_hub:
+  name: event_hub_sample_event_hub
+  relationships:
+    input:
+    - name: event_hub_sample_event_generator
+      service: 211a55bd-5d92-446c-8be8-190f8f0e623e
+      type: EventGenerator
+    output:
+    - name: event_hub_sample_event_logger1
+      service: 08ccbd67-456f-4349-854a-4e6959e5017b
+      type: EventLogger
+    - name: event_hub_sample_event_logger
+      service: c8a719e0-164d-408f-9ed1-06e08dc5abbe
+      type: EventLogger
+  type: EventHub
+event_hub_sample_event_logger:
+  name: event_hub_sample_event_logger
+  relationships:
+    input:
+    - name: event_hub_sample_event_hub
+      service: c8a719e0-164d-408f-9ed1-06e08dc5abbe
+      type: EventHub
+  type: EventLogger
+event_hub_sample_event_logger1:
+  name: event_hub_sample_event_logger1
+  relationships:
+    input:
+    - name: event_hub_sample_event_hub
+      service: 08ccbd67-456f-4349-854a-4e6959e5017b
+      type: EventHub
+  type: EventLogger

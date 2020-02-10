@@ -1,9 +1,11 @@
 package cmd
 
 import (
-	"fmt"
-	"github.com/microsoft/abstrakt/internal/dagconfigservice"
+	"github.com/microsoft/abstrakt/internal/platform/constellation"
+	"github.com/microsoft/abstrakt/tools/file"
+	helper "github.com/microsoft/abstrakt/tools/test"
 	"github.com/sirupsen/logrus/hooks/test"
+	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -11,57 +13,37 @@ import (
 )
 
 func TestVisualiseCmdWithAllRequirementsNoError(t *testing.T) {
-	constellationPath, _, _ := PrepareRealFilesForTest(t)
+	constellationPath := "testdata/constellation/valid.yaml"
 
 	hook := test.NewGlobal()
-	_, err := executeCommand(newVisualiseCmd().cmd, "-f", constellationPath)
+	_, err := helper.ExecuteCommand(newVisualiseCmd().cmd, "-f", constellationPath)
 
-	if err != nil {
-		t.Error("Did not receive output")
-	} else {
-		if !compareGraphOutputAsSets(validGraphString, hook.LastEntry().Message) {
-			t.Errorf("Expcted output and produced output do not match : expected %s produced %s", validGraphString, hook.LastEntry().Message)
-		}
-	}
+	assert.NoError(t, err)
+	assert.True(t, helper.CompareGraphOutputAsSets(validGraphString, hook.LastEntry().Message))
 }
 
 func TestVisualiseCmdFailYaml(t *testing.T) {
-	expected := "Could not open YAML input file for reading"
+	expected := "Constellation config failed to load file"
 
-	output, err := executeCommand(newVisualiseCmd().cmd, "-f", "constellationPath")
+	_, err := helper.ExecuteCommand(newVisualiseCmd().cmd, "-f", "constellationPath")
 
-	if err != nil {
-		checkStringContains(t, err.Error(), expected)
-	} else {
-		t.Errorf("Did not fail. Expected: %v \nGot: %v", expected, output)
-	}
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), expected)
 }
 
 func TestVisualiseCmdFailNotYaml(t *testing.T) {
-	expected := "dagConfigService failed to load file"
+	expected := "Constellation config failed to load file"
 
-	output, err := executeCommand(newVisualiseCmd().cmd, "-f", "visualise.go")
+	_, err := helper.ExecuteCommand(newVisualiseCmd().cmd, "-f", "visualise.go")
 
-	if err != nil {
-		checkStringContains(t, err.Error(), expected)
-	} else {
-		t.Errorf("Did not fail. Expected: %v \nGot: %v", expected, output)
-	}
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), expected)
 }
 
 func TestFileExists(t *testing.T) {
+	_, _, tdir := helper.PrepareRealFilesForTest(t)
 
-	tdir, err := ioutil.TempDir("", "helm-")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() {
-		err = os.RemoveAll(tdir)
-		if err != nil {
-			t.Fatal(err)
-		}
-	}()
+	defer helper.CleanTempTestFiles(t, tdir)
 
 	//Setup variables and content for test
 	testValidFilename := filepath.Join(tdir, "testVisualise.out")
@@ -69,115 +51,37 @@ func TestFileExists(t *testing.T) {
 	testData := []byte("A file to test with")
 
 	//Create a file to test against
-	err = ioutil.WriteFile(testValidFilename, testData, 0644)
-	if err != nil {
-		fmt.Println("Could not create output testing file, cannot proceed")
-		t.Error(err)
-	}
+	err := ioutil.WriteFile(testValidFilename, testData, 0644)
+	assert.NoError(t, err, "Could not create output testing file, cannot proceed")
 
 	//Test that a valid file (created above) can be seen
-	var result bool = fileExists(testValidFilename) //Expecting true - file does exists
-	if result == false {
-		t.Errorf("Test file does exist but testFile returns that it does not")
-	}
+	var result bool = file.Exists(testValidFilename) //Expecting true - file does exists
+	assert.True(t, result, "Test file does exist but testFile returns that it does not")
 
 	//Test that an invalid file (does not exist) is not seen
-	result = fileExists(testInvalidFilename) //Expecting false - file does not exist
-	if result != false {
-		t.Errorf("Test file does not exist but testFile says it does")
-	}
+	result = file.Exists(testInvalidFilename) //Expecting false - file does not exist
+	assert.False(t, result, "Test file does not exist but testFile says it does")
 
 	err = os.Remove(testValidFilename)
-	if err != nil {
-		panic(err)
-	}
+	assert.NoError(t, err)
 
-	result = fileExists(testValidFilename) //Expecting false - file has been removed
-	if result == true {
-		t.Errorf("Test file has been removed but fileExists is finding it")
-	}
-
-}
-
-func TestGenerateGraph(t *testing.T) {
-
-	retConfig := dagconfigservice.NewDagConfigService()
-	err := retConfig.LoadDagConfigFromString(test01DagStr)
-	if err != nil {
-		panic(err)
-	}
-
-	cmpString := test02ConstGraphString
-	retString := generateGraph(retConfig)
-
-	if !compareGraphOutputAsSets(cmpString, retString) {
-		t.Errorf("Input graph did not generate expected output graphviz representation")
-		t.Errorf("Expected:\n%v \nGot:\n%v", cmpString, retString)
-	}
-
+	result = file.Exists(testValidFilename) //Expecting false - file has been removed
+	assert.False(t, result, "Test file has been removed but fileExists is finding it")
 }
 
 func TestParseYaml(t *testing.T) {
+	retConfig := new(constellation.Config)
+	err := retConfig.LoadString(testValidYAMLString)
+	assert.NoError(t, err)
 
-	retConfig := dagconfigservice.NewDagConfigService()
-	err := retConfig.LoadDagConfigFromString(testValidYAMLString)
-	if err != nil {
-		panic(err)
-	}
+	errMsg := "YAML did not parse correctly and it should have"
 
-	if retConfig.Name != "Azure Event Hubs Sample" &&
-		retConfig.ID != "d6e4a5e9-696a-4626-ba7a-534d6ff450a5" &&
-		len(retConfig.Services) != 1 &&
-		len(retConfig.Relationships) != 1 {
-		t.Errorf("YAML did not parse correctly and it should have")
-	}
-
+	assert.Equalf(t, retConfig.Name, "Azure Event Hubs Sample", errMsg)
+	assert.EqualValuesf(t, retConfig.ID, "211a55bd-5d92-446c-8be8-190f8f0e623e", errMsg)
+	assert.Equalf(t, len(retConfig.Services), 1, errMsg)
+	assert.Equalf(t, len(retConfig.Relationships), 1, errMsg)
 }
 
-// Sample DAG file data
-const test01DagStr = `Name: "Azure Event Hubs Sample"
-Id: "d6e4a5e9-696a-4626-ba7a-534d6ff450a5"
-Services:
-- Id: "Event Generator"
-  Type: "EventGenerator"
-  Properties: {}
-- Id: "Azure Event Hub"
-  Type: "EventHub"
-  Properties: {}
-- Id: "Event Logger"
-  Type: "EventLogger"
-  Properties: {}
-- Id: "Event Logger"
-  Type: "EventLogger"
-  Properties: {}
-Relationships:
-- Id: "Generator to Event Hubs Link"
-  Description: "Event Generator to Event Hub connection"
-  From: "Event Generator"
-  To: "Azure Event Hub"
-  Properties: {}
-- Id: "Event Hubs to Event Logger Link"
-  Description: "Event Hubs to Event Logger connection"
-  From: "Azure Event Hub"
-  To: "Event Logger"
-  Properties: {}
-- Id: "Event Hubs to Event Logger Link Repeat"
-  Description: "Event Hubs to Event Logger connection"
-  From: "Azure Event Hub"
-  To: "Event Logger"
-  Properties: {}`
-
-const test02ConstGraphString = `digraph Azure_Event_Hubs_Sample {
-	rankdir=LR;
-	"Event_Generator"->"Azure_Event_Hub";
-	"Azure_Event_Hub"->"Event_Logger";
-	"Azure_Event_Hub"->"Event_Logger";
-	"Azure_Event_Hub";
-	"Event_Generator";
-	"Event_Logger";
-
-}
-`
 const testValidYAMLString = `
 Description: "Event Generator to Event Hub connection"
 From: 9e1bcb3d-ff58-41d4-8779-f71e7b8800f8
@@ -196,13 +100,11 @@ Type: EventGenerator
 
 const validGraphString = `digraph Azure_Event_Hubs_Sample {
 	rankdir=LR;
-	"9e1bcb3d-ff58-41d4-8779-f71e7b8800f8"->"3aa1e546-1ed5-4d67-a59c-be0d5905b490";
-	"3aa1e546-1ed5-4d67-a59c-be0d5905b490"->"1d0255d4-5b8c-4a52-b0bb-ac024cda37e5";
-	"3aa1e546-1ed5-4d67-a59c-be0d5905b490"->"a268fae5-2a82-4a3e-ada7-a52eeb7019ac";
-	"1d0255d4-5b8c-4a52-b0bb-ac024cda37e5";
-	"3aa1e546-1ed5-4d67-a59c-be0d5905b490";
-	"9e1bcb3d-ff58-41d4-8779-f71e7b8800f8";
-	"a268fae5-2a82-4a3e-ada7-a52eeb7019ac";
+	"Event_Generator"->"Azure_Event_Hub";
+	"Azure_Event_Hub"->"Event_Logger";
+	"Azure_Event_Hub";
+	"Event_Generator";
+	"Event_Logger";
 
 }
 `

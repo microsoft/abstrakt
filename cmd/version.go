@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	logger "github.com/microsoft/abstrakt/internal/tools/logger"
+	logger "github.com/microsoft/abstrakt/tools/logger"
 	"github.com/spf13/cobra"
 )
 

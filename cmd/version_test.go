@@ -1,9 +1,11 @@
 package cmd
 
 import (
+	helper "github.com/microsoft/abstrakt/tools/test"
 	"github.com/sirupsen/logrus/hooks/test"
+	"github.com/stretchr/testify/assert"
 	"os"
-	"testing" // based on standard golang testing library https://golang.org/pkg/testing/
+	"testing"
 )
 
 // TestMain does setup or teardown (tests run when m.Run() is called)
@@ -15,21 +17,15 @@ func TestMain(m *testing.M) {
 func TestVersion(t *testing.T) {
 	expected := "0.0.1"
 	version := Version()
-
-	if version != expected {
-		t.Errorf("Did not find correct abstrakt version. Expected %v, got %v", expected, version)
-	}
+	assert.Equal(t, expected, version)
 }
 
 func TestVersionCmd(t *testing.T) {
 	expected := "0.0.1"
 
 	hook := test.NewGlobal()
-	_, err := executeCommand(newVersionCmd().cmd)
+	_, err := helper.ExecuteCommand(newVersionCmd().cmd)
 
-	if err != nil {
-		t.Error(err)
-	} else {
-		checkStringContains(t, hook.LastEntry().Message, expected)
-	}
+	assert.NoError(t, err)
+	assert.Contains(t, hook.LastEntry().Message, expected)
 }

@@ -8,14 +8,14 @@
 
 test-watcher:
 	@echo "Running test watcher"
-	bash ./.scripts/test_watcher.sh
+	bash ./scripts/test_watcher.sh
 
 lint-all: lint-prepare lint vet
 
 lint-prepare:
 ifeq (,$(shell which golangci-lint))
 	@echo "Installing golangci-lint"
-	curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.21.0 > /dev/null 2>&1
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOPATH)/bin v1.23.1 > /dev/null 2>&1
 else
 	@echo "golangci-lint is installed"
 endif
@@ -29,7 +29,7 @@ vet:
 	go vet ./...
 
 ##################
-# Testing		 #
+#    Testing     #
 ##################
 
 test-prepare: 
@@ -59,6 +59,7 @@ install-helm:
 	curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > get_helm.sh
 	chmod 700 get_helm.sh
 	./get_helm.sh
+	rm get_helm.sh
 
 create-kindcluster:
 ifeq (,$(shell kind get clusters))
@@ -79,7 +80,7 @@ else
 	@exit 111
 endif
 	make create-kindcluster
-	kubectl apply -f /workspace/rbac.yaml
+	kubectl apply -f /workspace/scripts/rbac.yaml
 
 install-kind:
 ifeq (,$(shell which kind))
@@ -90,25 +91,25 @@ else
 endif
 
 ##################
-#  Run Examples    		  #
+#  Run Examples  #
 ##################
 
 fmt:
 	gofmt -s -w ./
 
-build:	
+build:
 	go build -o abstrakt main.go
 
-visualise: build	
-	./abstrakt visualise -f ./sample/constellation/http_constellation.yaml | dot -Tpng > result.png
+visualise: build
+	./abstrakt visualise -f ./examples/constellation/http_constellation.yaml | dot -Tpng > result.png
 
 diff: build
-	./abstrakt diff -o ./sample/constellation/sample_constellation.yaml -n ./sample/constellation/sample_constellation_changed.yaml | dot -Tpng > result.png
+	./abstrakt diff -o ./examples/constellation/sample_constellation.yaml -n ./examples/constellation/sample_constellation_changed.yaml | dot -Tpng > result.png
 
 run-http-demo: http-demo http-demo-deploy
 
-http-demo: build	
-	./abstrakt compose http-demo -f ./sample/constellation/http_constellation.yaml -m ./sample/constellation/http_constellation_maps.yaml -o ./output/http_sample
+http-demo: build
+	./abstrakt compose http-demo -f ./examples/constellation/http_constellation.yaml -m ./examples/constellation/http_constellation_maps.yaml -o ./output/http_sample
 
 http-demo-deploy:
 	helm install wormhole-http-demo ./output/http_sample/http-demo

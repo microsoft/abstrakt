@@ -19,6 +19,7 @@ require (
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/viper v1.4.0
+	github.com/stretchr/testify v1.4.0
 	golang.org/x/crypto v0.0.0-20191028145041-f83a4685e152
 	golang.org/x/sys v0.0.0-20191112214154-59a1497f0cea // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect

@@ -2,21 +2,23 @@ run:
   deadline: 5m
   skip-files: []
 linters-settings:
-  linters-settings.govet:
+  govet:
     check-shadowing: true
-  linters-settings.gocyclo:
+  gocyclo:
     min-complexity: 12.0
-  linters-settings.maligned:
+  maligned:
     suggest-new: true
-  linters-settings.goconst:
+  goconst:
     min-len: 3.0
     min-occurrences: 3.0
-  linters-settings.misspell:
-    locale: "US"
-    ignore-words: 
+  misspell:
+    locale: "UK"
+    ignore-words:
      - listend
      - analyses
      - cancelling
+     - color
+     - colors
 linters:
   enable:
     - vet

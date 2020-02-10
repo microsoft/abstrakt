@@ -32,7 +32,7 @@ With everything installed and running, you can continue.
 
 You can find sample constellation files in the following location:
 
-`/sample/constellation/`
+`/examples/constellation/`
 
 Using these files you can test the app binary. 
 
