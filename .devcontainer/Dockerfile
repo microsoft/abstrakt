@@ -83,8 +83,8 @@ ENV PATH="/usr/local/kubebuilder/bin:${PATH}"
 ENV GO111MODULE=on
 
 ENV KUBECONFIG="/root/.kube/kind-config-kind"
-COPY ./scripts/makefile ./
-RUN make install-kind
-RUN make install-helm
+COPY ./scripts/makefile-kind ./scripts/makefile-helm ./
+RUN make -f makefile-kind install-kind
+RUN make -f makefile-helm install-helm
 
 ENV SHELL /bin/zsh
