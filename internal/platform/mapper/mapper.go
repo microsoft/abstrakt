@@ -7,11 +7,12 @@ package mapper
 //////////////////////////////////////////////////////
 
 import (
+	"io/ioutil"
+	"reflect"
+
 	"github.com/microsoft/abstrakt/tools/guid"
 	"gopkg.in/dealancer/validate.v2"
 	yamlParser "gopkg.in/yaml.v2"
-	"io/ioutil"
-	"reflect"
 )
 
 // Note: the yaml mapping attributes are necessary (despite the nearly

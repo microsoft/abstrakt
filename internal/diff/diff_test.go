@@ -1,12 +1,13 @@
 package diff_test
 
 import (
+	"testing"
+
 	set "github.com/deckarep/golang-set"
 	"github.com/microsoft/abstrakt/internal/diff"
 	"github.com/microsoft/abstrakt/internal/platform/constellation"
 	helper "github.com/microsoft/abstrakt/tools/test"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 // TestGetComparisonSets - generate sets of common, added and removed services and relationships from  input YAML

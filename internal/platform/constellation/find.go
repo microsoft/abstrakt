@@ -1,9 +1,10 @@
 package constellation
 
 import (
+	"strings"
+
 	"github.com/microsoft/abstrakt/tools/find"
 	"github.com/microsoft/abstrakt/tools/guid"
-	"strings"
 )
 
 // FindService -- Find a Service by id.

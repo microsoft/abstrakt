@@ -1,12 +1,13 @@
 package constellation_test
 
 import (
-	"github.com/microsoft/abstrakt/internal/platform/constellation"
-	"github.com/microsoft/abstrakt/tools/guid"
-	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"reflect"
 	"testing"
+
+	"github.com/microsoft/abstrakt/internal/platform/constellation"
+	"github.com/microsoft/abstrakt/tools/guid"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewDagConfigFromString(t *testing.T) {

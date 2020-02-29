@@ -2,10 +2,11 @@ package constellation_test
 
 import (
 	"bytes"
+	"testing"
+
 	"github.com/microsoft/abstrakt/internal/platform/constellation"
 	helper "github.com/microsoft/abstrakt/tools/test"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestGenerateGraph(t *testing.T) {

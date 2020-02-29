@@ -1,9 +1,10 @@
 package cmd
 
 import (
+	"testing"
+
 	helper "github.com/microsoft/abstrakt/tools/test"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestComposeCommandReturnsErrorIfTemplateTypeIsInvalid(t *testing.T) {

@@ -1,9 +1,10 @@
 package find_test
 
 import (
+	"testing"
+
 	"github.com/microsoft/abstrakt/tools/find"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestFindElementInSlice(t *testing.T) {

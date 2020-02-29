@@ -1,9 +1,10 @@
 package mapper
 
 import (
+	"strings"
+
 	"github.com/microsoft/abstrakt/tools/find"
 	"github.com/microsoft/abstrakt/tools/guid"
-	"strings"
 )
 
 // FindByName -- Look up a map by chart name.

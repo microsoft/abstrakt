@@ -8,10 +8,11 @@ package cmd
 import (
 	"bytes"
 	"fmt"
+	"strings"
+
 	"github.com/microsoft/abstrakt/internal/platform/constellation"
 	"github.com/microsoft/abstrakt/tools/logger"
 	"github.com/spf13/cobra"
-	"strings"
 )
 
 type visualiseCmd struct {

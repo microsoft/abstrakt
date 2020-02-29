@@ -1,9 +1,10 @@
 package constellation_test
 
 import (
+	"testing"
+
 	"github.com/microsoft/abstrakt/internal/platform/constellation"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestRelationshipFinding(t *testing.T) {

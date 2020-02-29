@@ -1,9 +1,10 @@
 package file_test
 
 import (
+	"testing"
+
 	"github.com/microsoft/abstrakt/tools/file"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestFileExistsNoFile(t *testing.T) {

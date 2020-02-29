@@ -1,9 +1,10 @@
 package guid_test
 
 import (
+	"testing"
+
 	"github.com/microsoft/abstrakt/tools/guid"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestGUID_Equals(t *testing.T) {

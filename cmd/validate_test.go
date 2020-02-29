@@ -1,10 +1,11 @@
 package cmd
 
 import (
+	"testing"
+
 	helper "github.com/microsoft/abstrakt/tools/test"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestValidateCommandNoArgs(t *testing.T) {

@@ -6,8 +6,6 @@ import (
 	"bytes"
 	"compress/gzip"
 	"flag"
-	"github.com/microsoft/abstrakt/internal/platform/chart"
-	"github.com/stretchr/testify/assert"
 	"io"
 	"io/ioutil"
 	"os"
@@ -15,6 +13,9 @@ import (
 	"path/filepath"
 	"reflect"
 	"testing"
+
+	"github.com/microsoft/abstrakt/internal/platform/chart"
+	"github.com/stretchr/testify/assert"
 )
 
 var update = flag.Bool("update", false, "update golden dataset")
