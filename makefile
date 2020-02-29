@@ -1,4 +1,16 @@
 ##################
+#   Variables    #
+##################
+
+GIT_VERSION = $(shell git rev-list -1 HEAD)
+
+ifdef VERSION
+	ABSTRAKT_VERSION := $(VERSION)
+else
+	ABSTRAKT_VERSION := edge
+endif
+
+##################
 # Linting/Verify #
 ##################
 
@@ -53,14 +65,21 @@ test-all: test-prepare test
 test-export-all: test-prepare test-export
 
 ##################
+#     Build      #
+##################
+
+BASE_PACKAGE_NAME := github.com/microsoft/abstrakt
+LDFLAGS:=-X $(BASE_PACKAGE_NAME)/cmd.commit=$(GIT_VERSION) -X $(BASE_PACKAGE_NAME)/cmd.version=$(ABSTRAKT_VERSION)
+
+build::
+	go build -ldflags="$(LDFLAGS)" -o abstrakt main.go
+
+##################
 #  Run Examples  #
 ##################
 
 fmt:
 	gofmt -s -w ./
-
-build::
-	go build -o abstrakt main.go
 
 visualise: build
 	./abstrakt visualise -f ./examples/constellation/http_constellation.yaml | dot -Tpng > result.png
