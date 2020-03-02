@@ -1,0 +1,53 @@
+name: build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+env:
+  GOVER: 1.13.7
+  ARCHIVE_DIR: dist/archives
+
+jobs:
+  build:
+    name: 'Build Abstrakt'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v1.4.0
+        with:
+          node-version: 12
+
+      - name: Set up Go ${{ env.GOVER }}
+        uses: actions/setup-go@v1.1.2
+        with:
+          go-version: ${{ env.GOVER }}
+
+      - name: 'Checkout'
+        uses: actions/checkout@master
+
+      - name: 'Install Dependencies'
+        run: npm i
+
+      - name: 'Set GOPATH'
+        # temporary fix
+        # see https://github.com/actions/setup-go/issues/14
+        run: |
+          echo "##[set-env name=GOPATH;]$(dirname $GITHUB_WORKSPACE)"
+          echo "##[add-path]$(dirname $GITHUB_WORKSPACE)/bin"
+        shell: bash
+
+      - name: 'Lint Abstrakt'
+        run: make lint-all
+
+      - name: 'Test Abstrakt'
+        run: make test-all
+
+      - name: 'Generate Semantic Version'
+        run: ARCHIVE_OUTDIR=${{ env.ARCHIVE_DIR }} npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
