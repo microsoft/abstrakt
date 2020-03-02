@@ -4,10 +4,16 @@
 
 GIT_VERSION = $(shell git rev-list -1 HEAD)
 
-ifdef VERSION
-	ABSTRAKT_VERSION := $(VERSION)
+ifdef RELEASE
+	ABSTRAKT_VERSION := $(RELEASE)
 else
 	ABSTRAKT_VERSION := edge
+endif
+
+ifdef ARCHIVE_OUTDIR
+	OUTPUT_PATH := $(ARCHIVE_OUTDIR)
+else
+	OUTPUT_PATH := .
 endif
 
 ##################
@@ -72,7 +78,15 @@ BASE_PACKAGE_NAME := github.com/microsoft/abstrakt
 LDFLAGS:=-X $(BASE_PACKAGE_NAME)/cmd.commit=$(GIT_VERSION) -X $(BASE_PACKAGE_NAME)/cmd.version=$(ABSTRAKT_VERSION)
 
 build::
-	go build -ldflags="$(LDFLAGS)" -o abstrakt main.go
+	GOOS=darwin GOARCH=amd64 go build -ldflags="$(LDFLAGS)" -o abstrakt main.go
+
+archive:
+ifeq ("$(wildcard $(OUTPUT_PATH))", "")
+	mkdir -p $(OUTPUT_PATH)
+endif
+	tar -czvf $(OUTPUT_PATH)/abstrakt_darwin_amd64.tar.gz abstrakt
+
+release: build archive
 
 ##################
 #  Run Examples  #

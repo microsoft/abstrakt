@@ -1,0 +1,20 @@
+{
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    ["@semantic-release/changelog", {
+      "changelogFile": "docs/CHANGELOG.md",
+    }],
+    ["@semantic-release/git", {
+      "assets": ["docs/CHANGELOG.md"],
+    }],
+    ["@semantic-release/exec", {
+      "publishCmd": "mkdir -p dist/archives && make release && echo '::set-env name=RELEASE::${nextRelease.version}'"
+    }],
+    ["@semantic-release/github", {
+      "assets": [
+        {"path": "dist/archives/abstrakt_darwin_amd64.tar.gz"}
+      ]
+    }]
+  ]
+}
