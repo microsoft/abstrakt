@@ -1,6 +1,6 @@
 # Abstrakt
 
-[![Build Status](https://dev.azure.com/aussiedevcrew/Wormhole/_apis/build/status/microsoft.abstrakt?branchName=master)](https://dev.azure.com/aussiedevcrew/Wormhole/_build/latest?definitionId=20&branchName=master) ![Azure DevOps coverage (branch)](https://abstrakt-shields.azurewebsites.net/azure-devops/coverage/aussiedevcrew/Wormhole/20/master)
+[![build](https://github.com/microsoft/abstrakt/workflows/build/badge.svg?branch=master)](https://github.com/microsoft/abstrakt/actions?query=workflow%3Abuild) ![Azure DevOps coverage (branch)](https://abstrakt-shields.azurewebsites.net/azure-devops/coverage/aussiedevcrew/Wormhole/20/master) [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
 ## Quick Start
 
