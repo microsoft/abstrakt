@@ -1,10 +1,11 @@
 package cmd
 
 import (
+	"testing"
+
 	helper "github.com/microsoft/abstrakt/tools/test"
 	"github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 // TestDiffCmdWithAllRequirementsNoError - test diff command parameters
@@ -40,7 +41,7 @@ func TestDffCmdFailYaml(t *testing.T) {
 // TestDiffCmdFailNotYaml - test diff command parameters
 // Test both required command line parameter files fail when provided with invalid input files (-o, -n) failing each in turn
 func TestDiffCmdFailNotYaml(t *testing.T) {
-	expected := "Constellation config failed to load file \"diff.go\": yaml: line 25: mapping values are not allowed in this context"
+	expected := "Constellation config failed to load file \"diff.go\": yaml: line 26: mapping values are not allowed in this context"
 
 	_, err := helper.ExecuteCommand(newDiffCmd().cmd, "-o", "diff.go", "-n", "diff.go")
 
