@@ -34,4 +34,3 @@ __debug_bin
 cmd/test.dot
 
 node_modules
-package-lock.json
