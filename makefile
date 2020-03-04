@@ -16,6 +16,32 @@ else
 	OUTPUT_PATH := .
 endif
 
+LOCAL_OS := $(shell uname)
+ifeq ($(LOCAL_OS),Linux)
+   TARGET_OS_LOCAL = linux
+else ifeq ($(LOCAL_OS),Darwin)
+   TARGET_OS_LOCAL = darwin
+else
+   TARGET_OS_LOCAL ?= windows
+endif
+export GOOS ?= $(TARGET_OS_LOCAL)
+
+ifneq ($(TARGET_OS_LOCAL), windows)
+	NO7Z = true
+endif
+
+ifeq ($(GOOS),windows)
+	BINARY_EXT_LOCAL:=.exe
+	GOLANGCI_LINT:=golangci-lint.exe
+	export ARCHIVE_EXT = .zip
+else
+	BINARY_EXT_LOCAL:=
+	GOLANGCI_LINT:=golangci-lint
+	export ARCHIVE_EXT = .tar.gz
+endif
+
+export BINARY_EXT ?= $(BINARY_EXT_LOCAL)
+
 ##################
 # Linting/Verify #
 ##################
@@ -28,7 +54,7 @@ test-watcher:
 	@echo "Running test watcher"
 	bash ./scripts/test_watcher.sh
 
-lint-all: lint-prepare lint vet
+lint-all: lint-prepare build lint vet
 
 lint-prepare:
 ifeq (,$(shell which golangci-lint))
@@ -38,7 +64,7 @@ else
 	@echo "golangci-lint is installed"
 endif
 
-lint: build
+lint:
 	@echo "Linting"
 	golangci-lint run ./...
 
@@ -51,6 +77,8 @@ vet:
 ##################
 
 test-prepare:
+	go get github.com/stretchr/testify
+	go get github.com/pmezard/go-difflib
 	go get github.com/jstemmer/go-junit-report
 	go get github.com/AlekSi/gocov-xml
 	go get github.com/axw/gocov/gocov
@@ -78,13 +106,20 @@ BASE_PACKAGE_NAME := github.com/microsoft/abstrakt
 LDFLAGS:=-X $(BASE_PACKAGE_NAME)/cmd.commit=$(GIT_VERSION) -X $(BASE_PACKAGE_NAME)/cmd.version=$(ABSTRAKT_VERSION)
 
 build::
-	GOOS=darwin GOARCH=amd64 go build -ldflags="$(LDFLAGS)" -o abstrakt main.go
+	GOOS=$(GOOS) GOARCH=amd64 go build -ldflags="$(LDFLAGS)" -o abstrakt$(BINARY_EXT) main.go
 
 archive:
 ifeq ("$(wildcard $(OUTPUT_PATH))", "")
 	mkdir -p $(OUTPUT_PATH)
 endif
-	tar -czvf $(OUTPUT_PATH)/abstrakt_darwin_amd64.tar.gz abstrakt
+
+ifeq (,$(NO7Z))
+ifeq ($(GOOS),windows)
+	7z.exe a -tzip "$(OUTPUT_PATH)\\abstrakt__$(GOOS)_amd64$(ARCHIVE_EXT)" "abstrakt$(BINARY_EXT)"
+endif
+else
+	tar -czvf "$(OUTPUT_PATH)/abstrakt_$(GOOS)_amd64$(ARCHIVE_EXT)" "abstrakt$(BINARY_EXT)"
+endif
 
 release: build archive
 
