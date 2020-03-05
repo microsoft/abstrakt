@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/microsoft/abstrakt/internal/compose"
@@ -41,7 +42,8 @@ func TestComposeService(t *testing.T) {
 
 	for _, raw := range h.Raw {
 		if raw.Name == "test/values.yaml" {
-			assert.Equal(t, string(contentBytes), string(raw.Data))
+			stripped := strings.ReplaceAll(string(contentBytes), "\r", "")
+			assert.Equal(t, stripped, string(raw.Data))
 		}
 	}
 }

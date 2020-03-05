@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"runtime"
 	"testing"
 
 	helper "github.com/microsoft/abstrakt/tools/test"
@@ -24,18 +25,30 @@ func TestDiffCmdWithAllRequirementsNoError(t *testing.T) {
 // Test both required command line parameters (-o, -n) failing each in turn
 func TestDffCmdFailYaml(t *testing.T) {
 	expected := "Constellation config failed to load file \"constellationPathOrg\": open constellationPathOrg: no such file or directory"
+	winExpacted := "Constellation config failed to load file \"constellationPathOrg\": open constellationPathOrg: The system cannot find the file specified."
 
 	_, err := helper.ExecuteCommand(newDiffCmd().cmd, "-o", "constellationPathOrg", "-n", "constellationPathNew")
 
 	assert.Error(t, err)
-	assert.EqualError(t, err, expected)
+
+	if runtime.GOOS == "windows" {
+		assert.EqualError(t, err, winExpacted)
+	} else {
+		assert.EqualError(t, err, expected)
+	}
 
 	expected = "Constellation config failed to load file \"constellationPathNew\": open constellationPathNew: no such file or directory"
+	winExpacted = "Constellation config failed to load file \"constellationPathNew\": open constellationPathNew: The system cannot find the file specified."
 
 	_, err = helper.ExecuteCommand(newDiffCmd().cmd, "-o", "../examples/constellation/sample_constellation.yaml", "-n", "constellationPathNew")
 
 	assert.Error(t, err)
-	assert.EqualError(t, err, expected)
+
+	if runtime.GOOS == "windows" {
+		assert.EqualError(t, err, winExpacted)
+	} else {
+		assert.EqualError(t, err, expected)
+	}
 }
 
 // TestDiffCmdFailNotYaml - test diff command parameters

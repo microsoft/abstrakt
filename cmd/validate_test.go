@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"runtime"
 	"testing"
 
 	helper "github.com/microsoft/abstrakt/tools/test"
@@ -38,6 +39,7 @@ func TestValidateCommandMapExist(t *testing.T) {
 
 func TestValidateCommandConstellationFail(t *testing.T) {
 	expected := "Constellation: open does-not-exist: no such file or directory"
+	winExpected := "Constellation: open does-not-exist: The system cannot find the file specified."
 
 	hook := test.NewGlobal()
 	_, err := helper.ExecuteCommand(newValidateCmd().cmd, "-f", "does-not-exist")
@@ -49,11 +51,17 @@ func TestValidateCommandConstellationFail(t *testing.T) {
 	}
 
 	assert.Error(t, err)
-	assert.Contains(t, entries, expected)
+
+	if runtime.GOOS == "windows" {
+		assert.Contains(t, entries, winExpected)
+	} else {
+		assert.Contains(t, entries, expected)
+	}
 }
 
 func TestValidateCommandMapFail(t *testing.T) {
 	expected := "Mapper: open does-not-exist: no such file or directory"
+	winExpected := "Mapper: open does-not-exist: The system cannot find the file specified."
 
 	hook := test.NewGlobal()
 	_, err := helper.ExecuteCommand(newValidateCmd().cmd, "-m", "does-not-exist")
@@ -61,7 +69,12 @@ func TestValidateCommandMapFail(t *testing.T) {
 	entries := helper.GetAllLogs(hook.AllEntries())
 
 	assert.Error(t, err)
-	assert.Contains(t, entries, expected)
+
+	if runtime.GOOS == "windows" {
+		assert.Contains(t, entries, winExpected)
+	} else {
+		assert.Contains(t, entries, expected)
+	}
 }
 
 func TestValidateCommandConstellationInvalidSchema(t *testing.T) {
