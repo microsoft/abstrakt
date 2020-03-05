@@ -5,5 +5,28 @@
         "@semantic-release/git": "^9.0.0",
         "@semantic-release/github": "^7.0.4",
         "semantic-release": "^17.0.4"
+    },
+    "release": {
+        "plugins": [
+            "@semantic-release/commit-analyzer",
+            "@semantic-release/release-notes-generator",
+            ["@semantic-release/changelog", {
+                "changelogFile": "docs/CHANGELOG.md"
+            }],
+            ["@semantic-release/git", {
+                "assets": ["docs/CHANGELOG.md"]
+            }],
+            ["@semantic-release/exec", {
+                "publishCmd": "export RELEASE=${nextRelease.version} && make release GOOS=linux && make release GOOS=darwin && make release GOOS=windows"
+            }],
+            ["@semantic-release/github", {
+                "assets": [
+                {"path": "./abstrakt_linux_amd64.tar.gz"},
+                {"path": "./abstrakt_darwin_amd64.tar.gz"},
+                {"path": "./abstrakt_windows_amd64.zip"},
+                {"path": "./checksums.sha256"}
+                ]
+            }]
+        ]
     }
 }
