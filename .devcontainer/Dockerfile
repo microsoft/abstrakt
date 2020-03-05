@@ -78,6 +78,10 @@ RUN echo "export HISTFILE=/root/commandhistory/.zsh_history" >> "/root/.zshrc" \
     && mkdir -p /root/commandhistory \
     && touch /root/commandhistory/.zsh_history
 
+# Installing node
+RUN curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash - \
+    && sudo apt-get install -y nodejs
+
 ENV PATH="/usr/local/kubebuilder/bin:${PATH}"
 
 ENV GO111MODULE=on
