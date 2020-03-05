@@ -44,7 +44,7 @@ jobs:
     strategy:
       matrix:
         go-version: [1.12.x, 1.13.x]
-        platform: [ubuntu-latest, macos-latest]
+        platform: [ubuntu-latest, macos-latest, windows-latest]
         target_arch: [arm64]
     steps:
       - name: 'install go ${{ matrix.go-version }}'
