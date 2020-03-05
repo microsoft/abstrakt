@@ -108,6 +108,10 @@ LDFLAGS:=-X $(BASE_PACKAGE_NAME)/cmd.commit=$(GIT_VERSION) -X $(BASE_PACKAGE_NAM
 build::
 	GOOS=$(GOOS) GOARCH=amd64 go build -ldflags="$(LDFLAGS)" -o abstrakt$(BINARY_EXT) main.go
 
+##################
+#    Release     #
+##################
+
 archive:
 ifeq ("$(wildcard $(OUTPUT_PATH))", "")
 	mkdir -p $(OUTPUT_PATH)
@@ -115,13 +119,24 @@ endif
 
 ifeq (,$(NO7Z))
 ifeq ($(GOOS),windows)
-	7z.exe a -tzip "$(OUTPUT_PATH)\\abstrakt__$(GOOS)_amd64$(ARCHIVE_EXT)" "abstrakt$(BINARY_EXT)"
+	7z.exe a -tzip "$(OUTPUT_PATH)\\abstrakt_$(GOOS)_amd64$(ARCHIVE_EXT)" "abstrakt$(BINARY_EXT)"
 endif
 else
 	tar -czvf "$(OUTPUT_PATH)/abstrakt_$(GOOS)_amd64$(ARCHIVE_EXT)" "abstrakt$(BINARY_EXT)"
 endif
 
-release: build archive
+release: build archive generate-checksum
+
+##################
+#     Verify     #
+##################
+
+generate-checksum:
+	cd $(OUTPUT_PATH)
+	sha256sum abstrakt_$(GOOS)_amd64$(ARCHIVE_EXT) >> checksums.sha256
+
+verify-checksum:
+	sha256sum -c $(OUTPUT_PATH)/checksums.sha256
 
 ##################
 #  Run Examples  #
