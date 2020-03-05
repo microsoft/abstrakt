@@ -22,29 +22,17 @@ func TestVersion(t *testing.T) {
 }
 
 func TestVersionCmd(t *testing.T) {
-	expected := "abstrakt version: edge"
-
-	hook := test.NewGlobal()
-	_, err := helper.ExecuteCommand(newVersionCmd().cmd)
-
-	entries := helper.GetAllLogs(hook.AllEntries())
-
-	assert.NoError(t, err)
-	assert.Contains(t, entries, expected)
-}
-
-func TestCommit(t *testing.T) {
-	expected := "n/a"
-	version := Commit()
-	assert.Equal(t, expected, version)
-}
-
-func TestCommitCmd(t *testing.T) {
-	expected := "abstrakt commit: n/a"
+	expected := "abstrakt version edge, commit n/a"
 
 	hook := test.NewGlobal()
 	_, err := helper.ExecuteCommand(newVersionCmd().cmd)
 
 	assert.NoError(t, err)
 	assert.Contains(t, hook.LastEntry().Message, expected)
+}
+
+func TestCommit(t *testing.T) {
+	expected := "n/a"
+	version := Commit()
+	assert.Equal(t, expected, version)
 }

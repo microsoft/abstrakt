@@ -22,8 +22,7 @@ func newVersionCmd() *versionCmd {
 		Short: "The version of Abstrakt being used",
 		Long:  "The version of Abstrakt being used",
 		Run: func(cmd *cobra.Command, args []string) {
-			logger.Infof("abstrakt version: %v", Version())
-			logger.Infof("abstrakt commit: %v", Commit())
+			logger.Infof("abstrakt version %v, commit %v", Version(), Commit())
 		},
 	})
 
