@@ -2,6 +2,18 @@
 
 [![build](https://github.com/microsoft/abstrakt/workflows/build/badge.svg?branch=master)](https://github.com/microsoft/abstrakt/actions?query=workflow%3Abuild) ![Azure DevOps coverage (branch)](https://abstrakt-shields.azurewebsites.net/azure-devops/coverage/aussiedevcrew/Wormhole/20/master) [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
+## Table of contents
+
+* [Quick Start](#quick-start)
+  * [Dependencies](#dependencies)
+  * [Running](#running)
+  * [Samples](#samples)
+    * [Running the local Helm Microservice Sample](#running-the-local-helm-microservice-sample)
+    * [Running the sample](#running-the-sample)
+    * [Remove the install](#remove-the-install)
+    * [Debugging Templates](#debugging-templates)
+* [Contributing](#contributing)
+
 ## Quick Start
 
 If you want to contribute to the project, we've made things easy for you to get everything up and running using [devcontainers](https://code.visualstudio.com/docs/remote/containers).
@@ -78,4 +90,6 @@ You can remove the installed pods and services by calling `make http-demo-delete
 
 You can debug the templates by outputting them by running `make http-demo-template-all`
 
+## Contributing
 
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our process for submitting pull requests, and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT) for details on our code of conduct.
