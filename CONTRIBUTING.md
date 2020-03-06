@@ -26,6 +26,8 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
     * [Footer](#footer)
     * [Examples](#examples)
 * [Working with the code](#working-with-the-code)
+  * [Setting up your environment](#setting-up-your-environment)
+    * [DevContainer](#devcontainer)
   * [Linting and Testing locally](#linting-and-testing-locally)
   * [Watching Tests](#watching-tests)
 
@@ -145,6 +147,26 @@ The default graphite width of 10mm is always used for performance reasons.
 ```
 
 ## Working with the code
+
+### Setting up your environment
+
+But before we get started, make sure you [fork](https://guides.github.com/activities/forking/#fork) the project, and [clone](https://guides.github.com/activities/forking/#clone) your fork.
+
+#### DevContainer
+
+We've made things a little easier to get setup and running using [devcontainers](https://code.visualstudio.com/docs/remote/containers). But before we can continue, we need a couple things:
+
+- [Visual Studio Code](https://code.visualstudio.com/)
+- [Remote Development](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack)
+- [Docker](https://docs.docker.com/install/)
+
+With everything installed and running, you can continue.
+
+1. Open this project in a new instance of Visual Studio Code.
+2. You may be prompted to `Reopen in Container`. Click on it.
+    - If you do not see the prompt, bring up your command palette (`View` -> `Command Palette...`) and type `Remote Containers: Open Folder in Container...`
+3. Wait for Visual Studio Code to reopen and build your container.
+4. Once your container has finished building, you can now start developing!
 
 ### Linting and Testing locally
 
