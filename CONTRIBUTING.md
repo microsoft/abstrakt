@@ -25,6 +25,9 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
     * [Body](#body)
     * [Footer](#footer)
     * [Examples](#examples)
+* [Working with the code](#working-with-the-code)
+  * [Linting and Testing locally](#linting-and-testing-locally)
+  * [Watching Tests](#watching-tests)
 
 ## Coding rules
 
@@ -140,6 +143,8 @@ BREAKING CHANGE: The graphiteWidth option has been removed.
 
 The default graphite width of 10mm is always used for performance reasons.
 ```
+
+## Working with the code
 
 ### Linting and Testing locally
 
