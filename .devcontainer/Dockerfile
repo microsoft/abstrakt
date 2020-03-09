@@ -13,7 +13,7 @@ RUN apt-get update \
     && apt-get -y install --no-install-recommends apt-utils 2>&1 \
     && apt-get -y install sudo \
     && apt-get -y install git procps lsb-release \
-    && apt-get -y install wget nano zsh inotify-tools jq \
+    && apt-get -y install wget nano zsh inotify-tools jq zip \
     && apt-get install -y graphviz \
     && go get -x -d github.com/stamblerre/gocode 2>&1 \
     && go build -o gocode-gomod github.com/stamblerre/gocode \
@@ -59,8 +59,6 @@ RUN apt-get update \
     # Install kubectl
     && curl -sSL -o /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl \
     && chmod +x /usr/local/bin/kubectl
-    
-RUN apt-get -y install git procps wget nano zsh inotify-tools jq zip
 
 # Verify git, process tools installed
 RUN wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh || true
