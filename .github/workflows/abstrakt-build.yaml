@@ -4,9 +4,13 @@ on:
   push:
     branches:
       - master
+    paths-ignore:
+      - '**.md'
   pull_request:
     branches:
       - master
+    paths-ignore:
+      - '**.md'
 
 env:
   GOVER: 1.13.7
