@@ -38,7 +38,7 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 To ensure consistency and quality throughout the source code, all code modifications must have:
 - No [linting](#lint) errors
 - A [test](#tests) for every possible case introduced by your code change
-- **100%** test coverage
+- Complete test coverage, as is reasonably possible.
 - [Valid commit message(s)](#commit-message-guidelines)
 - Documentation for new features
 - Updated documentation for modified features
