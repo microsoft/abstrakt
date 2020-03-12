@@ -1,12 +1,13 @@
 package mapper_test
 
 import (
-	"github.com/microsoft/abstrakt/internal/platform/mapper"
-	"github.com/microsoft/abstrakt/tools/guid"
-	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"reflect"
 	"testing"
+
+	"github.com/microsoft/abstrakt/internal/platform/mapper"
+	"github.com/microsoft/abstrakt/tools/guid"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestMapFromString(t *testing.T) {

@@ -1,16 +1,18 @@
 package compose_test
 
 import (
+	"io/ioutil"
+	"os"
+	"path/filepath"
+	"strings"
+	"testing"
+
 	"github.com/microsoft/abstrakt/internal/compose"
 	helper "github.com/microsoft/abstrakt/tools/test"
 	"github.com/stretchr/testify/assert"
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/chartutil"
-	"io/ioutil"
-	"os"
-	"path/filepath"
-	"testing"
 )
 
 func TestComposeService(t *testing.T) {
@@ -40,7 +42,8 @@ func TestComposeService(t *testing.T) {
 
 	for _, raw := range h.Raw {
 		if raw.Name == "test/values.yaml" {
-			assert.Equal(t, string(contentBytes), string(raw.Data))
+			stripped := strings.ReplaceAll(string(contentBytes), "\r", "")
+			assert.Equal(t, stripped, string(raw.Data))
 		}
 	}
 }

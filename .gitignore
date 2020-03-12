@@ -32,3 +32,6 @@ output
 
 __debug_bin
 cmd/test.dot
+
+node_modules
+checksums.sha256

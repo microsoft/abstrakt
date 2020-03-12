@@ -2,10 +2,11 @@ package diff
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/awalterschulze/gographviz"
 	set "github.com/deckarep/golang-set"
 	"github.com/microsoft/abstrakt/internal/platform/constellation"
-	"strings"
 )
 
 // ComparisonSet is a combination of two graphviz graphs.

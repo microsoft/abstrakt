@@ -2,14 +2,16 @@ package test
 
 import (
 	"bytes"
-	set "github.com/deckarep/golang-set"
-	"github.com/sirupsen/logrus"
-	"github.com/spf13/cobra"
 	"io/ioutil"
 	"os"
 	"path"
+	"runtime"
 	"strings"
 	"testing"
+
+	set "github.com/deckarep/golang-set"
+	"github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
 )
 
 // ExecuteCommand is used to run a cobra command with arguments and return its value and error
@@ -39,8 +41,16 @@ func PrepareRealFilesForTest(t *testing.T) (string, string, string) {
 		t.Fatal(err2)
 	}
 
-	constellationPath := path.Join(cwd, "../examples/constellation/sample_constellation.yaml")
-	mapsPath := path.Join(cwd, "../examples/constellation/sample_constellation_maps.yaml")
+	exampleConstellation := "../examples/constellation/sample_constellation.yaml"
+	exampleMap := "../examples/constellation/sample_constellation_maps.yaml"
+
+	if runtime.GOOS == "windows" {
+		exampleConstellation = strings.ReplaceAll(exampleConstellation, "/", "\\")
+		exampleMap = strings.ReplaceAll(exampleMap, "/", "\\")
+	}
+
+	constellationPath := path.Join(cwd, exampleConstellation)
+	mapsPath := path.Join(cwd, exampleMap)
 
 	return constellationPath, mapsPath, tdir
 }
@@ -64,9 +74,19 @@ func PrepareTwoRealConstellationFilesForTest(t *testing.T) (string, string, stri
 		t.Fatal(err2)
 	}
 
-	constellationPathOrg := path.Join(cwd, "../examples/constellation/sample_constellation.yaml")
-	constellationPathNew := path.Join(cwd, "../examples/constellation/sample_constellation_changed.yaml")
-	mapsPath := path.Join(cwd, "../examples/constellation/sample_constellation_maps.yaml")
+	exampleConstellation := "../examples/constellation/sample_constellation.yaml"
+	exampleConstellationChanged := "../examples/constellation/sample_constellation_changed.yaml"
+	exampleMap := "../examples/constellation/sample_constellation_maps.yaml"
+
+	if runtime.GOOS == "windows" {
+		exampleConstellation = strings.ReplaceAll(exampleConstellation, "/", "\\")
+		exampleConstellationChanged = strings.ReplaceAll(exampleConstellationChanged, "/", "\\")
+		exampleMap = strings.ReplaceAll(exampleMap, "/", "\\")
+	}
+
+	constellationPathOrg := path.Join(cwd, exampleConstellation)
+	constellationPathNew := path.Join(cwd, exampleConstellationChanged)
+	mapsPath := path.Join(cwd, exampleMap)
 
 	return constellationPathOrg, constellationPathNew, mapsPath, tdir
 }

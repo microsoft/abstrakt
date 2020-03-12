@@ -1,9 +1,10 @@
 package mapper_test
 
 import (
+	"testing"
+
 	"github.com/microsoft/abstrakt/internal/platform/mapper"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestFindByName(t *testing.T) {

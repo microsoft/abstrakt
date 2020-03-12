@@ -9,6 +9,11 @@ type versionCmd struct {
 	*baseCmd
 }
 
+var (
+	version = "edge"
+	commit  = "n/a"
+)
+
 func newVersionCmd() *versionCmd {
 	cc := &versionCmd{}
 
@@ -17,7 +22,7 @@ func newVersionCmd() *versionCmd {
 		Short: "The version of Abstrakt being used",
 		Long:  "The version of Abstrakt being used",
 		Run: func(cmd *cobra.Command, args []string) {
-			logger.Infof("abstrakt version %v", Version())
+			logger.Infof("abstrakt version %v, commit %v", Version(), Commit())
 		},
 	})
 
@@ -26,5 +31,10 @@ func newVersionCmd() *versionCmd {
 
 // Version returns the version of abstrakt running.
 func Version() string {
-	return "0.0.1"
+	return version
+}
+
+// Commit returns the git commit SHA for the code that abstrakt was built from.
+func Commit() string {
+	return commit
 }

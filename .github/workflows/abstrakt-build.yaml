@@ -1,0 +1,109 @@
+name: build
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    branches:
+      - master
+    paths-ignore:
+      - '**.md'
+
+env:
+  GOVER: 1.13.7
+
+jobs:
+  lint:
+    name: 'lint abstrakt'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'install go ${{ env.GOVER }}'
+        uses: actions/setup-go@v1.1.2
+        with:
+          go-version: ${{ env.GOVER }}
+
+      - name: 'checkout'
+        uses: actions/checkout@v1
+
+      - name: 'set GOPATH'
+        # temporary fix
+        # see https://github.com/actions/setup-go/issues/14
+        run: |
+          echo "##[set-env name=GOPATH;]$(dirname $GITHUB_WORKSPACE)"
+          echo "##[add-path]$(dirname $GITHUB_WORKSPACE)/bin"
+        shell: bash
+
+      - name: 'install dependencies'
+        run: make lint-prepare
+
+      - name: 'lint abstrakt'
+        run: make lint vet
+
+  test:
+    name: 'test - ${{ matrix.platform }} w/ go ${{ matrix.go-version }}'
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      matrix:
+        go-version: [1.12.x, 1.13.x]
+        platform: [ubuntu-latest, macos-latest, windows-latest]
+        target_arch: [arm64]
+    steps:
+      - name: 'install go ${{ matrix.go-version }}'
+        if: success()
+        uses: actions/setup-go@v1.1.2
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: 'checkout'
+        uses: actions/checkout@v1
+
+      - name: 'set GOPATH'
+        run: |
+          echo "##[set-env name=GOPATH;]$(dirname $GITHUB_WORKSPACE)"
+          echo "##[add-path]$(dirname $GITHUB_WORKSPACE)/bin"
+        shell: bash
+
+      - name: 'build abstrakt'
+        run: make build
+
+      - name: 'install dependencies'
+        run: make test-prepare
+
+      - name: 'test abstrakt'
+        run: make test
+
+  release:
+    name: 'release abstrakt'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    steps:
+      - name: 'setup node.js'
+        uses: actions/setup-node@v1.4.0
+        with:
+          node-version: 12
+
+      - name: 'install go ${{ env.GOVER }}'
+        uses: actions/setup-go@v1.1.2
+        with:
+          go-version: ${{ env.GOVER }}
+
+      - name: 'checkout'
+        uses: actions/checkout@master
+
+      - name: 'set GOPATH'
+        run: |
+          echo "##[set-env name=GOPATH;]$(dirname $GITHUB_WORKSPACE)"
+          echo "##[add-path]$(dirname $GITHUB_WORKSPACE)/bin"
+        shell: bash
+
+      - name: 'install dependencies'
+        run: npm ci
+
+      - name: 'generate semantic version'
+        run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

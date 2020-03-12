@@ -2,13 +2,14 @@ package chart
 
 import (
 	"bytes"
+	"io/ioutil"
+	"os"
+	"path"
+
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/chartutil"
 	"helm.sh/helm/v3/pkg/downloader"
-	"io/ioutil"
-	"os"
-	"path"
 )
 
 const startMeta = `apiVersion: v1

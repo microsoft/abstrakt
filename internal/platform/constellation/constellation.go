@@ -16,11 +16,12 @@ package constellation
 ////////////////////////////////////////////////////////////
 
 import (
+	"io/ioutil"
+	"reflect"
+
 	"github.com/microsoft/abstrakt/tools/guid"
 	"gopkg.in/dealancer/validate.v2"
 	yamlParser "gopkg.in/yaml.v2"
-	"io/ioutil"
-	"reflect"
 )
 
 // Note: the yaml mappings are necessary (despite the 1-1 name correspondence).
