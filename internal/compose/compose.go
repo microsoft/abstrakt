@@ -7,6 +7,7 @@ import (
 	"github.com/microsoft/abstrakt/internal/platform/constellation"
 	"github.com/microsoft/abstrakt/internal/platform/mapper"
 	helm "helm.sh/helm/v3/pkg/chart"
+	"sigs.k8s.io/yaml"
 )
 
 //Composer takes maps and configs and builds out the helm chart
@@ -30,6 +31,16 @@ func (c *Composer) Build(name string, dir string) (*helm.Chart, error) {
 	serviceMap := make(map[string]int)
 	aliasMap := make(map[string]string)
 	deps := make([]*helm.Dependency, 0)
+
+	closure := func() {
+		for _, f := range newChart.Raw {
+			if f.Name == "values.yaml" {
+				b, _ := yaml.Marshal(newChart.Values)
+				f.Data = b
+			}
+		}
+	}
+	defer closure()
 
 	values := newChart.Values
 
