@@ -7,6 +7,5 @@ metadata:
     app: "receiver-{{.Values.name}}"
 spec:
   containers:
-  - name: wormholereceiver   
-    image: jakkaj/wormhole_receiver:5   
-    
+  - name: wormholereceiver
+    image: jakkaj/wormhole_receiver:5

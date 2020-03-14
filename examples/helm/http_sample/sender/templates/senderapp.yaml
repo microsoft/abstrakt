@@ -7,7 +7,7 @@ metadata:
     app: sender-{{.Values.name}}
 spec:
   containers:
-  - name: wormholesender    
+  - name: wormholesender
     image: jakkaj/wormhole_sender:5
     env:
     - name: RECEIVER_URI
@@ -17,5 +17,4 @@ spec:
       value: "http://{{ (index .Values.relationships.output 0).name }}:8080/api/EchoBody"
       {{end}}
     - name: CHAIN_ARG
-      value: "-Chain-{{.Values.name}}"      
-      
+      value: "-Chain-{{.Values.name}}"
