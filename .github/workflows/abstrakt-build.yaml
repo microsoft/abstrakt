@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'install go ${{ env.GOVER }}'
-        uses: actions/setup-go@v1.1.2
+        uses: actions/setup-go@master
         with:
           go-version: ${{ env.GOVER }}
 
@@ -53,7 +53,7 @@ jobs:
     steps:
       - name: 'install go ${{ matrix.go-version }}'
         if: success()
-        uses: actions/setup-go@v1.1.2
+        uses: actions/setup-go@master
         with:
           go-version: ${{ matrix.go-version }}
 
@@ -87,7 +87,7 @@ jobs:
           node-version: 12
 
       - name: 'install go ${{ env.GOVER }}'
-        uses: actions/setup-go@v1.1.2
+        uses: actions/setup-go@master
         with:
           go-version: ${{ env.GOVER }}
 
