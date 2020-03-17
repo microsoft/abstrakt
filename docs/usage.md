@@ -1,6 +1,7 @@
 # Abstrakt Usage
 
 ### Abstrakt
+
 Scalable, config driven data pipelines for Kubernetes.
 
 Abstrakt is a command line utility for processing constellation files. It has a number of subcommands shown below.
@@ -58,6 +59,7 @@ Create a Helm chart named `http-demo` to be generated under ./output.
 ```
 
 With __.tgz__
+
 ```bash
 ./abstrakt compose http-demo -f ./examples/constellation/http_constellation.yaml -m ./examples/constellation/http_constellation_maps.yaml -o ./output/http-demo -z
 ```
@@ -108,7 +110,8 @@ Alternatively, copy the output and paste into a Graphviz rendering tool to see t
 [Webgraphviz](http://www.webgraphviz.com/)  
 
 ### abstrakt diff
-```console
+
+```cmd
 diff produces graphiviz dot language output showing changes to a constellation. Defaults to showing final diff only, command line
 switches can also produce either or both of the original or changed constellation inputs
 
@@ -130,17 +133,21 @@ Global Flags:
 #### Examples
 
 Run visualise on a file
-	
-	abstrakt visualise -f basic_azure_event_hubs.yaml
-	digraph Azure_Event_Hubs_Sample {
-	        Event_Generator->Azure_Event_Hub;
-	        Azure_Event_Hub->Event_Logger;
-	        Azure_Event_Hub;
-	        Event_Generator;
-	        Event_Logger;
-	
-	}
-	
+
+```cmd
+abstrakt visualise -f basic_azure_event_hubs.yaml
+digraph Azure_Event_Hubs_Sample {
+        Event_Generator->Azure_Event_Hub;
+        Azure_Event_Hub->Event_Logger;
+        Azure_Event_Hub;
+        Event_Generator;
+        Event_Logger;
+
+}
+```
+
 Pipe visualise output to Graphviz producing a file called result.png (assumes Graphviz is installed and can be called from the location abstrakt is being run)
 
-	abstrakt visualise -f ./examples/constellation/sample_consteallation.yaml | dot -Tpng > result.png
+```cmd
+abstrakt visualise -f ./examples/constellation/sample_consteallation.yaml | dot -Tpng > result.png
+```

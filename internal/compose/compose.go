@@ -7,6 +7,7 @@ import (
 	"github.com/microsoft/abstrakt/internal/platform/constellation"
 	"github.com/microsoft/abstrakt/internal/platform/mapper"
 	helm "helm.sh/helm/v3/pkg/chart"
+	"sigs.k8s.io/yaml"
 )
 
 //Composer takes maps and configs and builds out the helm chart
@@ -16,20 +17,33 @@ type Composer struct {
 }
 
 //Build takes the loaded DAG and maps and builds the Helm values and requirements documents
-func (c *Composer) Build(name string, dir string) (*helm.Chart, error) {
+func (c *Composer) Build(name string, dir string) (newChart *helm.Chart, err error) {
 	if c.Constellation.Name == "" || c.Mapper.Name == "" {
 		return nil, fmt.Errorf("Please initialise with LoadFromFile or LoadFromString")
 	}
 
-	newChart, err := chart.Create(name, dir)
+	newChart, err = chart.Create(name, dir)
 
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	serviceMap := make(map[string]int)
 	aliasMap := make(map[string]string)
 	deps := make([]*helm.Dependency, 0)
+
+	closure := func() {
+		for _, f := range newChart.Raw {
+			if f.Name == "values.yaml" {
+				b, err := yaml.Marshal(newChart.Values)
+				if err != nil {
+					return
+				}
+				f.Data = b
+			}
+		}
+	}
+	defer closure()
 
 	values := newChart.Values
 
@@ -118,7 +132,7 @@ func (c *Composer) Build(name string, dir string) (*helm.Chart, error) {
 	newChart.Values = values
 	newChart.Metadata.Dependencies = deps
 
-	return newChart, nil
+	return
 }
 
 //LoadFile takes a string dag and map and loads them
