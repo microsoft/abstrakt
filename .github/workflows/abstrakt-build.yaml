@@ -33,16 +33,13 @@ jobs:
           echo "GOPATH=$(dirname $GITHUB_WORKSPACE)" >> $GITHUB_ENV
         shell: bash
 
-      - name: 'install dependencies'
-        run: make lint-prepare
-
-      - name: 'install golangci-lint'
+      - name: 'install and run lint'
         uses: golangci/golangci-lint-action@v2
         with:
           version: v1.29
 
-      - name: 'lint abstrakt'
-        run: make lint vet
+      - name: 'run vet'
+        run: make vet
 
   test:
     name: 'test - ${{ matrix.platform }} w/ go ${{ matrix.go-version }}'
