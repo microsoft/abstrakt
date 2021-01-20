@@ -55,7 +55,7 @@ lint-all: lint-prepare build lint vet
 lint-prepare:
 ifeq (,$(shell which golangci-lint))
 	@echo "Installing golangci-lint"
-	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOPATH)/bin v1.23.8 > /dev/null 2>&1
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.23.8 > /dev/null 2>&1
 else
 	@echo "golangci-lint is installed"
 endif
@@ -84,11 +84,11 @@ test:
 	go test -v ./... -cover -coverprofile=coverage.txt -race -covermode=atomic
 
 test-export:
-	go test -v ./... -cover -coverprofile=coverage.txt -race -covermode=atomic 2>&1 | $(GOPATH)/bin/go-junit-report > report.xml
-	$(GOPATH)/bin/gocov convert coverage.txt > coverage.json
-	$(GOPATH)/bin/gocov-xml < coverage.json > coverage.xml
+	go test -v ./... -cover -coverprofile=coverage.txt -race -covermode=atomic 2>&1 | $(go env GOPATH)/bin/go-junit-report > report.xml
+	$(go env GOPATH)/bin/gocov convert coverage.txt > coverage.json
+	$(go env GOPATH)/bin/gocov-xml < coverage.json > coverage.xml
 	mkdir coverage | true
-	$(GOPATH)/bin/gocov-html < coverage.json > coverage/index.html
+	$(go env GOPATH)/bin/gocov-html < coverage.json > coverage/index.html
 
 test-all: test-prepare test
 
