@@ -55,12 +55,12 @@ jobs:
     steps:
       - name: 'install go ${{ matrix.go-version }}'
         if: success()
-        uses: actions/setup-go@master
+        uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go-version }}
 
       - name: 'checkout'
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
       - name: 'set GOPATH'
         run: |
@@ -88,12 +88,12 @@ jobs:
           node-version: 12
 
       - name: 'install go ${{ env.GOVER }}'
-        uses: actions/setup-go@master
+        uses: actions/setup-go@v2
         with:
           go-version: ${{ env.GOVER }}
 
       - name: 'checkout'
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
 
       - name: 'set GOPATH'
         run: |
