@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'install go ${{ env.GOVER }}'
-        uses: actions/setup-go@master
+        uses: actions/setup-go@v2
         with:
           go-version: ${{ env.GOVER }}
 
@@ -33,6 +33,7 @@ jobs:
         # see https://github.com/actions/setup-go/issues/14
         run: |
           echo $GOPATH
+          go env
         shell: bash
 
       - name: 'install dependencies'
