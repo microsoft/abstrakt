@@ -21,26 +21,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'install go ${{ env.GOVER }}'
-        uses: actions/setup-go@master
+        uses: actions/setup-go@v2
         with:
           go-version: ${{ env.GOVER }}
 
       - name: 'checkout'
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
       - name: 'set GOPATH'
-        # temporary fix
-        # see https://github.com/actions/setup-go/issues/14
         run: |
-          echo "##[set-env name=GOPATH;]$(dirname $GITHUB_WORKSPACE)"
-          echo "##[add-path]$(dirname $GITHUB_WORKSPACE)/bin"
+          echo "GOPATH=$(dirname $GITHUB_WORKSPACE)" >> $GITHUB_ENV
         shell: bash
 
-      - name: 'install dependencies'
-        run: make lint-prepare
+      - name: 'install and run lint'
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.29
 
-      - name: 'lint abstrakt'
-        run: make lint vet
+      - name: 'run vet'
+        run: make vet
 
   test:
     name: 'test - ${{ matrix.platform }} w/ go ${{ matrix.go-version }}'
@@ -53,17 +52,16 @@ jobs:
     steps:
       - name: 'install go ${{ matrix.go-version }}'
         if: success()
-        uses: actions/setup-go@master
+        uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go-version }}
 
       - name: 'checkout'
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
       - name: 'set GOPATH'
         run: |
-          echo "##[set-env name=GOPATH;]$(dirname $GITHUB_WORKSPACE)"
-          echo "##[add-path]$(dirname $GITHUB_WORKSPACE)/bin"
+          echo "GOPATH=$(dirname $GITHUB_WORKSPACE)" >> $GITHUB_ENV
         shell: bash
 
       - name: 'build abstrakt'
@@ -87,17 +85,16 @@ jobs:
           node-version: 12
 
       - name: 'install go ${{ env.GOVER }}'
-        uses: actions/setup-go@master
+        uses: actions/setup-go@v2
         with:
           go-version: ${{ env.GOVER }}
 
       - name: 'checkout'
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
 
       - name: 'set GOPATH'
         run: |
-          echo "##[set-env name=GOPATH;]$(dirname $GITHUB_WORKSPACE)"
-          echo "##[add-path]$(dirname $GITHUB_WORKSPACE)/bin"
+          echo "GOPATH=$(dirname $GITHUB_WORKSPACE)" >> $GITHUB_ENV
         shell: bash
 
       - name: 'install dependencies'
